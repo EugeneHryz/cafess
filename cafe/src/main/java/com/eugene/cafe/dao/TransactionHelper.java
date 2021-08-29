@@ -14,7 +14,7 @@ public class TransactionHelper {
     public void beginTransaction(AbstractDao dao, AbstractDao... daos) throws DaoException {
         if (connection == null) {
             // todo: get connection from pool
-            connection = ConnectionFactory.createConnection();
+//            connection = ConnectionFactory.createConnection();
         }
         try {
             connection.setAutoCommit(false);
@@ -55,7 +55,7 @@ public class TransactionHelper {
 
     public void init(AbstractDao dao) {
         if (connection == null) {
-            connection = ConnectionFactory.createConnection();
+//            connection = ConnectionFactory.createConnection();
         }
 
         dao.setConnection(connection);
