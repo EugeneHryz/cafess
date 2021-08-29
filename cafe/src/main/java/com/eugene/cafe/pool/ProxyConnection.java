@@ -10,7 +10,6 @@ public class ProxyConnection implements Connection {
     private final Connection connection;
 
     ProxyConnection(Connection connection) {
-        // todo: get connection from pool
         this.connection = connection;
     }
 
