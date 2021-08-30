@@ -12,6 +12,8 @@ public class Client extends Entity {
 
     private ClientStatus status;
 
+    private String email;
+
     private double balance;
 
     private InputStream profileImage;
@@ -43,6 +45,10 @@ public class Client extends Entity {
         return status;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public double getBalance() {
         return balance;
     }
@@ -65,6 +71,10 @@ public class Client extends Entity {
 
     public void setStatus(ClientStatus status) {
         this.status = status;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setBalance(double balance) {
@@ -95,7 +105,7 @@ public class Client extends Entity {
 
     public static class Builder {
 
-        private long id;
+        private int id;
 
         private String name;
 
@@ -105,6 +115,8 @@ public class Client extends Entity {
 
         private ClientStatus status;
 
+        private String email;
+
         private double balance;
 
         private InputStream profileImage;
@@ -112,7 +124,7 @@ public class Client extends Entity {
         public Builder() {
         }
 
-        public Builder setId(long id) {
+        public Builder setId(int id) {
             this.id = id;
             return this;
         }
@@ -132,6 +144,11 @@ public class Client extends Entity {
             return this;
         }
 
+        public Builder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
         public Builder setStatus(ClientStatus status) {
             this.status = status;
             return this;
@@ -147,7 +164,7 @@ public class Client extends Entity {
             return this;
         }
 
-        public Client build() {
+        public Client buildClient() {
             Client client = new Client(name, surname, role, status, balance, profileImage);
             client.setId(id);
             return client;

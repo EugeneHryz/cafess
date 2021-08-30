@@ -17,6 +17,8 @@ public abstract class AbstractDao<T extends Entity> {
 
     public abstract List<T> findAll() throws DaoException;
 
+    public abstract Optional<T> update(T entity) throws DaoException;
+
     public abstract boolean deleteById(int id) throws DaoException;
 
     void setConnection(Connection connection) {

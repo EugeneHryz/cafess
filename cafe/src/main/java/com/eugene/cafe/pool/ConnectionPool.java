@@ -1,6 +1,8 @@
 package com.eugene.cafe.pool;
 
 import com.eugene.cafe.exception.ConnectionPoolException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
 
-    // todo: connection pool needs to be a singleton
+    private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
 
     private static final ReentrantLock lock = new ReentrantLock();
 
@@ -35,21 +37,21 @@ public class ConnectionPool {
                 ProxyConnection connection = ConnectionFactory.createConnection();
                 availableConnections.offer(connection);
             } catch (SQLException e) {
-                // todo: write to log
+                logger.error("Unable to create connection");
             }
         }
 
         if (availableConnections.isEmpty()) {
-            // todo: write fatal log
+            logger.fatal("Unable to populate connection pool");
             throw new RuntimeException("Unable to populate connection pool");
         }
     }
 
     public static ConnectionPool getInstance() {
-        if (initialized.get()) {
+        if (!initialized.get()) {
             lock.lock();
             try {
-                if (instance != null) {
+                if (instance == null) {
                     instance = new ConnectionPool();
                     initialized.set(true);
                 }
@@ -66,7 +68,7 @@ public class ConnectionPool {
             busyConnections.put(connection);
             return connection;
         } catch (InterruptedException e) {
-            // todo: write log
+            logger.error("Thread was interrupted while performing blocking operation " + e);
             Thread.currentThread().interrupt();
         }
         throw new ConnectionPoolException("Thread was interrupted while performing blocking operation");
@@ -79,12 +81,12 @@ public class ConnectionPool {
                 availableConnections.put(proxyConnection);
                 return;
             } catch (InterruptedException e) {
-                // todo write log
+                logger.error("Thread was interrupted while performing blocking operation " + e);
                 Thread.currentThread().interrupt();
             }
             throw new ConnectionPoolException("Thread was interrupted while performing blocking operation");
         } else {
-            // todo: write log
+            logger.warn("You can't put your own connection into the pool");
         }
     }
 
@@ -93,9 +95,9 @@ public class ConnectionPool {
             try {
                 availableConnections.take().reallyClose();
             } catch (InterruptedException e) {
-                // todo: write log
+                logger.error("Thread was interrupted while performing blocking operation " + e);
             } catch (SQLException e) {
-                // todo: write log
+                logger.error("Unable to close a connection " + e);
             }
         }
     }

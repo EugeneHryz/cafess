@@ -4,26 +4,28 @@ import com.eugene.cafe.entity.Client;
 import com.eugene.cafe.entity.ClientRole;
 import com.eugene.cafe.entity.ClientStatus;
 import com.eugene.cafe.exception.DaoException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.xml.transform.Result;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static com.eugene.cafe.dao.DatabaseColumnLabels.*;
 
 public class ClientDao extends AbstractDao<Client> {
 
-    private static final String SQL_INSERT_CLIENT = "INSERT INTO clients(name, surname, role_id, status_id, balance, profile_image) " +
-            "VALUES (?, ?, ?, ?, ?, ?)";
+    private static final Logger logger = LogManager.getLogger(ClientDao.class);
 
-    private static final String SQL_FIND_ALL = "SELECT " +
+    private static final String SQL_CREATE_CLIENT = "INSERT INTO clients(name, surname, role_id, status_id, email, " +
+            "balance, profile_image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String SQL_FIND_ALL_CLIENTS = "SELECT " +
             "clients.id, name, surname, email, role, status, balance, profile_image FROM clients " +
             "INNER JOIN client_role ON clients.role_id=client_role.id " +
-            "INNER JOIN client_status ON clients.status_id=client_status.id";
+            "INNER JOIN client_status ON clients.status_id = client_status.id";
 
     private static final String SQL_DELETE_CLIENT_BY_ID = "DELETE FROM clients WHERE clients.id = ?";
 
@@ -31,6 +33,10 @@ public class ClientDao extends AbstractDao<Client> {
             "clients.id, name, surname, email, role, status, balance, profile_image FROM clients " +
             "INNER JOIN client_role ON clients.role_id=client_role.id " +
             "INNER JOIN client_status ON clients.status_id=client_status.id " +
+            "WHERE clients.id = ?";
+
+    private static final String SQL_UPDATE_CLIENT = "UPDATE clients SET name = ?, surname = ?, " +
+            "email = ?, role_id = ?, status_id = ?, balance = ?, profile_image = ? " +
             "WHERE clients.id = ?";
 
     private static final String SQL_FIND_CLIENT_BY_EMAIL = "SELECT " +
@@ -42,25 +48,26 @@ public class ClientDao extends AbstractDao<Client> {
     @Override
     public boolean create(Client entity) throws DaoException {
         if (connection == null) {
-            // todo: write log
-            throw new DaoException("Database connection is not set");
+            logger.error("Database connection is not set for ClientDao");
+            throw new DaoException("Database connection is not set for ClientDao");
         }
 
         boolean created = false;
-        try (PreparedStatement statement = connection.prepareStatement(SQL_INSERT_CLIENT)) {
+        try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_CLIENT)) {
             statement.setString(1, entity.getName());
             statement.setString(2, entity.getSurname());
             statement.setInt(3, entity.getRole().getId());
             statement.setInt(4, entity.getStatus().getId());
-            statement.setDouble(5, entity.getBalance());
-            statement.setBlob(6, entity.getProfileImage());
+            statement.setString(5, entity.getEmail());
+            statement.setDouble(6, entity.getBalance());
+            statement.setBlob(7, entity.getProfileImage());
 
             if (statement.executeUpdate() > 0) {
                 created = true;
             }
         } catch (SQLException e) {
-            // todo: write log
-            throw new DaoException("Database error occurred " + e);
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
         }
         return created;
     }
@@ -68,53 +75,81 @@ public class ClientDao extends AbstractDao<Client> {
     @Override
     public Optional<Client> findById(int id) throws DaoException {
         if (connection == null) {
-            // todo: write log
-            throw new DaoException("Database connection is not set");
+            logger.error("Database connection is not set for ClientDao");
+            throw new DaoException("Database connection is not set for ClientDao");
         }
 
-        Optional<Client> result = Optional.empty();
+        Optional<Client> updated = Optional.empty();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_CLIENT_BY_ID)) {
             statement.setInt(1, id);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Client client = buildClient(resultSet);
-                result = Optional.of(client);
+                updated = Optional.of(client);
             }
         } catch (SQLException e) {
-            // todo: write log
-            throw new DaoException("Database error occurred " + e);
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
         }
-        return result;
+        return updated;
     }
 
     @Override
     public List<Client> findAll() throws DaoException {
         if (connection == null) {
-            // todo: write to log
-            throw new DaoException("Database connection is not set");
+            logger.error("Database connection is not set for ClientDao");
+            throw new DaoException("Database connection is not set for ClientDao");
         }
 
         List<Client> clients = new ArrayList<>();
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL)) {
+             ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_CLIENTS)) {
 
             while (resultSet.next()) {
                 Client client = buildClient(resultSet);
                 clients.add(client);
             }
         } catch (SQLException e) {
-            // todo: write log
-            throw new DaoException("Database error occurred " + e);
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
         }
         return clients;
     }
 
     @Override
+    public Optional<Client> update(Client entity) throws DaoException {
+        if (connection == null) {
+            logger.error("Database connection is not set for ClientDao");
+            throw new DaoException("Database connection is not set for for ClientDao");
+        }
+
+        Optional<Client> updated = Optional.empty();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_CLIENT)) {
+            statement.setString(1, entity.getName());
+            statement.setString(2, entity.getSurname());
+            statement.setString(3, entity.getEmail());
+            statement.setInt(4, entity.getRole().getId());
+            statement.setInt(5, entity.getStatus().getId());
+            statement.setDouble(6, entity.getBalance());
+            statement.setBlob(7, entity.getProfileImage());
+
+            statement.setLong(8, entity.getId());
+            if (statement.executeUpdate() > 0) {
+                updated = Optional.of(entity);
+            }
+        } catch (SQLException e) {
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
+        }
+        return updated;
+    }
+
+    @Override
     public boolean deleteById(int id) throws DaoException {
         if (connection == null) {
-            // todo: write log
-            throw new DaoException("Database connection is not set");
+            logger.error("Database connection is not set for ClientDao");
+            throw new DaoException("Database connection is not set for ClientDao");
         }
 
         boolean deleted = false;
@@ -125,16 +160,16 @@ public class ClientDao extends AbstractDao<Client> {
                 deleted = true;
             }
         } catch (SQLException e) {
-            // todo: write log
-            throw new DaoException("Database error occurred " + e);
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
         }
         return deleted;
     }
 
     Optional<Client> findClientByEmail(String email) throws DaoException {
         if (connection == null) {
-            // todo: write log
-            throw new DaoException("Database connection is not set");
+            logger.error("Database connection is not set for ClientDao");
+            throw new DaoException("Database connection is not set for ClientDao");
         }
 
         Optional<Client> result = Optional.empty();
@@ -147,8 +182,8 @@ public class ClientDao extends AbstractDao<Client> {
                 result = Optional.of(client);
             }
         } catch (SQLException e) {
-            // todo: write log
-            throw new DaoException("Database error occurred " + e);
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
         }
         return result;
     }
@@ -160,9 +195,10 @@ public class ClientDao extends AbstractDao<Client> {
                 .setName(resultSet.getString(CLIENTS_NAME))
                 .setSurname(resultSet.getString(CLIENTS_SURNAME))
                 .setRole(ClientRole.valueOf(resultSet
-                        .getString(CLIENT_ROLE_ROLE).toUpperCase(Locale.ROOT)))
+                        .getString(CLIENT_ROLE_ROLE).toUpperCase()))
                 .setStatus(ClientStatus.valueOf(resultSet
-                        .getString(CLIENT_STATUS_STATUS).toUpperCase(Locale.ROOT)))
+                        .getString(CLIENT_STATUS_STATUS).toUpperCase()))
+                .setEmail(resultSet.getString(CLIENTS_EMAIL))
                 .setBalance(resultSet.getDouble(CLIENTS_BALANCE));
 
         InputStream profileImage = null;
@@ -172,6 +208,6 @@ public class ClientDao extends AbstractDao<Client> {
         }
         builder.setProfileImage(profileImage);
 
-        return builder.build();
+        return builder.buildClient();
     }
 }
