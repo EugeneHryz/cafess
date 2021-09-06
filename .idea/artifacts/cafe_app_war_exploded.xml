@@ -13,6 +13,13 @@
         <element id="directory" name="classes">
           <element id="module-output" name="cafe-app" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.26" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.11.4" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.1" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.1" />
+          <element id="library" level="project" name="Maven: org.mindrot:jbcrypt:0.3m" />
+        </element>
       </element>
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/target/cafe-app-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />

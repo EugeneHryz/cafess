@@ -16,6 +16,8 @@ public class Review extends Entity {
         this.date = timestamp;
     }
 
+    // todo: implement hashcode(), equals()
+
     public short getRating() {
         return rating;
     }

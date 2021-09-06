@@ -74,6 +74,8 @@ public class Order extends Entity {
         this.reviewId = reviewId;
     }
 
+    // todo: implement hashcode(), equals()
+
     public static class Builder {
 
         private int id;

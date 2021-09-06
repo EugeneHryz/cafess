@@ -1,6 +1,6 @@
 package com.eugene.cafe.dao;
 
-import com.eugene.cafe.exception.ConnectionPoolException;
+import com.eugene.cafe.exception.DatabaseConnectionException;
 import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.pool.ConnectionPool;
 
@@ -13,12 +13,7 @@ public class TransactionHelper {
 
     public void beginTransaction(AbstractDao dao, AbstractDao... daos) throws DaoException {
         if (connection == null) {
-            try {
-                connection = ConnectionPool.getInstance().takeConnection();
-            } catch (ConnectionPoolException e) {
-                e.printStackTrace();
-                // todo: decide what to do with exception
-            }
+            connection = ConnectionPool.getInstance().takeConnection();
         }
         try {
             connection.setAutoCommit(false);
@@ -26,6 +21,7 @@ public class TransactionHelper {
             // todo: write log
             throw new DaoException("Database error occurred", e);
         }
+
         dao.setConnection(connection);
         for (AbstractDao d : daos) {
             d.setConnection(connection);
@@ -57,33 +53,30 @@ public class TransactionHelper {
             // todo: write log
             throw new DaoException("Database error occurred", e);
         }
-        // todo: return connection to pool
+
         try {
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            // todo: write log
+            throw new DaoException("Database error occurred", e);
         }
         connection = null;
     }
 
     public void init(AbstractDao dao) {
         if (connection == null) {
-            try {
-                connection = ConnectionPool.getInstance().takeConnection();
-            } catch (ConnectionPoolException e) {
-                e.printStackTrace();
-                // todo: decide what to do with exception
-            }
+            connection = ConnectionPool.getInstance().takeConnection();
         }
 
         dao.setConnection(connection);
     }
 
-    public void end() {
+    public void end() throws DaoException {
         try {
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            // todo: write log
+            throw new DaoException("Database error occurred", e);
         }
         connection = null;
     }

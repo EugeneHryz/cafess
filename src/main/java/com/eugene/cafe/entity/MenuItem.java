@@ -51,6 +51,8 @@ public class MenuItem extends Entity {
         this.image = image;
     }
 
+    // todo: implement hashcode(), equals()
+
     public static class Builder {
 
         private int id;

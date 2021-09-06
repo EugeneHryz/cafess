@@ -14,17 +14,21 @@ public class Client extends Entity {
 
     private String email;
 
+    private String hashedPassword;
+
     private double balance;
 
     private InputStream profileImage;
 
-    public Client(String name, String surname, ClientRole role, ClientStatus status,
+    public Client(String name, String surname, ClientRole role, ClientStatus status, String email, String hashedPassword,
                   double balance, InputStream profileImage) {
 
         this.name = name;
         this.surname = surname;
         this.role = role;
         this.status = status;
+        this.email = email;
+        this.hashedPassword = hashedPassword;
         this.balance = balance;
         this.profileImage = profileImage;
     }
@@ -47,6 +51,10 @@ public class Client extends Entity {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
     public double getBalance() {
@@ -77,6 +85,10 @@ public class Client extends Entity {
         this.email = email;
     }
 
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
+    }
+
     public void setBalance(double balance) {
         this.balance = balance;
     }
@@ -94,14 +106,18 @@ public class Client extends Entity {
                 .append(name)
                 .append(", surname: ")
                 .append(surname)
-                .append(", client role: ")
+                .append(", role: ")
                 .append(role.toString())
+                .append(", status: ")
+                .append(status.toString())
+                .append(", email: ")
+                .append(email)
                 .append(", balance: ")
                 .append(balance);
         return builder.toString();
     }
 
-    // todo: implement hashCode(), ...
+    // todo: implement hashCode(), equals()
 
     public static class Builder {
 
@@ -116,6 +132,8 @@ public class Client extends Entity {
         private ClientStatus status;
 
         private String email;
+
+        private String hashedPassword;
 
         private double balance;
 
@@ -149,6 +167,11 @@ public class Client extends Entity {
             return this;
         }
 
+        public Builder setHashedPassword(String hashedPassword) {
+            this.hashedPassword = hashedPassword;
+            return this;
+        }
+
         public Builder setStatus(ClientStatus status) {
             this.status = status;
             return this;
@@ -165,7 +188,7 @@ public class Client extends Entity {
         }
 
         public Client buildClient() {
-            Client client = new Client(name, surname, role, status, balance, profileImage);
+            Client client = new Client(name, surname, role, status, email, hashedPassword, balance, profileImage);
             client.setId(id);
             return client;
         }

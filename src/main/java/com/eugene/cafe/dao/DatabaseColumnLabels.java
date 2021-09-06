@@ -9,11 +9,13 @@ public final class DatabaseColumnLabels {
 
     public static final String CLIENTS_SURNAME = "surname";
 
-    public static final String CLIENTS_EMAIL = "email";
-
     public static final String CLIENTS_ROLE_ID = "role_id";
 
     public static final String CLIENTS_STATUS_ID = "status_id";
+
+    public static final String CLIENTS_EMAIL = "email";
+
+    public static final String CLIENTS_PASSWORD = "password";
 
     public static final String CLIENTS_BALANCE = "balance";
 

@@ -1,6 +1,6 @@
 package com.eugene.cafe.pool;
 
-import com.eugene.cafe.exception.ConnectionPoolException;
+import com.eugene.cafe.exception.DatabaseConnectionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,8 +36,8 @@ public class ConnectionPool {
             try {
                 ProxyConnection connection = ConnectionFactory.createConnection();
                 availableConnections.offer(connection);
-            } catch (SQLException e) {
-                logger.error("Unable to create connection");
+            } catch (DatabaseConnectionException e) {
+                logger.error("Unable to create connection " + e);
             }
         }
 
@@ -62,29 +62,28 @@ public class ConnectionPool {
         return instance;
     }
 
-    public Connection takeConnection() throws ConnectionPoolException {
+    public Connection takeConnection() {
+        ProxyConnection connection = null;
         try {
-            ProxyConnection connection = availableConnections.take();
+            connection = availableConnections.take();
             busyConnections.put(connection);
             return connection;
         } catch (InterruptedException e) {
             logger.error("Thread was interrupted while performing blocking operation " + e);
             Thread.currentThread().interrupt();
         }
-        throw new ConnectionPoolException("Thread was interrupted while performing blocking operation");
+        return connection;
     }
 
-    public void releaseConnection(Connection connection) throws ConnectionPoolException {
+    public void releaseConnection(Connection connection) {
         if (connection instanceof ProxyConnection proxyConnection) {
             try {
                 busyConnections.take();
                 availableConnections.put(proxyConnection);
-                return;
             } catch (InterruptedException e) {
                 logger.error("Thread was interrupted while performing blocking operation " + e);
                 Thread.currentThread().interrupt();
             }
-            throw new ConnectionPoolException("Thread was interrupted while performing blocking operation");
         } else {
             logger.warn("You can't put your own connection into the pool");
         }

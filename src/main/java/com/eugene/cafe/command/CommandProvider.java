@@ -25,12 +25,12 @@ public class CommandProvider {
         commandMap.put(CommandType.DEFAULT, new DefaultCommand());
     }
 
-    public Command getCommand(CommandType commandType) {
-        Command command = commandMap.get(CommandType.DEFAULT);
+    public Command getCommand(String commandName) {
+        Command command = null;
         try {
-            command = commandMap.get(commandType);
+            command = commandMap.get(CommandType.valueOf(commandName.toUpperCase()));
         } catch (IllegalArgumentException e) {
-
+            command = commandMap.get(CommandType.DEFAULT);
         }
         return command;
     }

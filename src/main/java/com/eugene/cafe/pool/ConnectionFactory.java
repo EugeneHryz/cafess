@@ -1,5 +1,6 @@
 package com.eugene.cafe.pool;
 
+import com.eugene.cafe.exception.DatabaseConnectionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,8 +40,14 @@ public class ConnectionFactory {
 
     private ConnectionFactory() { }
 
-    static ProxyConnection createConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection(DB_URL, properties);
+    static ProxyConnection createConnection() throws DatabaseConnectionException {
+        Connection connection;
+        try {
+            connection = DriverManager.getConnection(DB_URL, properties);
+        } catch (SQLException e) {
+            // todo: write log
+            throw new DatabaseConnectionException("Database error occurred or URL is null", e);
+        }
         return new ProxyConnection(connection);
     }
 }
