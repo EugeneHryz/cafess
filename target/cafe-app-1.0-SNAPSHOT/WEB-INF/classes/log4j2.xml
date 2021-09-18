@@ -13,11 +13,11 @@
             <AppenderRef ref="Console" />
             <AppenderRef ref="File"/>
         </Root>
-        <Logger level="fatal" name="com.eugene.cafe.pool.ConnectionFactory" additivity="false">
+        <Logger level="fatal" name="com.eugene.cafe.model.pool.ConnectionFactory" additivity="false">
             <AppenderRef ref="Console" />
             <AppenderRef ref="File"/>
         </Logger>
-        <Logger level="fatal" name="com.eugene.cafe.pool.ConnectionPool" additivity="false">
+        <Logger level="fatal" name="com.eugene.cafe.model.pool.ConnectionPool" additivity="false">
             <AppenderRef ref="Console" />
             <AppenderRef ref="File"/>
         </Logger>

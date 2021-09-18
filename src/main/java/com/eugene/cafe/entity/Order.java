@@ -2,7 +2,7 @@ package com.eugene.cafe.entity;
 
 import java.sql.Timestamp;
 
-public class Order extends Entity {
+public class Order extends AbstractEntity {
 
     private int clientId;
 

@@ -2,7 +2,7 @@ package com.eugene.cafe.entity;
 
 import java.sql.Timestamp;
 
-public class Review extends Entity {
+public class Review extends AbstractEntity {
 
     private short rating;
 

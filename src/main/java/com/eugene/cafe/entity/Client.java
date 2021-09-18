@@ -2,7 +2,7 @@ package com.eugene.cafe.entity;
 
 import java.io.InputStream;
 
-public class Client extends Entity {
+public class Client extends AbstractEntity {
 
     private String name;
 
@@ -101,7 +101,7 @@ public class Client extends Entity {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("id: ")
-                .append(id)
+                .append(getId())
                 .append(", name: ")
                 .append(name)
                 .append(", surname: ")

@@ -2,7 +2,7 @@ package com.eugene.cafe.entity;
 
 import java.io.InputStream;
 
-public class MenuItem extends Entity {
+public class MenuItem extends AbstractEntity {
 
     private String name;
 

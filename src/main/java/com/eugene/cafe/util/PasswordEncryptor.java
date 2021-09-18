@@ -1,14 +1,8 @@
 package com.eugene.cafe.util;
 
-import org.mindrot.jbcrypt.BCrypt;
+public interface PasswordEncryptor {
 
-public class PasswordEncryptor {
+    boolean checkPassword(String plainText, String hash);
 
-    public static boolean checkPassword(String plainTextPass, String hash) {
-        return BCrypt.checkpw(plainTextPass, hash);
-    }
-
-    public static String encryptPassword(String plainTextPass) {
-        return BCrypt.hashpw(plainTextPass, BCrypt.gensalt());
-    }
+    String encryptPassword(String plainText);
 }

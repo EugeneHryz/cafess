@@ -2,11 +2,11 @@ package com.eugene.cafe.controller;
 
 import java.io.*;
 
-import com.eugene.cafe.command.Command;
-import com.eugene.cafe.command.CommandProvider;
-import com.eugene.cafe.command.RequestParameter;
-import com.eugene.cafe.pool.ConnectionPool;
-import jakarta.servlet.RequestDispatcher;
+import com.eugene.cafe.controller.command.Command;
+import com.eugene.cafe.controller.command.CommandProvider;
+import com.eugene.cafe.controller.command.RequestParameter;
+import com.eugene.cafe.controller.command.Router;
+import com.eugene.cafe.controller.command.impl.DefaultCommand;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -16,36 +16,26 @@ public class Controller extends HttpServlet {
 
     private final CommandProvider provider = CommandProvider.getInstance();
 
-    public void init() {
-        ConnectionPool.getInstance();
-    }
-
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String commandName = request.getParameter(RequestParameter.PARAM_COMMAND);
+//        Config.set(request.getSession(), Config.FMT_LOCALE, Locale.forLanguageTag("en-US"));
 
-        Command command = provider.getCommand(commandName);
-        String path = command.execute(request);
-
-        request.getRequestDispatcher(path).forward(request, response);
-
-//        if (path != null) {
-//            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
-//            dispatcher.forward(request, response);
-//        }
+        processRequest(request, response);
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//        response.setContentType("text/html");
-//
-//        request.getRequestDispatcher("index.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
-//    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//
-//    }
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String commandName = request.getParameter(RequestParameter.PARAM_COMMAND);
 
-    public void destroy() {
-        ConnectionPool.getInstance().destroyPool();
+        Command command = provider.getCommand(commandName);
+        Router router = command.execute(request);
+
+        switch (router.getType()) {
+            case FORWARD -> request.getRequestDispatcher(router.getPage()).forward(request, response);
+            case REDIRECT -> response.sendRedirect(router.getPage());
+        }
     }
 }
