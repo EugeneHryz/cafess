@@ -28,7 +28,10 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        System.out.println("in process request");
         String commandName = request.getParameter(RequestParameter.PARAM_COMMAND);
+
+        System.out.println("command name: " + commandName);
 
         Command command = provider.getCommand(commandName);
         Router router = command.execute(request);

@@ -24,6 +24,7 @@ public class CommandProvider {
         commandMap.put(CommandType.GO_TO_FORGOT_PASSWORD_PAGE, new GoToForgotPasswordPageCommand());
         commandMap.put(CommandType.GO_TO_SIGNUP_PAGE, new GoToSignupPageCommand());
         commandMap.put(CommandType.SIGN_UP, new SignUpCommand());
+        commandMap.put(CommandType.CHANGE_LOCALE, new ChangeLocaleCommand());
     }
 
     public Command getCommand(String commandName) {

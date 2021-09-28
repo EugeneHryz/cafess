@@ -7,5 +7,6 @@ public enum CommandType {
     DEFAULT,
     GO_TO_FORGOT_PASSWORD_PAGE,
     GO_TO_SIGNUP_PAGE,
-    SIGN_UP
+    SIGN_UP,
+    CHANGE_LOCALE
 }

@@ -13,6 +13,9 @@ public final class RequestParameter {
     public static final String PARAM_SURNAME = "surname";
 
 
+    public static final String PARAM_LOCALE = "locale";
+
+
     private RequestParameter() {
     }
 }

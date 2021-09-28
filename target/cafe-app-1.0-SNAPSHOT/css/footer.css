@@ -1,6 +1,4 @@
-.header {
-    background-color: slateblue;
-    display: block;
-    height: 80px;
+#footer {
+    background-color: var(--cafe-white);
     align-self: stretch;
 }

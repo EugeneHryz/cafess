@@ -31,7 +31,10 @@ public class LogInCommand implements Command {
             Optional<Client> client = clientService.signIn(email, password);
             if (client.isPresent()) {
                 // todo: save user and his role to the session
-                router = new Router(MAIN_PAGE, Router.RouterType.FORWARD);
+                request.getSession().setAttribute(USER, client.get());
+                request.getSession().setAttribute(ROLE, client.get().getRole());
+
+                router = new Router(MAIN_PAGE, Router.RouterType.REDIRECT);
             } else {
 
                 Locale locale = Locale.forLanguageTag((String) request.getSession().getAttribute(LOCALE));
