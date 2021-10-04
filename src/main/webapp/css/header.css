@@ -1,6 +1,4 @@
-.header {
-    background-color: slateblue;
-    display: block;
-    height: 80px;
+#header {
+    background-color: var(--cafe-background);
     align-self: stretch;
 }

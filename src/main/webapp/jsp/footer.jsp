@@ -2,6 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<c:if test="${not empty sessionScope.locale}">
+    <fmt:setLocale value="${sessionScope.locale}" scope="session" />
+    <c:set var="currentLocale" value="${sessionScope.locale}" scope="page" />
+</c:if>
+<fmt:setBundle basename="page_content" />
+
 <html>
 <head>
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -14,7 +20,13 @@
 
 <footer class="text-center text-lg-start text-muted align-self-stretch" style="background-color: var(--cafe-white)">
     <section class="d-flex justify-content-center justify-content-lg-between p-4">
-        <span class="fs-3">Cafess</span>
+        <form action="${pageContext.request.contextPath}/controller" class="d-flex mb-0">
+            <input type="hidden" name="command" value="change_locale" />
+            <select class="form-select" name="locale" aria-label="select locale" onchange="this.form.submit()">
+                <option value="ru_RU" ${currentLocale eq 'ru_RU' ? 'selected' : ''}>Русский</option>
+                <option value="en_US" ${currentLocale eq 'en_US' ? 'selected' : ''}>English</option>
+            </select>
+        </form>
 
         <section class="d-inline-flex align-items-center">
             <a href="https://www.facebook.com/" class="me-4 text-reset">

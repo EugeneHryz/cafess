@@ -11,15 +11,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-@WebServlet(urlPatterns = "/controller")
+@WebServlet(name = "controller", urlPatterns = "/controller")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024 * 5,
+        maxRequestSize = 1024 * 1024 * 20)
 public class Controller extends HttpServlet {
 
     private final CommandProvider provider = CommandProvider.getInstance();
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-//        Config.set(request.getSession(), Config.FMT_LOCALE, Locale.forLanguageTag("en-US"));
-
         processRequest(request, response);
     }
 
@@ -28,10 +28,7 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("in process request");
         String commandName = request.getParameter(RequestParameter.PARAM_COMMAND);
-
-        System.out.println("command name: " + commandName);
 
         Command command = provider.getCommand(commandName);
         Router router = command.execute(request);

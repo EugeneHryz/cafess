@@ -157,7 +157,7 @@ public class OrderDaoImpl extends OrderDao {
     }
 
     @Override
-    public List<Order> findAllClientOrders(Client client) throws DaoException {
+    public List<Order> findAllClientOrders(User user) throws DaoException {
         if (connection == null) {
             logger.error("Database connection is not set for OrderDao");
             throw new DaoException("Database connection is not set for OrderDao");

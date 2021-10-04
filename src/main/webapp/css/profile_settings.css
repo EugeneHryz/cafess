@@ -1,0 +1,67 @@
+#profile-settings-body {
+    background: var(--cafe-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/*!*overriding bootstrap css*!*/
+/*#profile-settings-body  .nav-pills .nav-link.active,*/
+/*.nav-pills .show > .nav-link {*/
+/*    font-weight: bold;*/
+/*    color: #0d6efd;*/
+/*    background-color: white;*/
+/*}*/
+
+
+#profile-settings-body .btn-default {
+    border-color: rgba(24,28,33,0.1);
+    background: rgba(0,0,0,0);
+    color: #4E5155;
+}
+
+#profile-settings-body label.btn {
+    margin-bottom: 0;
+}
+
+#profile-settings-body .btn-outline-primary {
+    border-color: #26B4FF;
+    background: transparent;
+    color: #26B4FF;
+}
+
+#profile-settings-body .btn {
+    cursor: pointer;
+}
+
+#profile-settings-body .btn-facebook {
+    border-color: rgba(0,0,0,0);
+    background: #3B5998;
+    color: #fff;
+}
+
+#profile-settings-body .btn-instagram {
+    border-color: rgba(0,0,0,0);
+    background: #000;
+    color: #fff;
+}
+
+#profile-settings-body .card {
+    background-clip: padding-box;
+    box-shadow: 0 1px 4px rgba(24,28,33,0.012);
+    width: 800px;
+}
+
+#profile-settings-body .row-bordered {
+    overflow: hidden;
+}
+
+#profile-settings-body .account-settings-fileinput {
+    position: absolute;
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+

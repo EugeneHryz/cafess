@@ -10,6 +10,8 @@ public final class PagePath {
 
     public static final String SIGNUP_PAGE = "jsp/signup.jsp";
 
+    public static final String PROFILE_SETTINGS_PAGE = "jsp/profile_settings.jsp";
+
 
     public static final String ERROR_PAGE = "jsp/error/error.jsp";
 

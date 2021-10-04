@@ -19,7 +19,7 @@
 <c:import url="header.jsp"/>
 
 <div class="form-login">
-    <form action="controller" method="post" id="loginForm" novalidate>
+    <form action="${pageContext.request.contextPath}/controller" method="post" id="loginForm" novalidate>
         <input type="hidden" name="command" value="log_in"/>
         <h1 class="h3 mb-3 fw-normal"><fmt:message key="login.welcomeMessage"/></h1>
 
@@ -41,7 +41,7 @@
                 key="login.button.submit"/></button>
     </form>
 
-    <form action="controller">
+    <form action="${pageContext.request.contextPath}/controller">
         <input type="hidden" name="command" value="go_to_signup_page"/>
         <fmt:message key="login.label.signup"/>
         <button class="w-100 btn-dark btn-lg btn-primary button-signup" type="submit"><fmt:message

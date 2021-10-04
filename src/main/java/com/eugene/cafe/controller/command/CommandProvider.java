@@ -1,6 +1,7 @@
 package com.eugene.cafe.controller.command;
 
 import com.eugene.cafe.controller.command.impl.*;
+import static com.eugene.cafe.controller.command.CommandType.*;
 
 import java.util.EnumMap;
 
@@ -18,13 +19,17 @@ public class CommandProvider {
     }
 
     private CommandProvider() {
-        commandMap.put(CommandType.LOG_IN, new LogInCommand());
-        commandMap.put(CommandType.LOG_OUT, new LogOutCommand());
-        commandMap.put(CommandType.DEFAULT, new DefaultCommand());
-        commandMap.put(CommandType.GO_TO_FORGOT_PASSWORD_PAGE, new GoToForgotPasswordPageCommand());
-        commandMap.put(CommandType.GO_TO_SIGNUP_PAGE, new GoToSignupPageCommand());
-        commandMap.put(CommandType.SIGN_UP, new SignUpCommand());
-        commandMap.put(CommandType.CHANGE_LOCALE, new ChangeLocaleCommand());
+        commandMap.put(LOG_IN, new LogInCommand());
+        commandMap.put(LOG_OUT, new LogOutCommand());
+        commandMap.put(DEFAULT, new DefaultCommand());
+        commandMap.put(GO_TO_FORGOT_PASSWORD_PAGE, new GoToForgotPasswordPageCommand());
+        commandMap.put(GO_TO_SIGNUP_PAGE, new GoToSignupPageCommand());
+        commandMap.put(SIGN_UP, new SignUpCommand());
+        commandMap.put(CHANGE_LOCALE, new ChangeLocaleCommand());
+        commandMap.put(GO_TO_PROFILE_SETTINGS_PAGE, new GoToProfileSettingsPage());
+        commandMap.put(EDIT_USER_PROFILE, new EditUserProfileCommand());
+        commandMap.put(UPDATE_PROFILE_PICTURE, new UpdateProfilePictureCommand());
+        commandMap.put(CHANGE_PASSWORD, new ChangePasswordCommand());
     }
 
     public Command getCommand(String commandName) {

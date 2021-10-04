@@ -21,14 +21,14 @@
 <div id="header" ${not empty sessionScope.user ? "style='background-color: var(--cafe-primary)'" : ""}>
 
     <nav class="navbar navbar-expand-md navbar-dark navbar-sl">
-        <div class="container-fluid justify-content-end py-2">
+        <div class="container-fluid justify-content-end py-1">
 
             <c:if test="${not empty sessionScope.user}">
                 <a class="navbar-brand fs-2 fw-normal" href="#">Cafess</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon d-flex"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
@@ -53,25 +53,23 @@
                     </ul>
                     <form class="d-flex mb-0">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-light me-4" type="submit">Search</button>
+                        <button class="btn btn-light" type="submit">Search</button>
                     </form>
                 </div>
-            </c:if>
 
-            <form action="${pageContext.request.contextPath}/controller" class="d-flex mb-0">
-                <input type="hidden" name="command" value="change_locale" />
-                <select class="form-select" name="locale" aria-label="select locale" onchange="this.form.submit()">
-                    <option value="ru_RU" ${currentLocale eq 'ru_RU' ? 'selected' : ''}>Русский</option>
-                    <option value="en_US" ${currentLocale eq 'en_US' ? 'selected' : ''}>English</option>
-                </select>
-            </form>
-
-            <c:if test="${not empty sessionScope.user}">
                 <a href="#userProfileMenu" class="d-block link-dark ms-3" role="button" data-bs-toggle="offcanvas" aria-expanded="false" aria-controls="userProfileMenu">
-                    <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="user" width="36" height="36" class="rounded-circle">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.user.profileImage}">
+                            <img src="${pageContext.request.contextPath}/upload/${sessionScope.user.profileImage}"
+                                 alt="profile image" class="rounded-circle" width="40" height="40"/>
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${pageContext.request.contextPath}/content/no_profile_picture.png"
+                                 alt="no profile picture" class="rounded-circle" height="40" width="40" />
+                        </c:otherwise>
+                    </c:choose>
                 </a>
             </c:if>
-
         </div>
     </nav>
 </div>
@@ -82,7 +80,7 @@
     </div>
     <div class="offcanvas-body">
         <ul class="navbar-nav fs-4 fw-light">
-            <li><a href="#" class="nav-link px-2 link-dark">Profile</a></li>
+            <li><a href="${pageContext.request.contextPath}/controller?command=go_to_profile_settings_page" class="nav-link px-2 link-dark">Profile settings</a></li>
             <li><a href="#" class="nav-link px-2 link-dark">Order history</a></li>
             <hr/>
             <li>

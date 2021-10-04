@@ -6,11 +6,11 @@ import static com.eugene.cafe.controller.command.RequestAttribute.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 import com.eugene.cafe.controller.command.Router;
-import com.eugene.cafe.entity.Client;
+import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.manager.ResourceManager;
-import com.eugene.cafe.model.service.ClientService;
-import com.eugene.cafe.model.service.impl.ClientServiceImpl;
+import com.eugene.cafe.model.service.UserService;
+import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public class LogInCommand implements Command {
 
-    private static final ClientService clientService = new ClientServiceImpl();
+    private static final UserService userService = new UserServiceImpl();
 
     @Override
     public Router execute(HttpServletRequest request) {
@@ -28,16 +28,15 @@ public class LogInCommand implements Command {
 
         Router router;
         try {
-            Optional<Client> client = clientService.signIn(email, password);
+            Optional<User> client = userService.signIn(email, password);
             if (client.isPresent()) {
-                // todo: save user and his role to the session
                 request.getSession().setAttribute(USER, client.get());
                 request.getSession().setAttribute(ROLE, client.get().getRole());
 
                 router = new Router(MAIN_PAGE, Router.RouterType.REDIRECT);
             } else {
 
-                Locale locale = Locale.forLanguageTag((String) request.getSession().getAttribute(LOCALE));
+                Locale locale = Locale.forLanguageTag((String) request.getSession(false).getAttribute(LOCALE));
                 ResourceManager manager = new ResourceManager("message", locale);
                 request.setAttribute(INVALID_LOGIN_OR_PASSWORD, manager.getProperty(INVALID_LOGIN_OR_PASSWORD));
 

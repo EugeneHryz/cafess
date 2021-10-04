@@ -14,6 +14,7 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
     @Override
     public void sessionCreated(HttpSessionEvent se) {
 //        Config.set(se.getSession(), Config.FMT_LOCALE, Locale.forLanguageTag("en-US"));
-        se.getSession().setAttribute(RequestAttribute.LOCALE, "ru_RU");
+        se.getSession().setAttribute(RequestAttribute.LOCALE, "ru-RU");
+        System.out.println("session created");
     }
 }

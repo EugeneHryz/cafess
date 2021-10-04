@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="cafe-app:war exploded">
-    <output-path>$PROJECT_DIR$/target/cafe-app-1.0-SNAPSHOT</output-path>
+  <artifact type="exploded-war" build-on-make="true" name="cafe-app:war exploded">
+    <output-path>$PROJECT_DIR$/../../../../../Program Files/apache-tomcat-10.0.10/webapps/cafe_app_war_exploded</output-path>
     <properties id="maven-jee-properties">
       <options>
         <exploded>true</exploded>
