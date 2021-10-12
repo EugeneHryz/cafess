@@ -1,22 +1,19 @@
 package com.eugene.cafe.entity;
 
-import java.io.InputStream;
-
 public class MenuItem extends AbstractEntity {
 
     private String name;
-
     private String description;
-
     private double price;
+    private int categoryId;
+    private String imagePath;
 
-    private InputStream image;
-
-    public MenuItem(String name, String description, double price, InputStream image) {
+    public MenuItem(String name, String description, double price, int categoryId, String imagePath) {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.image = image;
+        this.categoryId = categoryId;
+        this.imagePath = imagePath;
     }
 
     public String getName() {
@@ -31,8 +28,12 @@ public class MenuItem extends AbstractEntity {
         return price;
     }
 
-    public InputStream getImage() {
-        return image;
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 
     public void setName(String name) {
@@ -47,8 +48,29 @@ public class MenuItem extends AbstractEntity {
         this.price = price;
     }
 
-    public void setImage(InputStream image) {
-        this.image = image;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("MenuItem{id: ")
+                .append(getId())
+                .append(", name: ")
+                .append(name)
+                .append(", price: ")
+                .append(price)
+                .append(", description: ")
+                .append(description)
+                .append(", categoryId: ")
+                .append(categoryId)
+                .append("}");
+        return builder.toString();
     }
 
     // todo: implement hashcode(), equals()
@@ -56,14 +78,11 @@ public class MenuItem extends AbstractEntity {
     public static class Builder {
 
         private int id;
-
         private String name;
-
         private String description;
-
         private double price;
-
-        private InputStream image;
+        private int categoryId;
+        private String imagePath;
 
         public Builder setId(int id) {
             this.id = id;
@@ -85,13 +104,18 @@ public class MenuItem extends AbstractEntity {
             return this;
         }
 
-        public Builder setImage(InputStream image) {
-            this.image = image;
+        public Builder setImagePath(String imagePath) {
+            this.imagePath = imagePath;
+            return this;
+        }
+
+        public Builder setCategoryId(int categoryId) {
+            this.categoryId = categoryId;
             return this;
         }
 
         public MenuItem buildMenuItem() {
-            MenuItem item = new MenuItem(name, description, price, image);
+            MenuItem item = new MenuItem(name, description, price, categoryId, imagePath);
             item.setId(id);
             return item;
         }

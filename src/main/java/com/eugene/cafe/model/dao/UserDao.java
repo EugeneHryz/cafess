@@ -3,6 +3,7 @@ package com.eugene.cafe.model.dao;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.DaoException;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class UserDao extends AbstractDao<User> {

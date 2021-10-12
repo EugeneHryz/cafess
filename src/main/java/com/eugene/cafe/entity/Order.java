@@ -5,19 +5,15 @@ import java.sql.Timestamp;
 public class Order extends AbstractEntity {
 
     private int clientId;
-
     private Timestamp pickUpTime;
-
     private double totalPrice;
-
     private OrderStatus orderStatus;
-
     private PaymentStatus paymentStatus;
-
     private int reviewId;
 
     public Order(int clientId, Timestamp pickUpTime, double totalPrice,
                  OrderStatus orderStatus, PaymentStatus paymentStatus, int reviewId) {
+
         this.clientId = clientId;
         this.pickUpTime = pickUpTime;
         this.totalPrice = totalPrice;
@@ -74,22 +70,16 @@ public class Order extends AbstractEntity {
         this.reviewId = reviewId;
     }
 
-    // todo: implement hashcode(), equals()
+    // todo: implement toString(), hashcode(), equals()
 
     public static class Builder {
 
         private int id;
-
         private int clientId;
-
         private Timestamp pickUpTime;
-
         private double totalPrice;
-
         private OrderStatus orderStatus;
-
         private PaymentStatus paymentStatus;
-
         private int reviewId;
 
         public Builder setId(int id) {

@@ -9,7 +9,9 @@ import com.eugene.cafe.controller.command.Router;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.manager.ResourceManager;
+import com.eugene.cafe.model.service.MenuService;
 import com.eugene.cafe.model.service.UserService;
+import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -31,11 +33,10 @@ public class LogInCommand implements Command {
             Optional<User> client = userService.signIn(email, password);
             if (client.isPresent()) {
                 request.getSession().setAttribute(USER, client.get());
-                request.getSession().setAttribute(ROLE, client.get().getRole());
+                request.getSession().setAttribute(ROLE, client.get().getRole().name());
 
                 router = new Router(MAIN_PAGE, Router.RouterType.REDIRECT);
             } else {
-
                 Locale locale = Locale.forLanguageTag((String) request.getSession(false).getAttribute(LOCALE));
                 ResourceManager manager = new ResourceManager("message", locale);
                 request.setAttribute(INVALID_LOGIN_OR_PASSWORD, manager.getProperty(INVALID_LOGIN_OR_PASSWORD));

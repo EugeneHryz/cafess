@@ -63,7 +63,7 @@ public class UserDaoImpl extends UserDao {
             statement.setString(5, entity.getEmail());
             statement.setString(6, entity.getHashedPassword());
             statement.setDouble(7, entity.getBalance());
-            statement.setString(8, entity.getProfileImage());
+            statement.setString(8, entity.getProfileImagePath());
 
             if (statement.executeUpdate() > 0) {
                 ResultSet resultSet = statement.getGeneratedKeys();
@@ -111,8 +111,8 @@ public class UserDaoImpl extends UserDao {
         }
 
         List<User> users = new ArrayList<>();
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS)) {
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS);
 
             while (resultSet.next()) {
                 User user = buildUser(resultSet);
@@ -250,7 +250,7 @@ public class UserDaoImpl extends UserDao {
                 .setEmail(resultSet.getString(CLIENTS_EMAIL))
                 .setHashedPassword(resultSet.getString(CLIENTS_PASSWORD))
                 .setBalance(resultSet.getDouble(CLIENTS_BALANCE))
-                .setProfileImage(resultSet.getString(CLIENTS_PROFILE_IMAGE));
+                .setProfileImagePath(resultSet.getString(CLIENTS_PROFILE_IMAGE));
 
         return builder.buildUser();
     }

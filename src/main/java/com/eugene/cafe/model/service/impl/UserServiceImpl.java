@@ -13,7 +13,10 @@ import com.eugene.cafe.util.PasswordEncryptor;
 import com.eugene.cafe.util.impl.PasswordEncryptorImpl;
 import com.eugene.cafe.model.validator.UserValidator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
 
@@ -38,11 +41,7 @@ public class UserServiceImpl implements UserService {
                 // todo: write log
                 throw new ServiceException("Unable to find client by email", e);
             } finally {
-                try {
-                    helper.end();
-                } catch (DaoException e) {
-                    // todo: write log
-                }
+                helper.end();
             }
         }
         return result;
@@ -79,11 +78,7 @@ public class UserServiceImpl implements UserService {
             // todo: write log
             throw new ServiceException("Unable to sign up new user", e);
         } finally {
-            try {
-                helper.end();
-            } catch (DaoException e) {
-                // todo: write log
-            }
+            helper.end();
         }
         return result;
     }
@@ -113,11 +108,7 @@ public class UserServiceImpl implements UserService {
             // todo write log
             throw new ServiceException("Unable to update user profile", e);
         } finally {
-            try {
-                helper.end();
-            } catch (DaoException e) {
-                // todo: write log
-            }
+            helper.end();
         }
         return edited;
     }
@@ -136,11 +127,7 @@ public class UserServiceImpl implements UserService {
             // todo: write log
             throw new ServiceException("Unable to update profile picture", e);
         } finally {
-            try {
-                helper.end();
-            } catch (DaoException e) {
-                // todo: write log
-            }
+            helper.end();
         }
         return updated;
     }
@@ -168,12 +155,31 @@ public class UserServiceImpl implements UserService {
             // todo: write log
             throw new ServiceException("Unable to change user password", e);
         } finally {
-            try {
-                helper.end();
-            } catch (DaoException e) {
-                // todo: write log
-            }
+            helper.end();
         }
         return passwordChanged;
+    }
+
+    @Override
+    public List<User> getAllUsersWithoutAdmins() throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final UserDao userDao = new UserDaoImpl();
+
+        helper.init(userDao);
+        List<User> usersWithoutAdmins;
+        try {
+            List<User> users = userDao.findAll();
+            usersWithoutAdmins = users.stream()
+                    .filter(user -> user.getRole() != UserRole.ADMIN)
+                    .collect(Collectors.toList());
+
+        } catch (DaoException e) {
+            // todo: write log
+            throw new ServiceException("Unable to get all users", e);
+        } finally {
+            helper.end();
+        }
+        return usersWithoutAdmins;
     }
 }

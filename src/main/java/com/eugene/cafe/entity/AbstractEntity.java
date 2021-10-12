@@ -4,9 +4,6 @@ public abstract class AbstractEntity {
 
     private int id;
 
-    public AbstractEntity() {
-    }
-
     public int getId() {
         return id;
     }

@@ -5,9 +5,7 @@ import java.sql.Timestamp;
 public class Review extends AbstractEntity {
 
     private short rating;
-
     private String comment;
-
     private Timestamp date;
 
     public Review(short rating, String comment, Timestamp timestamp) {
@@ -16,7 +14,7 @@ public class Review extends AbstractEntity {
         this.date = timestamp;
     }
 
-    // todo: implement hashcode(), equals()
+    // todo: implement toString(), hashcode(), equals()
 
     public short getRating() {
         return rating;

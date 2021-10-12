@@ -20,13 +20,13 @@ public class OrderDaoImpl extends OrderDao {
 
     private static final Logger logger = LogManager.getLogger(OrderDaoImpl.class);
 
-    private static final String SQL_CREATE_ORDER = "INSERT INTO orders(client_id, estimated_time, " +
+    private static final String SQL_CREATE_ORDER = "INSERT INTO orders(client_id, pick_up_time, " +
             "total_price, order_status_id, payment_status_id, review_id) VALUES(?, ?, ?, ?, ?, ?)";
 
-    private static final String SQL_FIND_ORDER_BY_ID = "SELECT id, client_id, pick_up_time, total_price, " +
+    private static final String SQL_FIND_ORDER_BY_ID = "SELECT orders.id, client_id, pick_up_time, total_price, " +
             "order_status.status, order_payment_status.status, review_id FROM orders INNER JOIN order_status ON " +
             "orders.order_status_id = order_status.id INNER JOIN order_payment_status " +
-            "ON orders.payment_status_id = order_payment_status.id WHERE clients.id = ?";
+            "ON orders.payment_status_id = order_payment_status.id WHERE orders.id = ?";
 
     private static final String SQL_FIND_ALL_ORDERS = "SELECT id, client_id, pick_up_time, total_price, " +
             "order_status.status, order_payment_status.status, review_id FROM orders INNER JOIN order_status ON " +

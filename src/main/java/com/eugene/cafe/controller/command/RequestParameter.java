@@ -18,6 +18,20 @@ public final class RequestParameter {
 
     public static final String PARAM_NEW_PASSWORD = "new_password";
 
+    public static final String PARAM_MENU_ITEM_NAME = "menu_item_name";
+
+    public static final String PARAM_PRICE = "price";
+
+    public static final String PARAM_CATEGORY_ID = "category_id";
+
+    public static final String PARAM_DESCRIPTION = "description";
+
+    public static final String PARAM_PAGE_NUMBER = "page_number";
+
+    public static final String PARAM_SORT_ORDER = "sort_order";
+
+
+
 
     public static final String PARAM_LOCALE = "locale";
 

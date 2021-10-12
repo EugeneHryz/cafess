@@ -67,6 +67,8 @@ public final class DatabaseColumnLabel {
 
     public static final String MENU_ITEMS_IMAGE = "image";
 
+    public static final String MENU_ITEMS_CATEGORY_ID = "category_id";
+
     // reviews table
     public static final String REVIEWS_ID = "id";
 
@@ -75,6 +77,11 @@ public final class DatabaseColumnLabel {
     public static final String REVIEWS_COMMENT = "comment";
 
     public static final String REVIEWS_DATE = "date";
+
+    // categories table
+    public static final String MENU_CATEGORIES_ID = "id";
+
+    public static final String MENU_CATEGORIES_CATEGORY = "category";
 
 
     private DatabaseColumnLabel() { }

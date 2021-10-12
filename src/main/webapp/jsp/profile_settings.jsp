@@ -2,6 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<c:if test="${not empty sessionScope.locale}">
+    <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+</c:if>
+<fmt:setBundle basename="page_content"/>
+
 <html>
 <head>
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -23,7 +28,7 @@
     </h4>
 
     <div class="card overflow-hidden">
-        <div class="row no-gutters row-bordered row-border-light">
+        <div class="row">
 
             <div class="col-3 d-flex align-items-start">
                 <div class="nav flex-column nav-pills align-items-stretch" role="tablist" aria-orientation="vertical">
@@ -43,9 +48,9 @@
                             <input type="hidden" name="command" value="update_profile_picture"/>
                             <div class="card-body media d-flex align-items-center">
                                 <c:choose>
-                                    <c:when test="${not empty sessionScope.user.profileImage}">
+                                    <c:when test="${not empty sessionScope.user.profileImagePath}">
                                         <img id="profileImage"
-                                             src="${pageContext.request.contextPath}/upload/${sessionScope.user.profileImage}"
+                                             src="${pageContext.request.contextPath}/files/users/${sessionScope.user.profileImagePath}"
                                              alt="profile image" class="rounded-circle" width="100" height="100"/>
                                     </c:when>
                                     <c:otherwise>
@@ -142,7 +147,6 @@
             fileReader.readAsDataURL(selectedFile);
         }
     });
-
 </script>
 
 </body>

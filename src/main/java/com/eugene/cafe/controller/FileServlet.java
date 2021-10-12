@@ -1,5 +1,6 @@
 package com.eugene.cafe.controller;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,15 +11,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-@WebServlet(name="upload", urlPatterns = "/upload/*")
+@WebServlet(name="files", urlPatterns = "/files/*")
 public class FileServlet extends HttpServlet {
 
-    private static final String basePath = "C:/Users/Eugene/Desktop/java_course/Final project/upload";
+    private static final String UPLOAD_LOCATION = "upload.location";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String filePath = req.getPathInfo().replace("/", "\\");
+        String basePath = getServletContext().getInitParameter(UPLOAD_LOCATION);
 
+        String filePath = req.getPathInfo().replace("/", "\\");
         File file = new File(basePath + filePath);
 
         resp.setHeader("Content-Type", getServletContext().getMimeType(file.getName()));

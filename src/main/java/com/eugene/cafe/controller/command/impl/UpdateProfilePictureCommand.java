@@ -25,6 +25,9 @@ public class UpdateProfilePictureCommand implements Command {
 
     private static final UserService userService = new UserServiceImpl();
 
+    private static final String UPLOAD_LOCATION = "upload.location";
+    private static final String USERS_DIR = "users";
+
     @Override
     public Router execute(HttpServletRequest request) {
 
@@ -32,7 +35,8 @@ public class UpdateProfilePictureCommand implements Command {
         int id = user.getId();
         String idAsString = Integer.toString(id);
 
-        String uploadDir = request.getServletContext().getInitParameter("upload.location");
+        String uploadDir = request.getServletContext().getInitParameter(UPLOAD_LOCATION)
+                + File.separator + USERS_DIR;
         File file = new File(uploadDir);
         if (!file.exists()) {
             file.mkdir();
@@ -41,6 +45,9 @@ public class UpdateProfilePictureCommand implements Command {
         Router router = new Router(PROFILE_SETTINGS_PAGE, Router.RouterType.FORWARD);
         try {
             String submittedFileName = request.getPart(PARAM_FILE).getSubmittedFileName();
+            if (submittedFileName == null || submittedFileName.isEmpty()) {
+                return router;
+            }
 
             String userDir = uploadDir + File.separator + idAsString;
             File uploadUserDir = new File(userDir);
@@ -64,7 +71,6 @@ public class UpdateProfilePictureCommand implements Command {
             request.getSession().setAttribute(EXCEPTION, e);
             router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }
-
         return router;
     }
 }

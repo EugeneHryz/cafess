@@ -24,7 +24,7 @@
         <div class="container-fluid justify-content-end py-1">
 
             <c:if test="${not empty sessionScope.user}">
-                <a class="navbar-brand fs-2 fw-normal" href="#">Cafess</a>
+                <a class="navbar-brand fs-2 fw-normal" href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Cafess</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
 
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Home</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Home</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -59,8 +59,8 @@
 
                 <a href="#userProfileMenu" class="d-block link-dark ms-3" role="button" data-bs-toggle="offcanvas" aria-expanded="false" aria-controls="userProfileMenu">
                     <c:choose>
-                        <c:when test="${not empty sessionScope.user.profileImage}">
-                            <img src="${pageContext.request.contextPath}/upload/${sessionScope.user.profileImage}"
+                        <c:when test="${not empty sessionScope.user.profileImagePath}">
+                            <img src="${pageContext.request.contextPath}/files/users/${sessionScope.user.profileImagePath}"
                                  alt="profile image" class="rounded-circle" width="40" height="40"/>
                         </c:when>
                         <c:otherwise>
@@ -80,7 +80,12 @@
     </div>
     <div class="offcanvas-body">
         <ul class="navbar-nav fs-4 fw-light">
-            <li><a href="${pageContext.request.contextPath}/controller?command=go_to_profile_settings_page" class="nav-link px-2 link-dark">Profile settings</a></li>
+            <li><a href="${pageContext.request.contextPath}/controller?command=go_to_profile_settings_page" class="nav-link px-2 link-dark">Profile</a></li>
+
+            <c:if test="${sessionScope.role eq 'ADMIN'}">
+                <li><a href="${pageContext.request.contextPath}/controller?command=go_to_admin_dashboard_page" class="nav-link px-2 link-dark">Dashboard</a></li>
+            </c:if>
+
             <li><a href="#" class="nav-link px-2 link-dark">Order history</a></li>
             <hr/>
             <li>
@@ -91,7 +96,6 @@
         </ul>
     </div>
 </div>
-
 
 <script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.min.js">
 </script>

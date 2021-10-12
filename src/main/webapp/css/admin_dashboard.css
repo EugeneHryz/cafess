@@ -1,0 +1,65 @@
+#admin-dashboard-body {
+    background: var(--cafe-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+#admin-dashboard-body .container {
+    width: 900px;
+}
+
+#admin-dashboard-body .btn-default {
+    border-color: rgba(24,28,33,0.1);
+    background: rgba(0,0,0,0);
+    color: #4E5155;
+}
+
+#admin-dashboard-body label.btn {
+    margin-bottom: 0;
+}
+
+#admin-dashboard-body .btn-outline-primary {
+    border-color: #26B4FF;
+    background: transparent;
+    color: #26B4FF;
+}
+
+#admin-dashboard-body .btn {
+    cursor: pointer;
+}
+
+#admin-dashboard-body .text-light {
+    color: #babbbc !important;
+}
+
+#admin-dashboard-body .btn-facebook {
+    border-color: rgba(0,0,0,0);
+    background: #3B5998;
+    color: #fff;
+}
+
+#admin-dashboard-body .btn-instagram {
+    border-color: rgba(0,0,0,0);
+    background: #000;
+    color: #fff;
+}
+
+#admin-dashboard-body .card {
+    background-clip: padding-box;
+    box-shadow: 0 1px 4px rgba(24,28,33,0.012);
+}
+
+#admin-dashboard-body .row-bordered {
+    overflow: hidden;
+}
+
+#admin-dashboard-body .account-settings-fileinput {
+    position: absolute;
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}

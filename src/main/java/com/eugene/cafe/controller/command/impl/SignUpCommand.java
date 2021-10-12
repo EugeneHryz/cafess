@@ -40,11 +40,11 @@ public class SignUpCommand implements Command {
                 Optional<User> client = userService.signUp(name, surname, email, password);
                 if (client.isPresent()) {
                     request.getSession().setAttribute(USER, client.get());
-                    request.getSession().setAttribute(ROLE, client.get().getRole());
+                    request.getSession().setAttribute(ROLE, client.get().getRole().name());
 
                     router = new Router(MAIN_PAGE, Router.RouterType.FORWARD);
                 } else {
-                    request.setAttribute(LOGIN_ALREADY_EXISTS, manager.getProperty(LOGIN_ALREADY_EXISTS));
+                    request.setAttribute(EMAIL_ALREADY_EXISTS, manager.getProperty(EMAIL_ALREADY_EXISTS));
 
                     router = new Router(SIGNUP_PAGE, Router.RouterType.FORWARD);
                 }

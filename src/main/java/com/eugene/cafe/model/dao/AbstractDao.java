@@ -21,7 +21,7 @@ public abstract class AbstractDao<T extends AbstractEntity> {
 
     public abstract boolean deleteById(int id) throws DaoException;
 
-    void setConnection(Connection connection) {
+    public void setConnection(Connection connection) {
         this.connection = connection;
     }
 }

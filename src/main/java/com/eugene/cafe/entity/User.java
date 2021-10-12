@@ -5,23 +5,16 @@ import java.io.InputStream;
 public class User extends AbstractEntity {
 
     private String name;
-
     private String surname;
-
     private UserRole role;
-
     private UserStatus status;
-
     private String email;
-
     private String hashedPassword;
-
     private double balance;
-
     private String profileImagePath;
 
-    public User(String name, String surname, UserRole role, UserStatus status, String email, String hashedPassword,
-                double balance, String profileImagePath) {
+    public User(String name, String surname, UserRole role, UserStatus status, String email,
+                String hashedPassword, double balance, String profileImagePath) {
 
         this.name = name;
         this.surname = surname;
@@ -61,7 +54,7 @@ public class User extends AbstractEntity {
         return balance;
     }
 
-    public String getProfileImage() {
+    public String getProfileImagePath() {
         return profileImagePath;
     }
 
@@ -93,14 +86,14 @@ public class User extends AbstractEntity {
         this.balance = balance;
     }
 
-    public void setProfileImage(String profileImagePath) {
+    public void setProfileImagePath(String profileImagePath) {
         this.profileImagePath = profileImagePath;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("id: ")
+        builder.append("User{id: ")
                 .append(getId())
                 .append(", name: ")
                 .append(name)
@@ -113,7 +106,8 @@ public class User extends AbstractEntity {
                 .append(", email: ")
                 .append(email)
                 .append(", balance: ")
-                .append(balance);
+                .append(balance)
+                .append("}");
         return builder.toString();
     }
 
@@ -122,21 +116,13 @@ public class User extends AbstractEntity {
     public static class Builder {
 
         private int id;
-
         private String name;
-
         private String surname;
-
         private UserRole role;
-
         private UserStatus status;
-
         private String email;
-
         private String hashedPassword;
-
         private double balance;
-
         private String profileImagePath;
 
         public Builder() {
@@ -182,7 +168,7 @@ public class User extends AbstractEntity {
             return this;
         }
 
-        public Builder setProfileImage(String profileImagePath) {
+        public Builder setProfileImagePath(String profileImagePath) {
             this.profileImagePath = profileImagePath;
             return this;
         }
