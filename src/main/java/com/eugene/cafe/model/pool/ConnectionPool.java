@@ -36,7 +36,7 @@ public class ConnectionPool {
         for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
             try {
                 ProxyConnection connection = ConnectionFactory.createConnection();
-                System.out.println("putting new connection: " + availableConnections.offer(connection));
+                availableConnections.offer(connection);
             } catch (DatabaseConnectionException e) {
                 logger.error("Unable to create connection " + e);
             }
@@ -49,31 +49,22 @@ public class ConnectionPool {
     }
 
     public static ConnectionPool getInstance() {
-        System.out.println("Getting instance of connection pool..");
         if (!initialized.get()) {
-            System.out.println("about to lock..");
             lock.lock();
             try {
                 if (instance == null) {
                     instance = new ConnectionPool();
-                    System.out.println("New connection pool created");
                     initialized.set(true);
                 }
             } finally {
                 lock.unlock();
             }
-        } else {
-            System.out.println("Instance already created..");
         }
         return instance;
     }
 
     public Connection takeConnection() {
         ProxyConnection connection = null;
-        System.out.println("taking connection...");
-        if (availableConnections.isEmpty()) {
-            System.out.println("there are no available connections...");
-        }
         try {
             connection = availableConnections.take();
             busyConnections.put(connection);
@@ -99,11 +90,9 @@ public class ConnectionPool {
     }
 
     public void destroyPool() {
-        System.out.println("destroying pool");
         for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
             try {
                 availableConnections.take().reallyClose();
-                System.out.println("another connection closed");
             } catch (InterruptedException e) {
                 logger.error("Thread was interrupted while performing blocking operation " + e);
                 Thread.currentThread().interrupt();
@@ -112,7 +101,6 @@ public class ConnectionPool {
             }
         }
         deregisterDrivers();
-        System.out.println("pool destroyed!!!");
     }
 
     private void deregisterDrivers() {

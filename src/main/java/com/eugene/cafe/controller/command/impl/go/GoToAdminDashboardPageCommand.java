@@ -23,16 +23,16 @@ public class GoToAdminDashboardPageCommand implements Command {
     public Router execute(HttpServletRequest request) {
 
         Router router = new Router(ADMIN_DASHBOARD, Router.RouterType.REDIRECT);
-        try {
-            List<User> usersWithoutAdmins = userService.getAllUsersWithoutAdmins();
-
-            request.getSession().setAttribute(USERS_LIST, usersWithoutAdmins);
-
-        } catch (ServiceException e) {
-            // todo: write log
-            request.getSession().setAttribute(EXCEPTION, e);
-            router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
-        }
+//        try {
+//            List<User> usersWithoutAdmins = userService.getAllUsersWithoutAdmins();
+//
+//            request.getSession().setAttribute(USERS_LIST, usersWithoutAdmins);
+//
+//        } catch (ServiceException e) {
+//            // todo: write log
+//            request.getSession().setAttribute(EXCEPTION, e);
+//            router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
+//        }
 
         return router;
     }

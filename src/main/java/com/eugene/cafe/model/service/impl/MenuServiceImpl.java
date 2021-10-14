@@ -18,9 +18,9 @@ import java.util.List;
 
 public class MenuServiceImpl implements MenuService {
 
-    public static final int MENU_ITEMS_PER_PAGE = 8;
-
     private static final Logger logger = LogManager.getLogger(MenuServiceImpl.class);
+
+    public static final int MENU_ITEMS_PER_PAGE = 8;
 
     @Override
     public boolean addMenuItem(MenuItem newMenuItem) throws ServiceException {

@@ -14,6 +14,14 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin_dashboard.css" />
+
+    <script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.min.js" type='text/javascript'></script>
+
+    <style>
+        tr td:nth-child(6) {
+            text-align: right;
+        }
+    </style>
 </head>
 
 <body id="admin-dashboard-body">
@@ -99,6 +107,25 @@
                 </div>
 
                 <div class="tab-pane fade" id="manage-users" role="tabpanel">
+                    <div class="d-flex flex-column justify-content-between align-items-center">
+
+                        <table class="table table-hover table-borderless align-middle" style="table-layout: fixed">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="width: 19%">Email</th>
+                                <th scope="col" style="width: 19%">Name</th>
+                                <th scope="col" style="width: 19%">Surname</th>
+                                <th scope="col" style="width: 19%">Status</th>
+                                <th scope="col" style="width: 12%">Role</th>
+                                <th scope="col" style="width: 12%"></th>
+                            </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                            </tbody>
+                        </table>
+
+                        <ul class="pagination"></ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,8 +134,9 @@
 
 <c:import url="footer.jsp"/>
 
-<script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.min.js" type='text/javascript'></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
+<script src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
+
 
 <script>
     const fileInput = document.getElementById('fileUpload');
@@ -128,15 +156,72 @@
         }
     });
 
-    $('#manageUsersButton').one('click', function () {
+    const URL = "${pageContext.request.contextPath}/ajax";
+    const USERS_PER_PAGE = 2;
+    const MAX_VISIBLE_PAGES = 4;
 
-        const url = "${pageContext.request.contextPath}/jsp/users.jsp";
-        $.ajax(url, {
-            method: 'POST',
-            success: function (data) {
-                $('#manage-users').html(data);
+    loadNumberOfUsers();
+
+    function loadPage(page) {
+        const data = {
+            command: 'go_to_user_page',
+            page_number: page
+        };
+        $.getJSON(URL, data, function (responseData) {
+            const tableBody = $('#tableBody');
+
+            tableBody.fadeOut(120, function () {
+                tableBody.empty();
+
+                $.each(responseData, function (index, user) {
+                    const banButton = $("<button>")
+                        .addClass("btn btn-secondary")
+                        .css("width", "100%")
+                        .text("Ban")
+                        .attr("id", "banUserButton" + index);
+
+                    $("<tr>").appendTo(tableBody)
+                        .append($("<td>").text(user.email))
+                        .append($("<td>").text(user.name))
+                        .append($("<td>").text(user.surname))
+                        .append($("<td>").text(user.status.toLowerCase()))
+                        .append($("<td>").text(user.role.toLowerCase()))
+                        .append($("<td>").html(banButton));
+                });
+                tableBody.fadeIn(120);
+            });
+        })
+    }
+
+    function loadNumberOfUsers() {
+        const data = {
+            command: 'get_user_count'
+        }
+        $.getJSON(URL, data, function (responseData) {
+
+            const totalPages = Math.ceil(responseData / USERS_PER_PAGE);
+            console.log("totalPages: " + totalPages);
+            const visiblePages = (totalPages < MAX_VISIBLE_PAGES) ? totalPages : MAX_VISIBLE_PAGES;
+
+            initPagination(totalPages, visiblePages);
+        });
+    }
+
+    function initPagination(totalPages, visiblePages) {
+        const pagination = $('.pagination');
+
+        pagination.twbsPagination({
+            totalPages: totalPages,
+            visiblePages: visiblePages,
+            prev: '&laquo;',
+            next: '&raquo;',
+            firstClass: 'visually-hidden',
+            lastClass: 'visually-hidden',
+
+            onPageClick: function (event, page) {
+                loadPage(page);
             }
         });
-    });
+    }
 </script>
 </body>

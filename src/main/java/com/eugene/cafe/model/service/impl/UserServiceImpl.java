@@ -12,13 +12,17 @@ import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.util.PasswordEncryptor;
 import com.eugene.cafe.util.impl.PasswordEncryptorImpl;
 import com.eugene.cafe.model.validator.UserValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
+
+    public static final int USERS_PER_PAGE = 2;
 
     @Override
     public Optional<User> signIn(String email, String password) throws ServiceException {
@@ -161,25 +165,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsersWithoutAdmins() throws ServiceException {
+    public List<User> getSubsetOfUsers(int pageNumber) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
         helper.init(userDao);
-        List<User> usersWithoutAdmins;
+        List<User> users;
+        // todo: validate page number
+        int offset = USERS_PER_PAGE * (pageNumber - 1);
         try {
-            List<User> users = userDao.findAll();
-            usersWithoutAdmins = users.stream()
-                    .filter(user -> user.getRole() != UserRole.ADMIN)
-                    .collect(Collectors.toList());
+            users = userDao.getSubsetOfUsers(USERS_PER_PAGE, offset);
 
         } catch (DaoException e) {
-            // todo: write log
-            throw new ServiceException("Unable to get all users", e);
+            logger.error("Unable to get a subset of users", e);
+            throw new ServiceException("Unable to get a subset of users", e);
         } finally {
             helper.end();
         }
-        return usersWithoutAdmins;
+        return users;
+    }
+
+    @Override
+    public int getUserCount() throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final UserDao userDao = new UserDaoImpl();
+
+        helper.init(userDao);
+        int count;
+        try {
+            count = userDao.getCount();
+        } catch (DaoException e) {
+            logger.error("Unable to get user count", e);
+            throw new ServiceException("Unable to get user count", e);
+        } finally {
+            helper.end();
+        }
+        return count;
     }
 }

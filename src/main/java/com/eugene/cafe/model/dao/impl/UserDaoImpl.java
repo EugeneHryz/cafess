@@ -1,5 +1,7 @@
 package com.eugene.cafe.model.dao.impl;
 
+import com.eugene.cafe.entity.MenuItem;
+import com.eugene.cafe.model.dao.MenuItemSortOrder;
 import com.eugene.cafe.model.dao.UserDao;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.entity.UserRole;
@@ -47,11 +49,18 @@ public class UserDaoImpl extends UserDao {
             "INNER JOIN user_status ON users.status_id = user_status.id " +
             "WHERE users.email = ?";
 
+    private static final String SQL_FIND_SUBSET = "SELECT " +
+            "users.id, name, surname, email, password, role, status, balance, profile_image FROM users " +
+            "INNER JOIN user_role ON users.role_id = user_role.id " +
+            "INNER JOIN user_status ON users.status_id = user_status.id LIMIT ? OFFSET ?";
+
+    private static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM users";
+
     @Override
     public boolean create(User entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for UserDao");
         }
 
         boolean created = false;
@@ -83,8 +92,8 @@ public class UserDaoImpl extends UserDao {
     @Override
     public Optional<User> findById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for UserDao");
         }
 
         Optional<User> updated = Optional.empty();
@@ -106,8 +115,8 @@ public class UserDaoImpl extends UserDao {
     @Override
     public List<User> findAll() throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for UserDao");
         }
 
         List<User> users = new ArrayList<>();
@@ -128,8 +137,8 @@ public class UserDaoImpl extends UserDao {
     @Override
     public Optional<User> update(User entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for for UserDao");
         }
 
         Optional<User> updated = Optional.empty();
@@ -152,8 +161,8 @@ public class UserDaoImpl extends UserDao {
     @Override
     public Optional<User> updateProfilePicture(int id, String imagePath) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for for UserDao");
         }
 
         Optional<User> updated = Optional.empty();
@@ -174,8 +183,8 @@ public class UserDaoImpl extends UserDao {
     @Override
     public boolean deleteById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for UserDao");
         }
 
         boolean deleted = false;
@@ -195,8 +204,8 @@ public class UserDaoImpl extends UserDao {
     @Override
     public Optional<User> findUserByEmail(String email) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for UserDao");
         }
 
         Optional<User> result = Optional.empty();
@@ -218,8 +227,8 @@ public class UserDaoImpl extends UserDao {
     @Override
     public boolean changeUserPassword(int id, String newPassword) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ClientDao");
-            throw new DaoException("Database connection is not set for for ClientDao");
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for for UserDao");
         }
 
         boolean passwordUpdated = false;
@@ -235,6 +244,52 @@ public class UserDaoImpl extends UserDao {
             throw new DaoException("Database error occurred", e);
         }
         return passwordUpdated;
+    }
+
+    @Override
+    public List<User> getSubsetOfUsers(int limit, int offset) throws DaoException {
+        if (connection == null) {
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for UserDao");
+        }
+
+        List<User> users = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_SUBSET)) {
+            statement.setInt(1, limit);
+            statement.setInt(2, offset);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                User user = buildUser(resultSet);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
+        }
+        return users;
+    }
+
+    @Override
+    public int getCount() throws DaoException {
+        if (connection == null) {
+            logger.error("Database connection is not set for UserDao");
+            throw new DaoException("Database connection is not set for UserDao");
+        }
+
+        int number = 0;
+        try (Statement statement = connection.createStatement()) {
+
+            ResultSet resultSet = statement.executeQuery(SQL_COUNT_ALL);
+            if (resultSet.next()) {
+                number = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            // todo: write log
+            throw new DaoException("Database error occurred", e);
+        }
+        return number;
     }
 
     private User buildUser(ResultSet resultSet) throws SQLException {

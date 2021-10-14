@@ -13,4 +13,8 @@ public abstract class UserDao extends AbstractDao<User> {
     public abstract Optional<User> updateProfilePicture(int id, String imagePath) throws DaoException;
 
     public abstract boolean changeUserPassword(int id, String newPassword) throws DaoException;
+
+    public abstract List<User> getSubsetOfUsers(int limit, int offset) throws DaoException;
+
+    public abstract int getCount() throws DaoException;
 }

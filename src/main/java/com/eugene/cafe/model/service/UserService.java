@@ -18,5 +18,7 @@ public interface UserService {
 
     boolean changeUserPassword(int id, String oldPassword, String newPassword) throws ServiceException;
 
-    List<User> getAllUsersWithoutAdmins() throws ServiceException;
+    List<User> getSubsetOfUsers(int pageNumber) throws ServiceException;
+
+    int getUserCount() throws ServiceException;
 }

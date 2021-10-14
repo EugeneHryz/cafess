@@ -26,8 +26,6 @@ public class RequestAttribute {
 
     public static final String MENU_CATEGORIES_LIST = "menuCategoriesList";
 
-    public static final String USERS_LIST = "usersList";
-
     public static final String USER = "user";
 
     public static final String ROLE = "role";

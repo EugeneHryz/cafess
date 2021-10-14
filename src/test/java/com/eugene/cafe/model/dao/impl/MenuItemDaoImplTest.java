@@ -1,18 +1,13 @@
 package com.eugene.cafe.model.dao.impl;
 
-import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.model.dao.MenuItemDao;
-import com.eugene.cafe.model.dao.MenuItemSortOrder;
 import com.eugene.cafe.model.pool.ConnectionPool;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class MenuItemDaoImplTest {
 
