@@ -2,12 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:if test="${not empty sessionScope.locale}">
-    <fmt:setLocale value="${sessionScope.locale}" scope="session" />
-    <c:set var="currentLocale" value="${sessionScope.locale}" scope="page" />
-</c:if>
-<fmt:setBundle basename="page_content" />
-
 <html>
 <head>
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -16,7 +10,7 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css">
 </head>
-<body id="footer">
+<body id="footer" style="justify-self: flex-end">
 
 <footer class="text-center text-lg-start text-muted align-self-stretch" style="background-color: var(--cafe-white)">
     <section class="d-flex justify-content-center justify-content-lg-between p-4">
@@ -47,7 +41,6 @@
                 + 375 22 331-78-68
             </p>
         </section>
-
     </section>
 
     <hr class="mx-4 my-0"/>
@@ -55,7 +48,6 @@
         © 2021 Copyright
     </div>
 </footer>
-
 
 </body>
 </html>

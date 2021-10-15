@@ -22,29 +22,30 @@ public class MenuItemDaoImpl extends MenuItemDao {
     private static final String SQL_CREATE_MENU_ITEM = "INSERT INTO menu_items(name, description, price, category_id, image) " +
             "VALUES (?, ?, ?, ?, ?)";
 
-    private static final String SQL_FIND_MENU_ITEM_BY_ID = "SELECT id, name, description, price, category_id, image FROM menu_items " +
-            "WHERE menu_items.id = ?";
+    private static final String SQL_FIND_MENU_ITEM_BY_ID = "SELECT id, name, description, price, category_id, image " +
+            "FROM menu_items WHERE menu_items.id = ?";
 
-    private static final String SQL_FIND_ALL_MENU_ITEMS = "SELECT id, name, description, price, category_id, image FROM menu_items";
+    private static final String SQL_FIND_ALL_MENU_ITEMS = "SELECT id, name, description, price, category_id, image " +
+            "FROM menu_items";
 
-    private static final String SQL_FIND_SUBSET_PRICE_ASC = "SELECT id, name, description, price, category_id, image FROM menu_items " +
-            "ORDER BY price LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_SUBSET_PRICE_ASC = "SELECT id, name, description, price, category_id, image " +
+            "FROM menu_items ORDER BY price LIMIT ? OFFSET ?";
 
-    private static final String SQL_FIND_SUBSET_PRICE_DESC = "SELECT id, name, description, price, category_id, image FROM menu_items " +
-            "ORDER BY price DESC LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_SUBSET_PRICE_DESC = "SELECT id, name, description, price, category_id, image " +
+            "FROM menu_items ORDER BY price DESC LIMIT ? OFFSET ?";
 
-    private static final String SQL_FIND_SUBSET_BY_CATEGORY_PRICE_ASC = "SELECT id, name, description, price, category_id, image FROM menu_items " +
-            "WHERE category_id = ? ORDER BY price LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_SUBSET_BY_CATEGORY_PRICE_ASC = "SELECT id, name, description, price, category_id, image " +
+            "FROM menu_items WHERE category_id = ? ORDER BY price LIMIT ? OFFSET ?";
 
-    private static final String SQL_FIND_SUBSET_BY_CATEGORY_PRICE_DESC = "SELECT id, name, description, price, category_id, image FROM menu_items " +
-            "WHERE category_id = ? ORDER BY price DESC LIMIT ? OFFSET ?";
+    private static final String SQL_FIND_SUBSET_BY_CATEGORY_PRICE_DESC = "SELECT id, name, description, price, category_id, image " +
+            "FROM menu_items WHERE category_id = ? ORDER BY price DESC LIMIT ? OFFSET ?";
 
     private static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM menu_items";
 
     private static final String SQL_COUNT_BY_CATEGORY = "SELECT COUNT(*) FROM menu_items WHERE menu_items.category_id = ?";
 
-    private static final String SQL_UPDATE_MENU_ITEM = "UPDATE menu_items SET name = ?, description = ?, price = ?, category_id = ?, image = ? " +
-            "WHERE menu_items.id = ?";
+    private static final String SQL_UPDATE_MENU_ITEM = "UPDATE menu_items " +
+            "SET name = ?, description = ?, price = ?, category_id = ?, image = ? WHERE menu_items.id = ?";
 
     private static final String SQL_DELETE_MENU_ITEM_BY_ID = "DELETE FROM menu_items WHERE menu_items.id = ?";
 
@@ -57,11 +58,7 @@ public class MenuItemDaoImpl extends MenuItemDao {
 
         boolean created = false;
         try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_MENU_ITEM)) {
-            statement.setString(1, entity.getName());
-            statement.setString(2, entity.getDescription());
-            statement.setDouble(3, entity.getPrice());
-            statement.setInt(4, entity.getCategoryId());
-            statement.setString(5, entity.getImagePath());
+            initStatement(statement, entity);
 
             if (statement.executeUpdate() > 0) {
                 created = true;
@@ -128,11 +125,7 @@ public class MenuItemDaoImpl extends MenuItemDao {
 
         Optional<MenuItem> updated = Optional.empty();
         try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_MENU_ITEM)) {
-            statement.setString(1, entity.getName());
-            statement.setString(2, entity.getDescription());
-            statement.setDouble(3, entity.getPrice());
-            statement.setString(4, entity.getImagePath());
-            statement.setInt(5, entity.getCategoryId());
+            initStatement(statement, entity);
             statement.setInt(6, entity.getId());
 
             if (statement.executeUpdate() > 0) {
@@ -275,5 +268,14 @@ public class MenuItemDaoImpl extends MenuItemDao {
                 .setImagePath(resultSet.getString(MENU_ITEMS_IMAGE));
 
         return builder.buildMenuItem();
+    }
+
+    private void initStatement(PreparedStatement statement, MenuItem entity) throws SQLException {
+
+        statement.setString(1, entity.getName());
+        statement.setString(2, entity.getDescription());
+        statement.setDouble(3, entity.getPrice());
+        statement.setString(4, entity.getImagePath());
+        statement.setInt(5, entity.getCategoryId());
     }
 }

@@ -24,7 +24,6 @@ public class CommandProvider {
         commandMap.put(LOG_IN, new LogInCommand());
         commandMap.put(LOG_OUT, new LogOutCommand());
         commandMap.put(DEFAULT, new DefaultCommand());
-        commandMap.put(GO_TO_FORGOT_PASSWORD_PAGE, new GoToForgotPasswordPageCommand());
         commandMap.put(GO_TO_SIGNUP_PAGE, new GoToSignupPageCommand());
         commandMap.put(SIGN_UP, new SignUpCommand());
         commandMap.put(CHANGE_LOCALE, new ChangeLocaleCommand());
@@ -38,6 +37,7 @@ public class CommandProvider {
         commandMap.put(GO_TO_MENU_PAGE, new GoToMenuPageCommand());
         commandMap.put(CHANGE_SORT_ORDER, new ChangeSortOrderCommand());
         commandMap.put(CHANGE_CURRENT_CATEGORY, new ChangeCurrentCategoryCommand());
+        commandMap.put(TOP_UP_BALANCE, new TopUpBalanceCommand());
     }
 
     public Command getCommand(String commandName) {

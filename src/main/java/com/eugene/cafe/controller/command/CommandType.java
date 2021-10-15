@@ -5,7 +5,6 @@ public enum CommandType {
     LOG_IN,
     LOG_OUT,
     DEFAULT,
-    GO_TO_FORGOT_PASSWORD_PAGE,
     GO_TO_SIGNUP_PAGE,
     SIGN_UP,
     CHANGE_LOCALE,
@@ -19,4 +18,10 @@ public enum CommandType {
     GO_TO_MENU_PAGE,
     CHANGE_SORT_ORDER,
     CHANGE_CURRENT_CATEGORY,
+    TOP_UP_BALANCE,
+
+    GET_USER_COUNT,
+    GO_TO_USER_PAGE,
+    BAN_USER,
+    UNBAN_USER
 }

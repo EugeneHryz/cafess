@@ -18,7 +18,7 @@
 
 <c:import url="header.jsp" />
 
-<div class="album py-5">
+<div class="album pt-5 pb-3">
     <div class="container" style="width: 950px">
 
         <div class="d-flex justify-content-between mb-4">
@@ -97,7 +97,7 @@
     </div>
 </div>
 
-<ul class="pagination mb-3"></ul>
+<ul class="pagination mb-5"></ul>
 
 <c:import url="footer.jsp" />
 

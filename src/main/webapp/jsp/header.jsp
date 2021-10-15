@@ -51,10 +51,10 @@
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex mb-0">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-light" type="submit">Search</button>
-                    </form>
+<%--                    <form class="d-flex mb-0">--%>
+<%--                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
+<%--                        <button class="btn btn-light" type="submit">Search</button>--%>
+<%--                    </form>--%>
                 </div>
 
                 <a href="#userProfileMenu" class="d-block link-dark ms-3" role="button" data-bs-toggle="offcanvas" aria-expanded="false" aria-controls="userProfileMenu">

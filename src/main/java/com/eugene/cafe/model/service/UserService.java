@@ -1,6 +1,7 @@
 package com.eugene.cafe.model.service;
 
 import com.eugene.cafe.entity.User;
+import com.eugene.cafe.entity.UserStatus;
 import com.eugene.cafe.exception.ServiceException;
 
 import java.util.List;
@@ -18,7 +19,11 @@ public interface UserService {
 
     boolean changeUserPassword(int id, String oldPassword, String newPassword) throws ServiceException;
 
-    List<User> getSubsetOfUsers(int pageNumber) throws ServiceException;
+    List<User> getSubsetOfUsers(String pageNumber) throws ServiceException;
 
     int getUserCount() throws ServiceException;
+
+    Optional<User> changeUserStatus(int userId, UserStatus status) throws ServiceException;
+
+    Optional<User> topUpUserBalance(int userId, String topUpAmount) throws ServiceException;
 }

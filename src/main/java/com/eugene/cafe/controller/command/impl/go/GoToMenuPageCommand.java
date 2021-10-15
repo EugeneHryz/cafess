@@ -24,6 +24,7 @@ public class GoToMenuPageCommand implements Command {
     public Router execute(HttpServletRequest request) {
 
         String pageNumberParam = request.getParameter(PARAM_PAGE_NUMBER);
+        // todo: validate page number
         int pageNumber = Integer.parseInt(pageNumberParam);
 
         String sortOrder = (String) request.getSession().getAttribute(MENU_ITEMS_SORT_ORDER);

@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-    public static final int USERS_PER_PAGE = 2;
+    public static final int USERS_PER_PAGE = 1;
 
     @Override
     public Optional<User> signIn(String email, String password) throws ServiceException {
@@ -93,20 +93,18 @@ public class UserServiceImpl implements UserService {
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
-        User.Builder builder = new User.Builder();
-        builder.setId(id)
-                .setName(name)
-                .setSurname(surname)
-                .setEmail(email);
-        User user = builder.buildUser();
-
         Optional<User> edited = Optional.empty();
         helper.init(userDao);
         try {
-            Optional<User> updatedUser = userDao.update(user);
+            Optional<User> userToEdit = userDao.findById(id);
+            if (userToEdit.isPresent()) {
 
-            if (updatedUser.isPresent()) {
-                edited = updatedUser;
+                User user = userToEdit.get();
+                user.setName(name);
+                user.setSurname(surname);
+                user.setEmail(email);
+
+                edited = userDao.update(user);
             }
         } catch (DaoException e) {
             // todo write log
@@ -165,7 +163,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getSubsetOfUsers(int pageNumber) throws ServiceException {
+    public List<User> getSubsetOfUsers(String pageNumber) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
@@ -173,7 +171,8 @@ public class UserServiceImpl implements UserService {
         helper.init(userDao);
         List<User> users;
         // todo: validate page number
-        int offset = USERS_PER_PAGE * (pageNumber - 1);
+        int number = Integer.parseInt(pageNumber);
+        int offset = USERS_PER_PAGE * (number - 1);
         try {
             users = userDao.getSubsetOfUsers(USERS_PER_PAGE, offset);
 
@@ -203,5 +202,57 @@ public class UserServiceImpl implements UserService {
             helper.end();
         }
         return count;
+    }
+
+    @Override
+    public Optional<User> changeUserStatus(int userId, UserStatus status) throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final UserDao userDao = new UserDaoImpl();
+
+        helper.init(userDao);
+        Optional<User> bannedUser = Optional.empty();
+        try {
+            Optional<User> user = userDao.findById(userId);
+            if (user.isPresent()) {
+                user.get().setStatus(status);
+
+                bannedUser = userDao.update(user.get());
+            }
+        } catch (DaoException e) {
+            logger.error("Unable to ban the user (id: " + userId + ")", e);
+            throw new ServiceException("Unable to ban the user (id: " + userId + ")", e);
+        } finally {
+            helper.end();
+        }
+        return bannedUser;
+    }
+
+    @Override
+    public Optional<User> topUpUserBalance(int userId, String topUpAmount) throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final UserDao userDao = new UserDaoImpl();
+
+        helper.init(userDao);
+        Optional<User> updated = Optional.empty();
+        // todo: validate amount
+        try {
+            Optional<User> userOptional = userDao.findById(userId);
+            if (userOptional.isPresent()) {
+
+                double amount = Double.parseDouble(topUpAmount);
+                User user = userOptional.get();
+                user.setBalance(user.getBalance() + amount);
+
+                updated = userDao.update(user);
+            }
+        } catch (DaoException e) {
+            // todo: write log
+            throw new ServiceException("Failed to top up user balance", e);
+        } finally {
+            helper.end();
+        }
+        return updated;
     }
 }

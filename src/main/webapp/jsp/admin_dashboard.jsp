@@ -21,6 +21,13 @@
         tr td:nth-child(6) {
             text-align: right;
         }
+        tr th:first-child, tr td:first-child {
+            padding-left: 12px;
+            text-overflow: ellipsis;
+        }
+        tr th:last-child, tr td:last-child {
+            padding-right: 12px;
+        }
     </style>
 </head>
 
@@ -46,7 +53,7 @@
         </div>
     </div>
 
-    <div class="card overflow-hidden border-top-0 rounded-0">
+    <div class="card border-top-0 rounded-0">
 
         <div class="row no-gutters row-bordered row-border-light">
 
@@ -108,11 +115,10 @@
 
                 <div class="tab-pane fade" id="manage-users" role="tabpanel">
                     <div class="d-flex flex-column justify-content-between align-items-center">
-
                         <table class="table table-hover table-borderless align-middle" style="table-layout: fixed">
                             <thead>
                             <tr>
-                                <th scope="col" style="width: 19%">Email</th>
+                                <th scope="col" style="width: 19%;">Email</th>
                                 <th scope="col" style="width: 19%">Name</th>
                                 <th scope="col" style="width: 19%">Surname</th>
                                 <th scope="col" style="width: 19%">Status</th>
@@ -120,6 +126,7 @@
                                 <th scope="col" style="width: 12%"></th>
                             </tr>
                             </thead>
+
                             <tbody id="tableBody">
                             </tbody>
                         </table>
@@ -127,6 +134,7 @@
                         <ul class="pagination"></ul>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -136,7 +144,6 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
-
 
 <script>
     const fileInput = document.getElementById('fileUpload');
@@ -156,8 +163,9 @@
         }
     });
 
+
     const URL = "${pageContext.request.contextPath}/ajax";
-    const USERS_PER_PAGE = 2;
+    const USERS_PER_PAGE = 1;
     const MAX_VISIBLE_PAGES = 4;
 
     loadNumberOfUsers();
@@ -171,23 +179,52 @@
             const tableBody = $('#tableBody');
 
             tableBody.fadeOut(120, function () {
+                // clear previous table body contents
                 tableBody.empty();
 
                 $.each(responseData, function (index, user) {
-                    const banButton = $("<button>")
-                        .addClass("btn btn-secondary")
-                        .css("width", "100%")
-                        .text("Ban")
-                        .attr("id", "banUserButton" + index);
+                    // creating button for each user row
+                    const toggleBanButton = $("<button>")
+                        .addClass('btn btn-danger btn-sm')
+                        .attr('id', 'toggleBanButton' + index)
+                        .css('width', '75%');
 
+                    if (user.status === 'BANNED') {
+                        toggleBanButton.text('Unban');
+                    } else {
+                        toggleBanButton.text('Ban');
+                    }
+
+                    // setting click event on button to ban/unban users
+                    toggleBanButton.on('click', function () {
+                        const requestData = {
+                            user_id: user.id
+                        };
+                        requestData.command = (tableBody.find('#userStatus' + index).text() === 'banned') ? 'unban_user' : 'ban_user';
+
+                        $.post(URL, requestData).done(function (response) {
+                            // update user status
+                            tableBody.find('#userStatus' + index).text(response.status.toLowerCase());
+
+                            // update button text
+                            if (response.status === 'BANNED') {
+                                toggleBanButton.text('Unban');
+                            } else {
+                                toggleBanButton.text('Ban');
+                            }
+                        });
+                    });
+
+                    // adding new row to the table with user data
                     $("<tr>").appendTo(tableBody)
-                        .append($("<td>").text(user.email))
-                        .append($("<td>").text(user.name))
-                        .append($("<td>").text(user.surname))
-                        .append($("<td>").text(user.status.toLowerCase()))
-                        .append($("<td>").text(user.role.toLowerCase()))
-                        .append($("<td>").html(banButton));
+                        .append($("<td>").attr('id', 'userEmail' + index).text(user.email))
+                        .append($("<td>").attr('id', 'userName' + index).text(user.name))
+                        .append($("<td>").attr('id', 'userSurname' + index).text(user.surname))
+                        .append($("<td>").attr('id', 'userStatus' + index).text(user.status.toLowerCase()))
+                        .append($("<td>").attr('id', 'userRole' + index).text(user.role.toLowerCase()))
+                        .append($("<td>").html(toggleBanButton));
                 });
+
                 tableBody.fadeIn(120);
             });
         })
@@ -200,7 +237,6 @@
         $.getJSON(URL, data, function (responseData) {
 
             const totalPages = Math.ceil(responseData / USERS_PER_PAGE);
-            console.log("totalPages: " + totalPages);
             const visiblePages = (totalPages < MAX_VISIBLE_PAGES) ? totalPages : MAX_VISIBLE_PAGES;
 
             initPagination(totalPages, visiblePages);
@@ -208,9 +244,8 @@
     }
 
     function initPagination(totalPages, visiblePages) {
-        const pagination = $('.pagination');
 
-        pagination.twbsPagination({
+        $('.pagination').twbsPagination({
             totalPages: totalPages,
             visiblePages: visiblePages,
             prev: '&laquo;',
@@ -225,3 +260,4 @@
     }
 </script>
 </body>
+</html>

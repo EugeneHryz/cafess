@@ -1,11 +1,10 @@
-#admin-dashboard-body {
-    background: var(--cafe-background);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 100vh;
-}
+/*#admin-dashboard-body {*/
+/*    background: var(--cafe-black);*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    justify-content: space-between;*/
+/*}*/
 
 #admin-dashboard-body .container {
     width: 900px;
@@ -35,18 +34,6 @@
     color: #babbbc !important;
 }
 
-#admin-dashboard-body .btn-facebook {
-    border-color: rgba(0,0,0,0);
-    background: #3B5998;
-    color: #fff;
-}
-
-#admin-dashboard-body .btn-instagram {
-    border-color: rgba(0,0,0,0);
-    background: #000;
-    color: #fff;
-}
-
 #admin-dashboard-body .card {
     background-clip: padding-box;
     box-shadow: 0 1px 4px rgba(24,28,33,0.012);
@@ -63,3 +50,5 @@
     height: 1px;
     opacity: 0;
 }
+
+

@@ -30,6 +30,9 @@ public final class RequestParameter {
 
     public static final String PARAM_SORT_ORDER = "sort_order";
 
+    public static final String PARAM_USER_ID = "user_id";
+
+    public static final String PARAM_TOP_UP_AMOUNT = "top_up_amount";
 
 
 

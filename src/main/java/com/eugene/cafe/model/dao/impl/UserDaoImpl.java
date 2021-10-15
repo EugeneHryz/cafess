@@ -1,7 +1,5 @@
 package com.eugene.cafe.model.dao.impl;
 
-import com.eugene.cafe.entity.MenuItem;
-import com.eugene.cafe.model.dao.MenuItemSortOrder;
 import com.eugene.cafe.model.dao.UserDao;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.entity.UserRole;
@@ -37,7 +35,8 @@ public class UserDaoImpl extends UserDao {
             "INNER JOIN user_status ON users.status_id = user_status.id " +
             "WHERE users.id = ?";
 
-    private static final String SQL_UPDATE_USER = "UPDATE users SET name = ?, surname = ?, email = ? WHERE users.id = ?";
+    private static final String SQL_UPDATE_USER = "UPDATE users SET name = ?, surname = ?, role_id = ?, status_id = ?, " +
+            "email = ?, password = ?, balance = ?, profile_image = ? WHERE users.id = ?";
 
     private static final String SQL_UPDATE_PROFILE_PICTURE = "UPDATE users SET profile_image = ? WHERE users.id = ?";
 
@@ -52,7 +51,8 @@ public class UserDaoImpl extends UserDao {
     private static final String SQL_FIND_SUBSET = "SELECT " +
             "users.id, name, surname, email, password, role, status, balance, profile_image FROM users " +
             "INNER JOIN user_role ON users.role_id = user_role.id " +
-            "INNER JOIN user_status ON users.status_id = user_status.id LIMIT ? OFFSET ?";
+            "INNER JOIN user_status ON users.status_id = user_status.id " +
+            "ORDER BY users.id LIMIT ? OFFSET ?";
 
     private static final String SQL_COUNT_ALL = "SELECT COUNT(*) FROM users";
 
@@ -65,14 +65,7 @@ public class UserDaoImpl extends UserDao {
 
         boolean created = false;
         try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_USER, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, entity.getName());
-            statement.setString(2, entity.getSurname());
-            statement.setInt(3, entity.getRole().ordinal());
-            statement.setInt(4, entity.getStatus().ordinal());
-            statement.setString(5, entity.getEmail());
-            statement.setString(6, entity.getHashedPassword());
-            statement.setDouble(7, entity.getBalance());
-            statement.setString(8, entity.getProfileImagePath());
+            initStatement(statement, entity);
 
             if (statement.executeUpdate() > 0) {
                 ResultSet resultSet = statement.getGeneratedKeys();
@@ -143,11 +136,9 @@ public class UserDaoImpl extends UserDao {
 
         Optional<User> updated = Optional.empty();
         try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_USER)) {
-            statement.setString(1, entity.getName());
-            statement.setString(2, entity.getSurname());
-            statement.setString(3, entity.getEmail());
+            initStatement(statement, entity);
 
-            statement.setInt(4, entity.getId());
+            statement.setInt(9, entity.getId());
             if (statement.executeUpdate() > 0) {
                 updated = findById(entity.getId());
             }
@@ -308,5 +299,16 @@ public class UserDaoImpl extends UserDao {
                 .setProfileImagePath(resultSet.getString(CLIENTS_PROFILE_IMAGE));
 
         return builder.buildUser();
+    }
+
+    private void initStatement(PreparedStatement statement, User entity) throws SQLException {
+        statement.setString(1, entity.getName());
+        statement.setString(2, entity.getSurname());
+        statement.setInt(3, entity.getRole().ordinal());
+        statement.setInt(4, entity.getStatus().ordinal());
+        statement.setString(5, entity.getEmail());
+        statement.setString(6, entity.getHashedPassword());
+        statement.setDouble(7, entity.getBalance());
+        statement.setString(8, entity.getProfileImagePath());
     }
 }
