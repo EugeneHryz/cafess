@@ -17,10 +17,9 @@ public class GetUserCountCommand implements AjaxCommand {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String jsonData;
         try {
             int userCount = userService.getUserCount();
-            jsonData = new Gson().toJson(userCount);
+            String jsonData = new Gson().toJson(userCount);
             response.getWriter().write(jsonData);
 
         } catch (ServiceException e) {

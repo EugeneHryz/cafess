@@ -39,14 +39,15 @@
             <div class="col-3 d-flex align-items-start">
                 <div class="nav flex-column nav-pills align-items-stretch" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#account-general"
-                            type="button"
+                            type="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0"
                             role="tab" aria-selected="true">General
                     </button>
                     <button class="nav-link" data-bs-toggle="pill" data-bs-target="#account-change-password"
-                            type="button"
+                            type="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0"
                             role="tab" aria-selected="false">Change password
                     </button>
-                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#account-balance" type="button"
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#account-balance"
+                            type="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0"
                             role="tab" aria-selected="false">Balance
                     </button>
                 </div>

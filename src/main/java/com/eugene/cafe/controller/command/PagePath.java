@@ -12,6 +12,8 @@ public final class PagePath {
 
     public static final String ADMIN_DASHBOARD = "jsp/admin_dashboard.jsp";
 
+    public static final String CHECKOUT_PAGE = "jsp/checkout.jsp";
+
 
 
     public static final String ERROR_PAGE = "jsp/error/error.jsp";

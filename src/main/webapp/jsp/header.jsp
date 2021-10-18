@@ -3,18 +3,20 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:if test="${not empty sessionScope.locale}">
-    <fmt:setLocale value="${sessionScope.locale}" scope="session" />
-    <c:set var="currentLocale" value="${sessionScope.locale}" scope="page" />
+    <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+    <c:set var="currentLocale" value="${sessionScope.locale}" scope="page"/>
 </c:if>
-<fmt:setBundle basename="page_content" />
+<fmt:setBundle basename="page_content"/>
 
 <html>
 <head>
-    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet"/>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
+
+    <script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.js"></script>
 </head>
 <body>
 
@@ -24,7 +26,8 @@
         <div class="container-fluid justify-content-end py-1">
 
             <c:if test="${not empty sessionScope.user}">
-                <a class="navbar-brand fs-2 fw-normal" href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Cafess</a>
+                <a class="navbar-brand fs-2 fw-normal"
+                   href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Cafess</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -34,38 +37,34 @@
 
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Home</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
+                            <a class="nav-link"
+                               href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Home</a>
                         </li>
                     </ul>
-<%--                    <form class="d-flex mb-0">--%>
-<%--                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
-<%--                        <button class="btn btn-light" type="submit">Search</button>--%>
-<%--                    </form>--%>
                 </div>
 
-                <a href="#userProfileMenu" class="d-block link-dark ms-3" role="button" data-bs-toggle="offcanvas" aria-expanded="false" aria-controls="userProfileMenu">
+                <a id="shoppingCart" href="${pageContext.request.contextPath}/controller?command=go_to_checkout_page" class="position-relative ${not empty sessionScope.shoppingCart ? '' : "visually-hidden"} me-2"
+                   style="text-decoration: none">
+                    <img src="${pageContext.request.contextPath}/content/shopping_bag.svg" alt="shopping bag"
+                         class="position-relative"
+                         height="40" width="40">
+                        <span id="shoppingCartSize" class="position-absolute translate-middle badge rounded-pill bg-danger"
+                            style="top: 15%; left: 90%">
+                                ${sessionScope.shoppingCartSize}
+                        </span>
+                    </img>
+                </a>
+
+                <a href="#userProfileMenu" class="d-block link-dark ms-3" role="button" data-bs-toggle="offcanvas"
+                   aria-expanded="false" aria-controls="userProfileMenu">
                     <c:choose>
                         <c:when test="${not empty sessionScope.user.profileImagePath}">
                             <img src="${pageContext.request.contextPath}/files/users/${sessionScope.user.profileImagePath}"
-                                 alt="profile image" class="rounded-circle" width="40" height="40"/>
+                                 alt="profile image" class="rounded-circle" width="46" height="46"/>
                         </c:when>
                         <c:otherwise>
                             <img src="${pageContext.request.contextPath}/content/no_profile_picture.png"
-                                 alt="no profile picture" class="rounded-circle" height="40" width="40" />
+                                 alt="no profile picture" class="rounded-circle" height="46" width="46"/>
                         </c:otherwise>
                     </c:choose>
                 </a>
@@ -80,10 +79,12 @@
     </div>
     <div class="offcanvas-body">
         <ul class="navbar-nav fs-4 fw-light">
-            <li><a href="${pageContext.request.contextPath}/controller?command=go_to_profile_settings_page" class="nav-link px-2 link-dark">Profile</a></li>
+            <li><a href="${pageContext.request.contextPath}/controller?command=go_to_profile_settings_page"
+                   class="nav-link px-2 link-dark">Profile</a></li>
 
             <c:if test="${sessionScope.role eq 'ADMIN'}">
-                <li><a href="${pageContext.request.contextPath}/controller?command=go_to_admin_dashboard_page" class="nav-link px-2 link-dark">Dashboard</a></li>
+                <li><a href="${pageContext.request.contextPath}/controller?command=go_to_admin_dashboard_page"
+                       class="nav-link px-2 link-dark">Dashboard</a></li>
             </c:if>
 
             <li><a href="#" class="nav-link px-2 link-dark">Order history</a></li>
@@ -96,9 +97,6 @@
         </ul>
     </div>
 </div>
-
-<script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.min.js">
-</script>
 
 </body>
 </html>

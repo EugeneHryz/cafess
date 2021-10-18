@@ -1,6 +1,6 @@
 package com.eugene.cafe.controller.command;
 
-import com.eugene.cafe.controller.command.impl.ajax.GetUserCountCommand;
+import com.eugene.cafe.controller.command.impl.ajax.*;
 
 import java.util.EnumMap;
 
@@ -21,19 +21,24 @@ public class AjaxCommandProvider {
 
     private AjaxCommandProvider() {
         commandMap.put(GET_USER_COUNT, new GetUserCountCommand());
+        commandMap.put(GO_TO_USER_PAGE, new GoToUserPageCommand());
+        commandMap.put(BAN_USER, new BanUserCommand());
+        commandMap.put(UNBAN_USER, new UnbanUserCommand());
+        commandMap.put(ADD_ITEM_TO_CART, new AddItemToCartCommand());
+        commandMap.put(REMOVE_ITEM_FROM_CART, new RemoveItemFromCartCommand());
     }
 
     public AjaxCommand getCommand(String commandName) {
-        AjaxCommand command;
-        if (commandName != null) {
-            try {
-                command = commandMap.get(CommandType.valueOf(commandName.toUpperCase()));
-            } catch (IllegalArgumentException e) {
-                command = commandMap.get(CommandType.DEFAULT);
-            }
-        } else {
-            command = commandMap.get(CommandType.DEFAULT);
-        }
+        AjaxCommand command = commandMap.get(CommandType.valueOf(commandName.toUpperCase()));
+//        if (commandName != null) {
+//            try {
+//
+//            } catch (IllegalArgumentException e) {
+//                command = commandMap.get(CommandType.DEFAULT);
+//            }
+//        } else {
+//            command = commandMap.get(CommandType.DEFAULT);
+//        }
         return command;
     }
 }

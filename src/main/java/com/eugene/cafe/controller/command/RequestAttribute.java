@@ -13,7 +13,12 @@ public class RequestAttribute {
 
     public static final String MENU_ITEM_NOT_ADDED = "menuItemNotAdded";
 
+    public static final String PLACE_ORDER_FAIL = "placeOrderFail";
 
+    public static final String PLACE_ORDER_SUCCESS = "placeOrderSuccess";
+
+
+    // request/session attributes
     public static final String MENU_ITEMS_SUBLIST = "menuItemsSublist";
 
     public static final String MENU_ITEMS_PAGE_NUMBER = "menuItemsPageNumber";
@@ -25,6 +30,16 @@ public class RequestAttribute {
     public static final String MENU_ITEMS_CURRENT_CATEGORY = "menuItemsCurrentCategory";
 
     public static final String MENU_CATEGORIES_LIST = "menuCategoriesList";
+
+    public static final String SHOPPING_CART = "shoppingCart";
+
+    public static final String SHOPPING_CART_SIZE = "shoppingCartSize";
+
+    public static final String ORDER_TOTAL = "orderTotal";
+
+    public static final String PICKUP_TIME_LIST = "pickupTimeList";
+
+    public static final String ORDER_RESULT_MESSAGE = "orderResult";
 
     public static final String USER = "user";
 

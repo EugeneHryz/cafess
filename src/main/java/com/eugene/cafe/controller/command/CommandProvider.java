@@ -38,6 +38,8 @@ public class CommandProvider {
         commandMap.put(CHANGE_SORT_ORDER, new ChangeSortOrderCommand());
         commandMap.put(CHANGE_CURRENT_CATEGORY, new ChangeCurrentCategoryCommand());
         commandMap.put(TOP_UP_BALANCE, new TopUpBalanceCommand());
+        commandMap.put(GO_TO_CHECKOUT_PAGE, new GoToCheckoutPageCommand());
+        commandMap.put(PLACE_ORDER, new PlaceOrderCommand());
     }
 
     public Command getCommand(String commandName) {

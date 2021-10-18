@@ -1,29 +1,31 @@
 package com.eugene.cafe.entity;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 
 public class Order extends AbstractEntity {
 
-    private int clientId;
+    private int userId;
     private Timestamp pickUpTime;
     private double totalPrice;
     private OrderStatus orderStatus;
-    private PaymentStatus paymentStatus;
+    private Map<MenuItem, Integer> menuItems;
     private int reviewId;
 
-    public Order(int clientId, Timestamp pickUpTime, double totalPrice,
-                 OrderStatus orderStatus, PaymentStatus paymentStatus, int reviewId) {
+    public Order(int userId, Timestamp pickUpTime, double totalPrice,
+                 OrderStatus orderStatus, Map<MenuItem, Integer> menuItems, int reviewId) {
 
-        this.clientId = clientId;
+        this.userId = userId;
         this.pickUpTime = pickUpTime;
         this.totalPrice = totalPrice;
         this.orderStatus = orderStatus;
-        this.paymentStatus = paymentStatus;
+        this.menuItems = menuItems;
         this.reviewId = reviewId;
     }
 
-    public int getClientId() {
-        return clientId;
+    public int getUserId() {
+        return userId;
     }
 
     public Timestamp getPickUpTime() {
@@ -38,16 +40,16 @@ public class Order extends AbstractEntity {
         return orderStatus;
     }
 
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
+    public Map<MenuItem, Integer> getMenuItems() {
+        return menuItems;
     }
 
     public int getReviewId() {
         return reviewId;
     }
 
-    public void setClientId(int clientId) {
-        this.clientId = clientId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public void setPickUpTime(Timestamp pickUpTime) {
@@ -62,8 +64,8 @@ public class Order extends AbstractEntity {
         this.orderStatus = orderStatus;
     }
 
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
+    public void setMenuItems(Map<MenuItem, Integer> menuItems) {
+        this.menuItems = menuItems;
     }
 
     public void setReviewId(int reviewId) {
@@ -75,11 +77,11 @@ public class Order extends AbstractEntity {
     public static class Builder {
 
         private int id;
-        private int clientId;
+        private int userId;
         private Timestamp pickUpTime;
         private double totalPrice;
-        private OrderStatus orderStatus;
-        private PaymentStatus paymentStatus;
+        private OrderStatus orderStatus = OrderStatus.COOKING;
+        private Map<MenuItem, Integer> menuItems;
         private int reviewId;
 
         public Builder setId(int id) {
@@ -87,8 +89,8 @@ public class Order extends AbstractEntity {
             return this;
         }
 
-        public Builder setClientId(int clientId) {
-            this.clientId = clientId;
+        public Builder setUserId(int userId) {
+            this.userId = userId;
             return this;
         }
 
@@ -107,8 +109,8 @@ public class Order extends AbstractEntity {
             return this;
         }
 
-        public Builder setPaymentStatus(PaymentStatus paymentStatus) {
-            this.paymentStatus = paymentStatus;
+        public Builder setMenuItems(Map<MenuItem, Integer> menuItems) {
+            this.menuItems = menuItems;
             return this;
         }
 
@@ -117,7 +119,7 @@ public class Order extends AbstractEntity {
         }
 
         public Order buildOrder() {
-            Order order = new Order(clientId, pickUpTime, totalPrice, orderStatus, paymentStatus, reviewId);
+            Order order = new Order(userId, pickUpTime, totalPrice, orderStatus, menuItems, reviewId);
             order.setId(id);
             return order;
         }

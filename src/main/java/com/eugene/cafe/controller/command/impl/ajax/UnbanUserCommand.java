@@ -25,12 +25,11 @@ public class UnbanUserCommand implements AjaxCommand {
         String userIdParam = request.getParameter(PARAM_USER_ID);
         int userId = Integer.parseInt(userIdParam);
 
-        String jsonData;
         try {
             Optional<User> unbannedUser = userService.changeUserStatus(userId, UserStatus.NOT_ACTIVATED);
 
             if (unbannedUser.isPresent()) {
-                jsonData = new Gson().toJson(unbannedUser.get());
+                String jsonData = new Gson().toJson(unbannedUser.get());
                 response.getWriter().write(jsonData);
             }
         } catch (ServiceException e) {

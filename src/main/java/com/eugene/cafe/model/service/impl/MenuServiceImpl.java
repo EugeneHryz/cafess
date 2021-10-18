@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MenuServiceImpl implements MenuService {
 
@@ -33,12 +34,31 @@ public class MenuServiceImpl implements MenuService {
         try {
             itemAdded = menuItemDao.create(newMenuItem);
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Unable to add new menu item", e);
             throw new ServiceException("Unable to add new menu item", e);
         } finally {
             helper.end();
         }
         return itemAdded;
+    }
+
+    @Override
+    public Optional<MenuItem> findMenuItemById(int id) throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final MenuItemDao menuItemDao = new MenuItemDaoImpl();
+
+        helper.init(menuItemDao);
+        Optional<MenuItem> menuItem;
+        try {
+            menuItem = menuItemDao.findById(id);
+        } catch (DaoException e) {
+            logger.error("Unable to find menu item by id", e);
+            throw new ServiceException("Unable to find menu item by id", e);
+        } finally {
+            helper.end();
+        }
+        return menuItem;
     }
 
     @Override
@@ -50,6 +70,7 @@ public class MenuServiceImpl implements MenuService {
         helper.init(menuItemDao);
         List<MenuItem> menuItems;
         // todo: validate page number
+
         int offset = MENU_ITEMS_PER_PAGE * (pageNumber - 1);
         try {
             if (category == null) {
@@ -59,7 +80,7 @@ public class MenuServiceImpl implements MenuService {
             }
 
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Unable to get a subset of menu items", e);
             throw new ServiceException("Unable to get a subset of menu items", e);
         } finally {
             helper.end();
@@ -101,7 +122,7 @@ public class MenuServiceImpl implements MenuService {
         try {
             categories = categoryDao.findAll();
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Unable to get all menu categories", e);
             throw new ServiceException("Unable to get all menu categories", e);
         } finally {
             helper.end();

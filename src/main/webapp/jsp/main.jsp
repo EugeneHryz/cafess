@@ -13,12 +13,14 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
+
+
 </head>
 <body id="main-body">
 
 <c:import url="header.jsp" />
 
-<div class="album pt-5 pb-3">
+<div class="album py-3">
     <div class="container" style="width: 950px">
 
         <div class="d-flex justify-content-between mb-4">
@@ -69,11 +71,14 @@
                             <span id="itemCategoryId" style="display: none">${item.categoryId}</span>
 
                             <div class="collapse" id="collapsingText${status.count}">${item.description}</div>
-                            <a class="d-block mb-2" data-bs-toggle="collapse" href="#collapsingText${status.count}"
+                            <a class="d-block" data-bs-toggle="collapse" href="#collapsingText${status.count}"
                                aria-controls="collapsingText${status.count}" role="button" >Description</a>
-
-                            <a href="#" class="btn btn-primary">Add to cart</a>
                         </div>
+
+                        <button id="addToCartButton${item.id}" class="btn btn-outline-dark w-100 py-2"
+                           style="border-radius: 0; border-bottom: none; border-left: none; border-right: none;">
+                            Add to cart
+                        </button>
                     </div>
                 </div>
             </c:forEach>
@@ -97,59 +102,124 @@
     </div>
 </div>
 
-<ul class="pagination mb-5"></ul>
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Cafess</strong>
+            <button id="closeToast" type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="orderResult" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Your order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ${requestScope.orderResult}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="pagination my-4"></ul>
 
 <c:import url="footer.jsp" />
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
 
 <script>
-    const totalNumberOfItems = $('#totalNumberOfItems').text();
-    const sublist = $('.col');
+    $(document).ready(function () {
 
-    const totalPages = Math.ceil(totalNumberOfItems / 8);
-    const numberOfVisiblePages = (totalPages > 4) ? 4 : totalPages;
+        const totalNumberOfItems = $('#totalNumberOfItems').text();
+        const sublist = $('.col');
 
-    const changePageForm = $('#goToAnotherPage');
-    const changeSortOrderForm = $('#changeSortOrder');
-    const changeCategoryForm = $('#changeCategory');
+        const totalPages = Math.ceil(totalNumberOfItems / 8);
+        const numberOfVisiblePages = (totalPages > 4) ? 4 : totalPages;
 
-    const sortSelect = $('#sortSelect');
-    const categorySelect = $('#categorySelect')
+        const changePageForm = $('#goToAnotherPage');
+        const changeSortOrderForm = $('#changeSortOrder');
+        const changeCategoryForm = $('#changeCategory');
 
-    const pagination = $('.pagination');
-    pagination.twbsPagination({
-        totalPages: totalPages,
-        visiblePages: numberOfVisiblePages,
-        initiateStartPageClick: false,
-        prev: '&laquo;',
-        next: '&raquo;',
+        const sortSelect = $('#sortSelect');
+        const categorySelect = $('#categorySelect');
 
-        onPageClick: function (event, page) {
-            goToAnotherPage(page);
+        const pagination = $('.pagination');
+        pagination.twbsPagination({
+            totalPages: totalPages,
+            visiblePages: numberOfVisiblePages,
+            initiateStartPageClick: false,
+            prev: '&laquo;',
+            next: '&raquo;',
+
+            onPageClick: function (event, page) {
+                goToAnotherPage(page);
+            }
+        });
+
+        const currentPage = Number($('#currentPageNumber').text());
+        pagination.twbsPagination('changePage', currentPage);
+
+        sortSelect.on('change', function () {
+            const newSortOrder = sortSelect.val();
+            changeSortOrderForm.find('#sortOrder').attr('value', newSortOrder);
+            changeSortOrderForm.submit();
+        });
+
+        categorySelect.on('change', function() {
+            const newCategoryId = categorySelect.val();
+            changeCategoryForm.find('#categoryId').attr('value', newCategoryId);
+            changeCategoryForm.submit();
+        });
+
+        function goToAnotherPage(page) {
+            changePageForm.find('#pageNumber').attr('value', page);
+            changePageForm.submit();
+        }
+
+        const URL = "${pageContext.request.contextPath}/ajax";
+
+        $('#itemsContainer').find('button').click(function () {
+            const productId = $(this).attr('id').slice(15);
+
+            addToCart(productId);
+        });
+
+        function addToCart(productId) {
+            const requestData = {
+                command: 'add_item_to_cart',
+                item_id: productId
+            }
+
+            $.post(URL, requestData).done(function (response) {
+                const liveToast = $('#liveToast');
+                liveToast.find('.toast-body').text("Item added to the cart");
+
+                liveToast.toast('show');
+
+                const shoppingCart = $('#shoppingCart');
+
+                shoppingCart.removeClass('visually-hidden');
+                shoppingCart.find('span').text(response);
+
+            }).fail(function (message) {
+                console.log(message);
+            });
+        }
+
+        if ("${requestScope.orderResult}") {
+            $('.modal-body').text("${requestScope.orderResult}");
+            $('#orderResult').modal('show');
         }
     });
-
-    const currentPage = Number($('#currentPageNumber').text());
-    pagination.twbsPagination('changePage', currentPage);
-
-    sortSelect.on('change', function () {
-        const newSortOrder = sortSelect.val();
-        changeSortOrderForm.find('#sortOrder').attr('value', newSortOrder);
-        changeSortOrderForm.submit();
-    });
-
-    categorySelect.on('change', function() {
-        const newCategoryId = categorySelect.val();
-        changeCategoryForm.find('#categoryId').attr('value', newCategoryId);
-        changeCategoryForm.submit();
-    });
-
-    function goToAnotherPage(page) {
-        changePageForm.find('#pageNumber').attr('value', page);
-        changePageForm.submit();
-    }
 </script>
 
 </body>

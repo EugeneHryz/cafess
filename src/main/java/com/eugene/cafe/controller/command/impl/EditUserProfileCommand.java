@@ -33,10 +33,6 @@ public class EditUserProfileCommand implements Command {
         String surname = request.getParameter(PARAM_SURNAME);
         String email = request.getParameter(PARAM_EMAIL);
 
-        System.out.println("name: " + name);
-        System.out.println("surname: " + surname);
-        System.out.println("email: " + email);
-
         Router router = new Router(PROFILE_SETTINGS_PAGE, Router.RouterType.FORWARD);
         try {
             Optional<User> editedUser = userService.editProfile(id, name, surname, email);

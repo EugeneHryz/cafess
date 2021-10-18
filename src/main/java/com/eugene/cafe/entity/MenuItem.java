@@ -73,7 +73,31 @@ public class MenuItem extends AbstractEntity {
         return builder.toString();
     }
 
-    // todo: implement hashcode(), equals()
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof MenuItem item) {
+            return (name.equals(item.name)
+                    && description.equals(item.description)
+                    && price == item.price
+                    && categoryId == item.categoryId
+                    && imagePath.equals(item.imagePath));
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = name.hashCode();
+        hashCode = hashCode * 31 + description.hashCode();
+        hashCode = hashCode * 31 + Double.hashCode(price);
+        hashCode = hashCode * 31 + Integer.hashCode(categoryId);
+        hashCode = hashCode * 31 + imagePath.hashCode();
+
+        return hashCode;
+    }
 
     public static class Builder {
 

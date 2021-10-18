@@ -35,7 +35,6 @@ public class AddMenuItemCommand implements Command {
         String menuItemName = request.getParameter(PARAM_MENU_ITEM_NAME);
         String menuItemPrice = request.getParameter(PARAM_PRICE);
         String categoryId = request.getParameter(PARAM_CATEGORY_ID);
-        System.out.println("Category id: " + categoryId);
         String menuItemDescription = request.getParameter(PARAM_DESCRIPTION);
 
         String uploadDir = request.getServletContext().getInitParameter(UPLOAD_LOCATION)
@@ -59,7 +58,6 @@ public class AddMenuItemCommand implements Command {
                     part.write(uploadDir + File.separator + submittedFileName);
                 }
             }
-
             MenuItem.Builder builder = new MenuItem.Builder();
             builder.setName(menuItemName)
                     .setDescription(menuItemDescription)

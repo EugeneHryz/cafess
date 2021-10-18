@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-    public static final int USERS_PER_PAGE = 1;
+    public static final int USERS_PER_PAGE = 4;
 
     @Override
     public Optional<User> signIn(String email, String password) throws ServiceException {

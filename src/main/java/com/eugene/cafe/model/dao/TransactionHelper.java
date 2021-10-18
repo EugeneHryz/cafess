@@ -1,6 +1,5 @@
 package com.eugene.cafe.model.dao;
 
-import com.eugene.cafe.entity.AbstractEntity;
 import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.model.pool.ConnectionPool;
 
@@ -52,13 +51,7 @@ public class TransactionHelper {
             // todo: write log
             throw new DaoException("Database error occurred", e);
         }
-
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            // todo: write log
-            throw new DaoException("Database error occurred", e);
-        }
+        ConnectionPool.getInstance().releaseConnection(connection);
         connection = null;
     }
 
@@ -66,7 +59,6 @@ public class TransactionHelper {
         if (connection == null) {
             connection = ConnectionPool.getInstance().takeConnection();
         }
-
         dao.setConnection(connection);
     }
 

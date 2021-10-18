@@ -23,10 +23,9 @@ public class GoToUserPageCommand implements AjaxCommand {
 
         String pageNumberParam = request.getParameter(PARAM_PAGE_NUMBER);
 
-        String jsonData;
         try {
             List<User> users = userService.getSubsetOfUsers(pageNumberParam);
-            jsonData = new Gson().toJson(users);
+            String jsonData = new Gson().toJson(users);
             response.getWriter().write(jsonData);
 
         } catch (ServiceException e) {

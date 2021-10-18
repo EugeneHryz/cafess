@@ -25,12 +25,11 @@ public class BanUserCommand implements AjaxCommand {
         String userIdParam = request.getParameter(PARAM_USER_ID);
         int userId = Integer.parseInt(userIdParam);
 
-        String jsonData;
         try {
             Optional<User> bannedUser = userService.changeUserStatus(userId, UserStatus.BANNED);
 
             if (bannedUser.isPresent()) {
-                jsonData = new Gson().toJson(bannedUser.get());
+                String jsonData = new Gson().toJson(bannedUser.get());
                 response.getWriter().write(jsonData);
             }
         } catch (ServiceException e) {

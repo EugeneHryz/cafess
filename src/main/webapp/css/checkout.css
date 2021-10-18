@@ -1,0 +1,13 @@
+#checkout-body .container {
+    width: 800px;
+}
+
+#checkout-body .remove-button {
+    margin: 3px;
+    opacity: 0.2;
+    transition: opacity 150ms;
+}
+
+#checkout-body .remove-button:hover {
+    opacity: 0.5;
+}

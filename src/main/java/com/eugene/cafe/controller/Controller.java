@@ -10,6 +10,8 @@ import com.eugene.cafe.controller.command.impl.DefaultCommand;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet(name = "controller", urlPatterns = "/controller")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
@@ -28,6 +30,7 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
         String commandName = request.getParameter(RequestParameter.PARAM_COMMAND);
 
         Command command = provider.getCommand(commandName);

@@ -31,7 +31,12 @@
     </style>
 </head>
 
-<body id="admin-dashboard-body">
+<body id="admin-dashboard-body" style="background: var(--cafe-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh">
 
 <c:import url="header.jsp"/>
 
@@ -165,7 +170,7 @@
 
 
     const URL = "${pageContext.request.contextPath}/ajax";
-    const USERS_PER_PAGE = 1;
+    const USERS_PER_PAGE = 4;
     const MAX_VISIBLE_PAGES = 4;
 
     loadNumberOfUsers();

@@ -36,13 +36,13 @@ public class AjaxServlet extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String commandName = req.getParameter(PARAM_COMMAND);
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         AjaxCommand command = commandProvider.getCommand(commandName);
+
         command.execute(req, resp);
     }
 }
