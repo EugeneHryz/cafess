@@ -12,7 +12,9 @@ import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.manager.ResourceManager;
 import com.eugene.cafe.model.service.OrderService;
+import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.model.service.impl.OrderServiceImpl;
+import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +23,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 public class PlaceOrderCommand implements Command {
 
@@ -30,6 +33,9 @@ public class PlaceOrderCommand implements Command {
 
     @Override
     public Router execute(HttpServletRequest request) {
+
+        Locale locale = Locale.forLanguageTag((String) request.getSession(false).getAttribute(LOCALE));
+        ResourceManager manager = new ResourceManager("message", locale);
 
         User user = (User) request.getSession().getAttribute(USER);
         int userId = user.getId();
@@ -44,16 +50,14 @@ public class PlaceOrderCommand implements Command {
 
         Router router = new Router(MAIN_PAGE, Router.RouterType.FORWARD);
         try {
-            // todo: let the user know if order was placed successfully
-
-            Locale locale = Locale.forLanguageTag((String) request.getSession(false).getAttribute(LOCALE));
-            ResourceManager manager = new ResourceManager("message", locale);
-
-            if (orderService.placeOrder(userId, orderTotal, menuItems, pickupTime)) {
+            // todo: let the user know if order was placed successfullН
+            Optional<User> updatedUser = orderService.placeOrder(userId, orderTotal, menuItems, pickupTime);
+            if (updatedUser.isPresent()) {
 
                 request.getSession().setAttribute(SHOPPING_CART, new HashMap<MenuItem, Integer>());
                 request.getSession().removeAttribute(ORDER_TOTAL);
                 request.getSession().removeAttribute(SHOPPING_CART_SIZE);
+                request.getSession().setAttribute(USER, updatedUser.get());
 
                 request.setAttribute(ORDER_RESULT_MESSAGE, manager.getProperty(PLACE_ORDER_SUCCESS));
             } else {

@@ -174,7 +174,6 @@ public class MenuItemDaoImpl extends MenuItemDao {
             statement.setInt(2, offset);
 
             ResultSet resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
                 MenuItem menuItem = buildMenuItem(resultSet);
                 menuItems.add(menuItem);
@@ -221,18 +220,18 @@ public class MenuItemDaoImpl extends MenuItemDao {
             throw new DaoException("Database connection is not set for MenuItemDao");
         }
 
-        int number = 0;
+        int count = 0;
         try (Statement statement = connection.createStatement()) {
 
             ResultSet resultSet = statement.executeQuery(SQL_COUNT_ALL);
             if (resultSet.next()) {
-                number = resultSet.getInt(1);
+                count = resultSet.getInt(1);
             }
         } catch (SQLException e) {
             // todo: write log
             throw new DaoException("Database error occurred", e);
         }
-        return number;
+        return count;
     }
 
     @Override

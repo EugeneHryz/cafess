@@ -44,7 +44,7 @@ public class RemoveItemFromCartCommand implements AjaxCommand {
                 double newOrderTotal = calculateOrderTotal(shoppingCart);
 
                 request.getSession().setAttribute(SHOPPING_CART_SIZE, totalItemsInCart);
-                request.setAttribute(ORDER_TOTAL, newOrderTotal);
+                request.getSession().setAttribute(ORDER_TOTAL, newOrderTotal);
 
                 JsonObject jsonObject = new JsonObject();
                 // todo: place those strings in constants

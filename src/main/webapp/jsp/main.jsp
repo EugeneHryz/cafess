@@ -13,8 +13,6 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
-
-
 </head>
 <body id="main-body">
 
@@ -46,8 +44,8 @@
 
         <div id="itemsContainer" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
 
-            <div id="totalNumberOfItems" style="display: none">${sessionScope.menuItemCount}</div>
-            <div id="currentPageNumber" style="display: none">${sessionScope.menuItemsPageNumber}</div>
+<%--            <div id="totalNumberOfItems" style="display: none"></div>--%>
+<%--            <div id="currentPageNumber" style="display: none"></div>--%>
 
             <c:forEach items="${sessionScope.menuItemsSublist}" var="item" varStatus="status">
                 <div class="col">
@@ -82,25 +80,24 @@
                     </div>
                 </div>
             </c:forEach>
-
-            <form id="goToAnotherPage" action="${pageContext.request.contextPath}/controller" style="display: none">
-                <input type="hidden" name="command" value="go_to_menu_page"/>
-                <input id="pageNumber" type="text" name="page_number" />
-            </form>
-
-            <form method="post" id="changeSortOrder" action="${pageContext.request.contextPath}/controller" style="display: none">
-                <input type="hidden" name="command" value="change_sort_order"/>
-                <input id="sortOrder" type="text" name="sort_order" value="price_ascending" />
-            </form>
-
-            <form method="post" id="changeCategory" action="${pageContext.request.contextPath}/controller" style="display: none">
-                <input type="hidden" name="command" value="change_current_category"/>
-                <input id="categoryId" type="text" name="category_id" />
-            </form>
-
         </div>
     </div>
 </div>
+
+<form id="goToAnotherPage" action="${pageContext.request.contextPath}/controller" style="display: none">
+    <input type="hidden" name="command" value="go_to_menu_page"/>
+    <input id="pageNumber" type="text" name="page" />
+</form>
+
+<form method="post" id="changeSortOrder" action="${pageContext.request.contextPath}/controller" style="display: none">
+    <input type="hidden" name="command" value="change_sort_order"/>
+    <input id="sortOrder" type="text" name="sort_order" value="price_ascending" />
+</form>
+
+<form method="post" id="changeCategory" action="${pageContext.request.contextPath}/controller" style="display: none">
+    <input type="hidden" name="command" value="change_current_category"/>
+    <input id="categoryId" type="text" name="category_id" />
+</form>
 
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -139,11 +136,11 @@
 <script>
     $(document).ready(function () {
 
-        const totalNumberOfItems = $('#totalNumberOfItems').text();
+        const totalNumberOfItems = ${sessionScope.menuItemCount};
         const sublist = $('.col');
 
         const totalPages = Math.ceil(totalNumberOfItems / 8);
-        const numberOfVisiblePages = (totalPages > 4) ? 4 : totalPages;
+        const visiblePages = (totalPages > 4) ? 4 : totalPages;
 
         const changePageForm = $('#goToAnotherPage');
         const changeSortOrderForm = $('#changeSortOrder');
@@ -155,7 +152,7 @@
         const pagination = $('.pagination');
         pagination.twbsPagination({
             totalPages: totalPages,
-            visiblePages: numberOfVisiblePages,
+            visiblePages: visiblePages,
             initiateStartPageClick: false,
             prev: '&laquo;',
             next: '&raquo;',
@@ -165,7 +162,7 @@
             }
         });
 
-        const currentPage = Number($('#currentPageNumber').text());
+        const currentPage = ${sessionScope.menuItemsPageNumber};
         pagination.twbsPagination('changePage', currentPage);
 
         sortSelect.on('change', function () {

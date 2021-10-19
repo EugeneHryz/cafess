@@ -1,7 +1,6 @@
 package com.eugene.cafe.controller.command;
 
 public enum CommandType {
-
     LOG_IN,
     LOG_OUT,
     DEFAULT,
@@ -14,13 +13,14 @@ public enum CommandType {
     CHANGE_PASSWORD,
     GO_TO_ADMIN_DASHBOARD_PAGE,
     ADD_MENU_ITEM,
-    GO_TO_MAIN_PAGE,
     GO_TO_MENU_PAGE,
     CHANGE_SORT_ORDER,
     CHANGE_CURRENT_CATEGORY,
     TOP_UP_BALANCE,
     GO_TO_CHECKOUT_PAGE,
     PLACE_ORDER,
+    GO_TO_ORDER_HISTORY_PAGE,
+    SAVE_REVIEW,
 
     GET_USER_COUNT,
     GO_TO_USER_PAGE,

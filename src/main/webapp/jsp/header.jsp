@@ -27,7 +27,7 @@
 
             <c:if test="${not empty sessionScope.user}">
                 <a class="navbar-brand fs-2 fw-normal"
-                   href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Cafess</a>
+                   href="${pageContext.request.contextPath}/controller?command=go_to_menu_page&page=1">Cafess</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link"
-                               href="${pageContext.request.contextPath}/controller?command=go_to_main_page">Home</a>
+                               href="${pageContext.request.contextPath}/controller?command=go_to_menu_page&page=1">Home</a>
                         </li>
                     </ul>
                 </div>
@@ -87,7 +87,7 @@
                        class="nav-link px-2 link-dark">Dashboard</a></li>
             </c:if>
 
-            <li><a href="#" class="nav-link px-2 link-dark">Order history</a></li>
+            <li><a href="${pageContext.request.contextPath}/controller?command=go_to_order_history_page&page=1" class="nav-link px-2 link-dark">Order history</a></li>
             <hr/>
             <li>
                 <a href="${pageContext.request.contextPath}/controller?command=log_out" class="nav-link px-2 link-dark">

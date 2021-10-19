@@ -9,9 +9,11 @@ import java.util.List;
 
 public abstract class OrderDao extends AbstractDao<Order> {
 
-    public abstract List<Order> findAllClientOrders(User user) throws DaoException;
-
     public abstract boolean createOrderMenuItemMappings(Order order, List<MenuItem> menuItems) throws DaoException;
 
     public abstract List<MenuItem> findMenuItemsByOrderId(int orderId) throws DaoException;
+
+    public abstract List<Order> getSubsetOfUserOrders(int userId, int offset, int limit) throws DaoException;
+
+    public abstract int getUserOrderCount(int userId) throws DaoException;
 }

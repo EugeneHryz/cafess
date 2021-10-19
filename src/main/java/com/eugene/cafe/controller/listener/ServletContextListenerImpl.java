@@ -24,7 +24,7 @@ public class ServletContextListenerImpl implements ServletContextListener {
         try {
             menuCategories = menuService.getAllMenuCategories();
         } catch (ServiceException e) {
-            // todo: write log and decide what to do with exception
+            // todo: write log and decide what to do with the exception
         }
     }
 

@@ -4,7 +4,6 @@
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
-    <c:set var="currentLocale" value="${sessionScope.locale}" scope="page"/>
 </c:if>
 <fmt:setBundle basename="page_content"/>
 
@@ -60,7 +59,9 @@
                     </c:forEach>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary" style="float: right;">Place order</button>
+            <div style="float: right">
+                <button type="submit" class="btn btn-primary">Place order</button>
+            </div>
         </form>
     </div>
 

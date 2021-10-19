@@ -44,17 +44,18 @@ public final class DatabaseColumnLabel {
     // orders table
     public static final String ORDERS_ID = "id";
 
-    public static final String ORDERS_CLIENT_ID = "client_id";
+    public static final String ORDERS_USER_ID = "user_id";
+
+    public static final String ORDERS_DATE = "date";
 
     public static final String ORDERS_PICK_UP_TIME = "pick_up_time";
 
     public static final String ORDERS_TOTAL_PRICE = "total_price";
 
-    public static final String ORDERS_ORDER_STATUS_ID = "order_status_id";
-
-    public static final String ORDERS_PAYMENT_STATUS_ID = "payment_status_id";
+    public static final String ORDERS_STATUS_ID = "status_id";
 
     public static final String ORDERS_REVIEW_ID = "review_id";
+
 
     // menu_items table
     public static final String MENU_ITEMS_ID = "id";
@@ -72,6 +73,8 @@ public final class DatabaseColumnLabel {
     // reviews table
     public static final String REVIEWS_ID = "id";
 
+    public static final String REVIEWS_ORDER_ID = "order_id";
+
     public static final String REVIEWS_RATING = "rating";
 
     public static final String REVIEWS_COMMENT = "comment";
@@ -84,5 +87,6 @@ public final class DatabaseColumnLabel {
     public static final String MENU_CATEGORIES_CATEGORY = "category";
 
 
-    private DatabaseColumnLabel() { }
+    private DatabaseColumnLabel() {
+    }
 }

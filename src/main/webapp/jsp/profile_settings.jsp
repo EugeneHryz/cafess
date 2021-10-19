@@ -147,7 +147,7 @@
                         <div class="card-body mb-4">
                             <div class="d-flex justify-content-between display-6">
                                 <span>Balance:</span>
-                                <span>${sessionScope.user.balance}</span>
+                                <span><fmt:formatNumber value="${sessionScope.user.balance}" maxFractionDigits="2" minFractionDigits="2"/></span>
                             </div>
                             <hr class="border-light mt-4 mb-2" />
                             <form method="post" action="${pageContext.request.contextPath}/controller">

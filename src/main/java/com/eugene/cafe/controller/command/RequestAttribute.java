@@ -1,6 +1,6 @@
 package com.eugene.cafe.controller.command;
 
-public class RequestAttribute {
+public final class RequestAttribute {
 
     // messages
     public static final String INVALID_LOGIN_OR_PASSWORD = "invalidLoginOrPassword";
@@ -17,9 +17,19 @@ public class RequestAttribute {
 
     public static final String PLACE_ORDER_SUCCESS = "placeOrderSuccess";
 
+    public static final String SAVE_REVIEW_SUCCESS = "saveReviewSuccess";
+
+    public static final String SAVE_REVIEW_FAIL = "saveReviewFail";
+
+    public static final String SAVE_REVIEW_MESSAGE = "saveReviewMessage";
+
 
     // request/session attributes
     public static final String MENU_ITEMS_SUBLIST = "menuItemsSublist";
+
+    public static final String ORDERS_SUBLIST = "ordersSublist";
+
+    public static final String ORDERS_PAGE_NUMBER = "ordersPageNumber";
 
     public static final String MENU_ITEMS_PAGE_NUMBER = "menuItemsPageNumber";
 
@@ -36,6 +46,8 @@ public class RequestAttribute {
     public static final String SHOPPING_CART_SIZE = "shoppingCartSize";
 
     public static final String ORDER_TOTAL = "orderTotal";
+
+    public static final String USER_ORDERS_COUNT = "userOrderCount";
 
     public static final String PICKUP_TIME_LIST = "pickupTimeList";
 

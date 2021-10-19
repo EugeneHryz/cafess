@@ -33,13 +33,14 @@ public class CommandProvider {
         commandMap.put(CHANGE_PASSWORD, new ChangePasswordCommand());
         commandMap.put(GO_TO_ADMIN_DASHBOARD_PAGE, new GoToAdminDashboardPageCommand());
         commandMap.put(ADD_MENU_ITEM, new AddMenuItemCommand());
-        commandMap.put(GO_TO_MAIN_PAGE, new GoToMainPageCommand());
         commandMap.put(GO_TO_MENU_PAGE, new GoToMenuPageCommand());
         commandMap.put(CHANGE_SORT_ORDER, new ChangeSortOrderCommand());
         commandMap.put(CHANGE_CURRENT_CATEGORY, new ChangeCurrentCategoryCommand());
         commandMap.put(TOP_UP_BALANCE, new TopUpBalanceCommand());
         commandMap.put(GO_TO_CHECKOUT_PAGE, new GoToCheckoutPageCommand());
         commandMap.put(PLACE_ORDER, new PlaceOrderCommand());
+        commandMap.put(GO_TO_ORDER_HISTORY_PAGE, new GoToOrderHistoryPageCommand());
+        commandMap.put(SAVE_REVIEW, new SaveReviewCommand());
     }
 
     public Command getCommand(String commandName) {
