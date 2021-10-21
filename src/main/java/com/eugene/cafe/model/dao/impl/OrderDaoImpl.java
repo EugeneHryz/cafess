@@ -37,16 +37,22 @@ public class OrderDaoImpl extends OrderDao {
             "order_status.status FROM orders INNER JOIN order_status ON " +
             "orders.status_id = order_status.id";
 
-    private static final String SQL_FIND_SUBSET_ID_DESC = "SELECT orders.id, user_id, date, pick_up_time, total_price, " +
+    private static final String SQL_FIND_SUBSET_BY_USER_ID_DESC = "SELECT orders.id, user_id, date, pick_up_time, total_price, " +
             "order_status.status FROM orders INNER JOIN order_status ON " +
             "orders.status_id = order_status.id WHERE user_id = ? ORDER BY orders.id DESC LIMIT ? OFFSET ?";
+
+    private static final String SQL_FIND_SUBSET_ID_DESC = "SELECT orders.id, user_id, date, pick_up_time, total_price, " +
+            "order_status.status FROM orders INNER JOIN order_status ON " +
+            "orders.status_id = order_status.id ORDER BY orders.id DESC LIMIT ? OFFSET ?";
 
     private static final String SQL_UPDATE_ORDER = "UPDATE orders SET user_id = ?, date = ?, pick_up_time = ?, total_price = ?, " +
             "status_id = ? WHERE orders.id = ?";
 
     private static final String SQL_DELETE_ORDER_BY_ID = "DELETE FROM orders WHERE orders.id = ?";
 
-    private static final String SQL_COUNT_USER_ORDERS = "SELECT COUNT(*) FROM orders WHERE user_id = ?";;
+    private static final String SQL_COUNT_USER_ORDERS = "SELECT COUNT(*) FROM orders WHERE user_id = ?";
+
+    private static final String SQL_COUNT_ORDERS = "SELECT COUNT(*) FROM orders";
 
     @Override
     public boolean create(Order entity) throws DaoException {
@@ -222,10 +228,34 @@ public class OrderDaoImpl extends OrderDao {
         }
 
         List<Order> orders = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_SUBSET_ID_DESC)) {
+        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_SUBSET_BY_USER_ID_DESC)) {
             statement.setInt(1, userId);
             statement.setInt(2, limit);
             statement.setInt(3, offset);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Order order = buildOrder(resultSet);
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            logger.error("Database error occurred " + e);
+            throw new DaoException("Database error occurred", e);
+        }
+        return orders;
+    }
+
+    @Override
+    public List<Order> getSubsetOfOrders(int offset, int limit) throws DaoException {
+        if (connection == null) {
+            logger.error("Database connection is not set for OrderDao");
+            throw new DaoException("Database connection is not set for OrderDao");
+        }
+
+        List<Order> orders = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_SUBSET_ID_DESC)) {
+            statement.setInt(1, limit);
+            statement.setInt(2, offset);
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -261,8 +291,28 @@ public class OrderDaoImpl extends OrderDao {
         return count;
     }
 
-    private Order buildOrder(ResultSet resultSet) throws SQLException {
+    @Override
+    public int getOrderCount() throws DaoException {
+        if (connection == null) {
+            logger.error("Database connection is not set for MenuItemDao");
+            throw new DaoException("Database connection is not set for MenuItemDao");
+        }
 
+        int count = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(SQL_COUNT_ORDERS);
+
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            // todo: write log
+            throw new DaoException("Database error occurred", e);
+        }
+        return count;
+    }
+
+    private Order buildOrder(ResultSet resultSet) throws SQLException {
         Order.Builder builder = new Order.Builder();
         builder.setId(resultSet.getInt(ORDERS_ID))
                 .setUserId(resultSet.getInt(ORDERS_USER_ID))
@@ -282,7 +332,6 @@ public class OrderDaoImpl extends OrderDao {
     }
 
     private MenuItem buildMenuItem(ResultSet resultSet) throws SQLException {
-
         MenuItem.Builder builder = new MenuItem.Builder();
         builder.setId(resultSet.getInt(MENU_ITEMS_ID))
                 .setName(resultSet.getString(MENU_ITEMS_NAME))

@@ -109,10 +109,6 @@
                                     <label class="form-label">Email</label>
                                     <input type="email" name="email" class="form-control"
                                            value="${sessionScope.user.email}">
-                                    <div class="alert alert-warning mt-3">
-                                        Your email is not confirmed. Please check your inbox.<br>
-                                        <a href="#">Resend confirmation</a>
-                                    </div>
                                 </div>
                             </form>
                         </div>

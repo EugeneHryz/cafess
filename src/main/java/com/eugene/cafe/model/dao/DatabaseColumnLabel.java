@@ -2,34 +2,34 @@ package com.eugene.cafe.model.dao;
 
 public final class DatabaseColumnLabel {
 
-    // clients table
-    public static final String CLIENTS_ID = "id";
+    // users table
+    public static final String USERS_ID = "id";
 
-    public static final String CLIENTS_NAME = "name";
+    public static final String USERS_NAME = "name";
 
-    public static final String CLIENTS_SURNAME = "surname";
+    public static final String USERS_SURNAME = "surname";
 
-    public static final String CLIENTS_ROLE_ID = "role_id";
+    public static final String USERS_ROLE_ID = "role_id";
 
-    public static final String CLIENTS_STATUS_ID = "status_id";
+    public static final String USERS_STATUS_ID = "status_id";
 
-    public static final String CLIENTS_EMAIL = "email";
+    public static final String USERS_EMAIL = "email";
 
-    public static final String CLIENTS_PASSWORD = "password";
+    public static final String USERS_PASSWORD = "password";
 
-    public static final String CLIENTS_BALANCE = "balance";
+    public static final String USERS_BALANCE = "balance";
 
-    public static final String CLIENTS_PROFILE_IMAGE = "profile_image";
+    public static final String USERS_PROFILE_IMAGE = "profile_image";
 
     // client_role table
-    public static final String CLIENT_ROLE_ID = "id";
+    public static final String USER_ROLE_ID = "id";
 
-    public static final String CLIENT_ROLE_ROLE = "role";
+    public static final String USER_ROLE_ROLE = "role";
 
     // client_status table
-    public static final String CLIENT_STATUS_ID = "id";
+    public static final String USER_STATUS_ID = "id";
 
-    public static final String CLIENT_STATUS_STATUS = "status";
+    public static final String USER_STATUS_STATUS = "status";
 
     // order_status table
     public static final String ORDER_STATUS_ID = "id";

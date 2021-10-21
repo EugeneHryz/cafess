@@ -15,5 +15,9 @@ public abstract class OrderDao extends AbstractDao<Order> {
 
     public abstract List<Order> getSubsetOfUserOrders(int userId, int offset, int limit) throws DaoException;
 
+    public abstract List<Order> getSubsetOfOrders(int offset, int limit) throws DaoException;
+
     public abstract int getUserOrderCount(int userId) throws DaoException;
+
+    public abstract int getOrderCount() throws DaoException;
 }

@@ -78,7 +78,6 @@ public class MenuServiceImpl implements MenuService {
             } else {
                 menuItems = menuItemDao.getSubsetOfMenuItemsByCategory(MENU_ITEMS_PER_PAGE, offset, sortOrder, category);
             }
-
         } catch (DaoException e) {
             logger.error("Unable to get a subset of menu items", e);
             throw new ServiceException("Unable to get a subset of menu items", e);
@@ -130,4 +129,22 @@ public class MenuServiceImpl implements MenuService {
         return categories;
     }
 
+    @Override
+    public boolean deleteMenuItem(int itemId) throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final MenuItemDao menuItemDao = new MenuItemDaoImpl();
+
+        helper.init(menuItemDao);
+        boolean itemDeleted;
+        try {
+            itemDeleted = menuItemDao.deleteById(itemId);
+        } catch (DaoException e) {
+            // todo: write log
+            throw new ServiceException("Failed to delete menu item", e);
+        } finally {
+            helper.end();
+        }
+        return itemDeleted;
+    }
 }

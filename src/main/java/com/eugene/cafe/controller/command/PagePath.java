@@ -16,6 +16,8 @@ public final class PagePath {
 
     public static final String ORDER_HISTORY_PAGE = "jsp/order_history.jsp";
 
+    public static final String ORDERS_PAGE = "jsp/orders.jsp";
+
 
 
     public static final String ERROR_PAGE = "jsp/error/error.jsp";

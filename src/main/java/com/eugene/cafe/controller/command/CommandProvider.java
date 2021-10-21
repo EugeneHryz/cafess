@@ -41,6 +41,8 @@ public class CommandProvider {
         commandMap.put(PLACE_ORDER, new PlaceOrderCommand());
         commandMap.put(GO_TO_ORDER_HISTORY_PAGE, new GoToOrderHistoryPageCommand());
         commandMap.put(SAVE_REVIEW, new SaveReviewCommand());
+        commandMap.put(GO_TO_ORDER_PAGE, new GoToOrderPageCommand());
+        commandMap.put(CHANGE_ORDER_STATUS, new ChangeOrderStatusCommand());
     }
 
     public Command getCommand(String commandName) {

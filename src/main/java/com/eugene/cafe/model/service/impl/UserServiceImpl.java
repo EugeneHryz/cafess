@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-    public static final int USERS_PER_PAGE = 4;
+    public static final int USERS_PER_PAGE = 8;
 
     @Override
     public Optional<User> signIn(String email, String password) throws ServiceException {
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
                 String hashedPassword = encryptor.encryptPassword(password);
                 builder.setHashedPassword(hashedPassword)
                         .setRole(UserRole.USER)
-                        .setStatus(UserStatus.NOT_ACTIVATED);
+                        .setStatus(UserStatus.ACTIVE);
 
                 User newUser = builder.buildUser();
                 if (userDao.create(newUser)) {

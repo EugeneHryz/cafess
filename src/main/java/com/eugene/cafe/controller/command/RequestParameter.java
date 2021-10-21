@@ -44,6 +44,10 @@ public final class RequestParameter {
 
     public static final String PARAM_ORDER_ID = "order_id";
 
+    public static final String PARAM_ITEM_ID = "item_id";
+
+    public static final String PARAM_ORDER_STATUS = "order_status";
+
     public static final String PARAM_LOCALE = "locale";
 
 

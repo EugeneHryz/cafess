@@ -23,9 +23,13 @@ public final class RequestAttribute {
 
     public static final String SAVE_REVIEW_MESSAGE = "saveReviewMessage";
 
+    public static final String MENU_ITEM_DELETED = "menuItemDeleted";
+
 
     // request/session attributes
     public static final String MENU_ITEMS_SUBLIST = "menuItemsSublist";
+
+    public static final String USERS_SUBLIST = "usersSublist";
 
     public static final String ORDERS_SUBLIST = "ordersSublist";
 
@@ -47,7 +51,7 @@ public final class RequestAttribute {
 
     public static final String ORDER_TOTAL = "orderTotal";
 
-    public static final String USER_ORDERS_COUNT = "userOrderCount";
+    public static final String ORDER_COUNT = "orderCount";
 
     public static final String PICKUP_TIME_LIST = "pickupTimeList";
 

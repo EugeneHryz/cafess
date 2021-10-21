@@ -1,0 +1,30 @@
+#orders-body .grey-text {
+    text-decoration: none;
+    color: #000;
+    opacity: 0.3;
+    transition: opacity 150ms;
+}
+
+#orders-body .rating i {
+    float: right;
+    color: grey;
+    transition: color 200ms;
+}
+
+#orders-body .grey-text:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+#orders-body .rating {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+#orders-body .rating .star {
+    color: var(--cafe-secondary);
+}
+
+#orders-body .rating .star ~ i {
+    color: var(--cafe-secondary);
+}

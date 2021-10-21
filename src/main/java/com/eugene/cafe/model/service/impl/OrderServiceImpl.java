@@ -1,9 +1,6 @@
 package com.eugene.cafe.model.service.impl;
 
-import com.eugene.cafe.entity.MenuItem;
-import com.eugene.cafe.entity.Order;
-import com.eugene.cafe.entity.Review;
-import com.eugene.cafe.entity.User;
+import com.eugene.cafe.entity.*;
 import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.model.dao.OrderDao;
@@ -96,11 +93,15 @@ public class OrderServiceImpl implements OrderService {
 
         helper.init(orderDao);
         helper.init(reviewDao);
-        List<Order> userOrders = new ArrayList<>();
+        List<Order> userOrders;
         // todo: validate page number
         int offset = ORDERS_PER_PAGE * (pageNumber - 1);
         try {
-            userOrders = orderDao.getSubsetOfUserOrders(userId, offset, ORDERS_PER_PAGE);
+            if (userId != 0) {
+                userOrders = orderDao.getSubsetOfUserOrders(userId, offset, ORDERS_PER_PAGE);
+            } else {
+                userOrders = orderDao.getSubsetOfOrders(offset, ORDERS_PER_PAGE);
+            }
 
             for (Order order : userOrders) {
                 List<MenuItem> menuItems = orderDao.findMenuItemsByOrderId(order.getId());
@@ -129,7 +130,11 @@ public class OrderServiceImpl implements OrderService {
         helper.init(orderDao);
         int count;
         try {
-            count = orderDao.getUserOrderCount(userId);
+            if (userId != 0) {
+                count = orderDao.getUserOrderCount(userId);
+            } else {
+                count = orderDao.getOrderCount();
+            }
         } catch (DaoException e) {
             // todo: write log
             throw new ServiceException("Failed to get user order count", e);
@@ -180,10 +185,8 @@ public class OrderServiceImpl implements OrderService {
                         .setRating(rating)
                         .setComment(comment)
                         .setDate(Timestamp.valueOf(LocalDateTime.now()));
-                System.out.println("building review");
 
                 reviewSaved = reviewDao.create(builder.buildReview());
-                System.out.println("review add result: " + reviewSaved);
             }
         } catch (DaoException e) {
             // todo: write log
@@ -192,6 +195,30 @@ public class OrderServiceImpl implements OrderService {
             helper.end();
         }
         return reviewSaved;
+    }
+
+    @Override
+    public boolean changeOrderStatus(int orderId, OrderStatus newStatus) throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final OrderDao orderDao = new OrderDaoImpl();
+
+        boolean statusChanged = false;
+        helper.init(orderDao);
+        try {
+            Optional<Order> order = orderDao.findById(orderId);
+            if (order.isPresent()) {
+
+                order.get().setOrderStatus(newStatus);
+                statusChanged = orderDao.update(order.get()).isPresent();
+            }
+        } catch (DaoException e) {
+            // todo: write log
+            throw new ServiceException("Failed to change order status (order id: " + orderId + ")", e);
+        } finally {
+            helper.end();
+        }
+        return statusChanged;
     }
 
     private Map<MenuItem, Integer> convertListToMap(List<MenuItem> menuItems) {

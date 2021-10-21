@@ -55,6 +55,10 @@
                     type="button" role="tab" aria-controls="manage-users">
                 Manage users
             </button>
+            <button id="manageMenuButton" class="nav-link" data-bs-toggle="tab" data-bs-target="#manage-menu"
+                    type="button" role="tab" aria-controls="manage-menu">
+                Manage menu
+            </button>
         </div>
     </div>
 
@@ -132,11 +136,30 @@
                             </tr>
                             </thead>
 
-                            <tbody id="tableBody">
+                            <tbody id="usersTableBody">
                             </tbody>
                         </table>
 
-                        <ul class="pagination"></ul>
+                        <ul class="usersPagination"></ul>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="manage-menu" role="tabpanel">
+                    <div class="d-flex flex-column justify-content-between align-items-center">
+                        <table class="table table-hover table-borderless align-middle" style="table-layout: fixed">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="width: 40%">Name</th>
+                                <th scope="col" style="width: 40%">Price</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="menuTableBody">
+                            </tbody>
+                        </table>
+
+                        <ul class="menuPagination"></ul>
                     </div>
                 </div>
 
@@ -151,118 +174,202 @@
 <script src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
 
 <script>
-    const fileInput = document.getElementById('fileUpload');
+    $(document).ready(function () {
+        const fileInput = document.getElementById('fileUpload');
 
-    const imagePreview = document.getElementById('menuItemImage');
+        const imagePreview = document.getElementById('menuItemImage');
 
-    fileInput.addEventListener('change', function (event) {
-        const selectedFile = event.target.files[0];
+        fileInput.addEventListener('change', function (event) {
+            const selectedFile = event.target.files[0];
 
-        if (selectedFile) {
-            const fileReader = new FileReader();
+            if (selectedFile) {
+                const fileReader = new FileReader();
 
-            fileReader.onload = function (event) {
-                imagePreview.src = event.target.result;
+                fileReader.onload = function (event) {
+                    imagePreview.src = event.target.result;
+                }
+                fileReader.readAsDataURL(selectedFile);
             }
-            fileReader.readAsDataURL(selectedFile);
-        }
-    });
+        });
 
+        const URL = "${pageContext.request.contextPath}/ajax";
+        const USERS_PER_PAGE = 8;
+        const MENU_ITEMS_PER_PAGE = 8;
+        const MAX_VISIBLE_PAGES = 4;
 
-    const URL = "${pageContext.request.contextPath}/ajax";
-    const USERS_PER_PAGE = 4;
-    const MAX_VISIBLE_PAGES = 4;
+        loadNumberOfUsers();
 
-    loadNumberOfUsers();
+        function loadUsersPage(page) {
+            const data = {
+                command: 'load_user_page',
+                page: page
+            };
+            $.getJSON(URL, data, function (responseData) {
+                const tableBody = $('#usersTableBody');
 
-    function loadPage(page) {
-        const data = {
-            command: 'go_to_user_page',
-            page_number: page
-        };
-        $.getJSON(URL, data, function (responseData) {
-            const tableBody = $('#tableBody');
+                tableBody.fadeOut(120, function () {
+                    // clear previous table body contents
+                    tableBody.empty();
 
-            tableBody.fadeOut(120, function () {
-                // clear previous table body contents
-                tableBody.empty();
+                    $.each(responseData, function (index, user) {
+                        // creating button for each user row
+                        const toggleBanButton = $("<button>")
+                            .addClass('btn btn-danger btn-sm')
+                            .attr('id', 'toggleBanButton' + index)
+                            .css('width', '75%');
 
-                $.each(responseData, function (index, user) {
-                    // creating button for each user row
-                    const toggleBanButton = $("<button>")
-                        .addClass('btn btn-danger btn-sm')
-                        .attr('id', 'toggleBanButton' + index)
-                        .css('width', '75%');
+                        if (user.status === 'BANNED') {
+                            toggleBanButton.text('Unban');
+                        } else {
+                            toggleBanButton.text('Ban');
+                        }
 
-                    if (user.status === 'BANNED') {
-                        toggleBanButton.text('Unban');
-                    } else {
-                        toggleBanButton.text('Ban');
-                    }
+                        // setting click event on button to ban/unban users
+                        toggleBanButton.on('click', function () {
+                            const requestData = {
+                                user_id: user.id
+                            };
+                            requestData.command = (tableBody.find('#userStatus' + index).text() === 'banned') ? 'unban_user' : 'ban_user';
 
-                    // setting click event on button to ban/unban users
-                    toggleBanButton.on('click', function () {
-                        const requestData = {
-                            user_id: user.id
-                        };
-                        requestData.command = (tableBody.find('#userStatus' + index).text() === 'banned') ? 'unban_user' : 'ban_user';
+                            $.post(URL, requestData).done(function (response) {
+                                // update user status
+                                tableBody.find('#userStatus' + index).text(response.status.toLowerCase());
 
-                        $.post(URL, requestData).done(function (response) {
-                            // update user status
-                            tableBody.find('#userStatus' + index).text(response.status.toLowerCase());
-
-                            // update button text
-                            if (response.status === 'BANNED') {
-                                toggleBanButton.text('Unban');
-                            } else {
-                                toggleBanButton.text('Ban');
-                            }
+                                // update button text
+                                if (response.status === 'BANNED') {
+                                    toggleBanButton.text('Unban');
+                                } else {
+                                    toggleBanButton.text('Ban');
+                                }
+                            });
                         });
+
+                        // adding new row to the table with user data
+                        $("<tr>").appendTo(tableBody)
+                            .append($("<td>").attr('id', 'userEmail' + index).text(user.email))
+                            .append($("<td>").attr('id', 'userName' + index).text(user.name))
+                            .append($("<td>").attr('id', 'userSurname' + index).text(user.surname))
+                            .append($("<td>").attr('id', 'userStatus' + index).text(user.status.toLowerCase()))
+                            .append($("<td>").attr('id', 'userRole' + index).text(user.role.toLowerCase()))
+                            .append($("<td>").html(toggleBanButton));
                     });
 
-                    // adding new row to the table with user data
-                    $("<tr>").appendTo(tableBody)
-                        .append($("<td>").attr('id', 'userEmail' + index).text(user.email))
-                        .append($("<td>").attr('id', 'userName' + index).text(user.name))
-                        .append($("<td>").attr('id', 'userSurname' + index).text(user.surname))
-                        .append($("<td>").attr('id', 'userStatus' + index).text(user.status.toLowerCase()))
-                        .append($("<td>").attr('id', 'userRole' + index).text(user.role.toLowerCase()))
-                        .append($("<td>").html(toggleBanButton));
+                    tableBody.fadeIn(120);
                 });
-
-                tableBody.fadeIn(120);
-            });
-        })
-    }
-
-    function loadNumberOfUsers() {
-        const data = {
-            command: 'get_user_count'
+            })
         }
-        $.getJSON(URL, data, function (responseData) {
 
-            const totalPages = Math.ceil(responseData / USERS_PER_PAGE);
-            const visiblePages = (totalPages < MAX_VISIBLE_PAGES) ? totalPages : MAX_VISIBLE_PAGES;
-
-            initPagination(totalPages, visiblePages);
-        });
-    }
-
-    function initPagination(totalPages, visiblePages) {
-
-        $('.pagination').twbsPagination({
-            totalPages: totalPages,
-            visiblePages: visiblePages,
-            prev: '&laquo;',
-            next: '&raquo;',
-            firstClass: 'visually-hidden',
-            lastClass: 'visually-hidden',
-
-            onPageClick: function (event, page) {
-                loadPage(page);
+        function loadNumberOfUsers() {
+            const data = {
+                command: 'get_user_count'
             }
-        });
-    }
+            $.getJSON(URL, data, function (responseData) {
+
+                const totalPages = Math.ceil(responseData / USERS_PER_PAGE);
+                const visiblePages = (totalPages < MAX_VISIBLE_PAGES) ? totalPages : MAX_VISIBLE_PAGES;
+
+                initUserPagination(totalPages, visiblePages);
+            });
+        }
+
+        function initUserPagination(totalPages, visiblePages) {
+            $('.usersPagination').twbsPagination({
+                totalPages: totalPages,
+                visiblePages: visiblePages,
+                prev: '&laquo;',
+                next: '&raquo;',
+                firstClass:  'visually-hidden',
+                lastClass: 'visually-hidden',
+
+                onPageClick: function (event, page) {
+                    loadUsersPage(page);
+                }
+            });
+        }
+
+        loadNumberOfMenuItems();
+
+        function loadNumberOfMenuItems() {
+            const data = {
+                command: 'get_menu_item_count'
+            }
+            $.getJSON(URL, data, function (responseData) {
+
+                const totalPages = Math.ceil(responseData / MENU_ITEMS_PER_PAGE);
+                const visiblePages = (totalPages < MAX_VISIBLE_PAGES) ? totalPages : MAX_VISIBLE_PAGES;
+
+                initMenuPagination(totalPages, visiblePages);
+            });
+        }
+
+        function initMenuPagination(totalPages, visiblePages) {
+            $('.menuPagination').twbsPagination({
+                totalPages: totalPages,
+                visiblePages: visiblePages,
+                prev: '&laquo;',
+                next: '&raquo;',
+                firstClass: 'visually-hidden',
+                lastClass: 'visually-hidden',
+
+                onPageClick: function (event, page) {
+                    loadMenuPage(page);
+                }
+            });
+        }
+
+        function loadMenuPage(page) {
+            const data = {
+                command: 'load_menu_page',
+                page: page
+            };
+            $.getJSON(URL, data, function (responseData) {
+                const tableBody = $('#menuTableBody');
+
+                tableBody.fadeOut(120, function () {
+                    // clear previous table body contents
+                    tableBody.empty();
+
+                    $.each(responseData, function (index, menuItem) {
+                        // creating button for each user row
+                        const deleteButton = $("<button>")
+                            .addClass('btn-close')
+                            .attr('id', 'deleteButton' + index)
+                            .css('float', 'right');
+
+                        // setting click event on button to delete item
+                        deleteButton.click(function () {
+                            const requestData = {
+                                command: 'delete_item',
+                                item_id: menuItem.id
+                            };
+
+                            $.post(URL, requestData).done(function (response) {
+                                if (response === 'menuItemDeleted') {
+                                    const currentRow = $('#menuRow' + index);
+
+                                    currentRow.animate({opacity: 0}, 150, function () {
+                                        currentRow.animate({height: 0}, 150, function () {
+                                            currentRow.remove();
+                                        })
+                                    })
+                                }
+                            }).fail(function (response) {
+                                console.log(response);
+                            });
+                        });
+
+                        // adding new row to the table with menu item data
+                        $("<tr>").attr('id', 'menuRow' + index).appendTo(tableBody)
+                            .append($("<td>").text(menuItem.name))
+                            .append($("<td>").text(Number(menuItem.price).toFixed(2)))
+                            .append($("<td>").html(deleteButton));
+                    });
+
+                    tableBody.fadeIn(120);
+                });
+            })
+        }
+    });
 </script>
 </body>
 </html>

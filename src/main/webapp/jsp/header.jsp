@@ -84,7 +84,11 @@
 
             <c:if test="${sessionScope.role eq 'ADMIN'}">
                 <li><a href="${pageContext.request.contextPath}/controller?command=go_to_admin_dashboard_page"
-                       class="nav-link px-2 link-dark">Dashboard</a></li>
+                       class="nav-link px-2 link-dark">Dashboard</a>
+                </li>
+                <li><a href="${pageContext.request.contextPath}/controller?command=go_to_order_page&page=1"
+                       class="nav-link px-2 link-dark">Orders</a>
+                </li>
             </c:if>
 
             <li><a href="${pageContext.request.contextPath}/controller?command=go_to_order_history_page&page=1" class="nav-link px-2 link-dark">Order history</a></li>

@@ -1,0 +1,38 @@
+#order-history-body .grey-text {
+    text-decoration: none;
+    color: #000;
+    opacity: 0.3;
+    transition: opacity 150ms;
+}
+
+#order-history-body .grey-text:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+#order-history-body .rating {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+#order-history-body .rating input {
+    appearance: none;
+    float: right;
+}
+
+#order-history-body .rating label {
+    float: right;
+    color: grey;
+    transition: color 200ms;
+}
+
+#order-history-body .rating label:hover,
+#order-history-body .rating label:hover ~ label,
+#order-history-body .rating input:checked ~ label {
+    color: var(--cafe-secondary);
+    cursor: pointer;
+}
+
+#order-history-body .rating .star ~ label {
+    color: var(--cafe-secondary);
+}

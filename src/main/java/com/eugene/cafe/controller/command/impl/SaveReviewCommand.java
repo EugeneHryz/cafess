@@ -49,7 +49,7 @@ public class SaveReviewCommand implements Command {
 
             request.setAttribute(ORDERS_SUBLIST, userOrders);
             request.setAttribute(ORDERS_PAGE_NUMBER, 1);
-            request.setAttribute(USER_ORDERS_COUNT, orderCount);
+            request.setAttribute(ORDER_COUNT, orderCount);
         } catch (ServiceException e) {
             // todo: write log
             request.getSession().setAttribute(EXCEPTION, e);

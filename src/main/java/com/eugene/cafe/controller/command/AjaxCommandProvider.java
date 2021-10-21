@@ -21,15 +21,19 @@ public class AjaxCommandProvider {
 
     private AjaxCommandProvider() {
         commandMap.put(GET_USER_COUNT, new GetUserCountCommand());
-        commandMap.put(GO_TO_USER_PAGE, new GoToUserPageCommand());
+        commandMap.put(LOAD_USER_PAGE, new LoadUserPageCommand());
         commandMap.put(BAN_USER, new BanUserCommand());
         commandMap.put(UNBAN_USER, new UnbanUserCommand());
         commandMap.put(ADD_ITEM_TO_CART, new AddItemToCartCommand());
         commandMap.put(REMOVE_ITEM_FROM_CART, new RemoveItemFromCartCommand());
+        commandMap.put(GET_MENU_ITEM_COUNT, new GetMenuItemCountCommand());
+        commandMap.put(LOAD_MENU_PAGE, new LoadMenuPageCommand());
+        commandMap.put(DELETE_ITEM, new DeleteMenuItemCommand());
     }
 
     public AjaxCommand getCommand(String commandName) {
         AjaxCommand command = commandMap.get(CommandType.valueOf(commandName.toUpperCase()));
+        // todo:??
 //        if (commandName != null) {
 //            try {
 //

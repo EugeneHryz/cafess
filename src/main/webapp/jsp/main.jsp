@@ -13,6 +13,20 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
+
+    <style>
+        .grey-text {
+            text-decoration: none !important;
+            color: #000 !important;
+            opacity: 0.4;
+            transition: opacity 250ms;
+        }
+
+        .grey-text:hover {
+            cursor: pointer;
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body id="main-body">
 
@@ -44,9 +58,6 @@
 
         <div id="itemsContainer" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
 
-<%--            <div id="totalNumberOfItems" style="display: none"></div>--%>
-<%--            <div id="currentPageNumber" style="display: none"></div>--%>
-
             <c:forEach items="${sessionScope.menuItemsSublist}" var="item" varStatus="status">
                 <div class="col">
                     <div class="card">
@@ -69,8 +80,7 @@
                             <span id="itemCategoryId" style="display: none">${item.categoryId}</span>
 
                             <div class="collapse" id="collapsingText${status.count}">${item.description}</div>
-                            <a class="d-block" data-bs-toggle="collapse" href="#collapsingText${status.count}"
-                               aria-controls="collapsingText${status.count}" role="button" >Description</a>
+                            <a class="d-block grey-text" data-bs-toggle="collapse" href="#collapsingText${status.count}" aria-controls="collapsingText${status.count}" role="button">Description</a>
                         </div>
 
                         <button id="addToCartButton${item.id}" class="btn btn-outline-dark w-100 py-2"

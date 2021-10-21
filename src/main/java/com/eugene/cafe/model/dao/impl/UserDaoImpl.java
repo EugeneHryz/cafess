@@ -89,20 +89,20 @@ public class UserDaoImpl extends UserDao {
             throw new DaoException("Database connection is not set for UserDao");
         }
 
-        Optional<User> updated = Optional.empty();
+        Optional<User> result = Optional.empty();
         try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_USER_BY_ID)) {
             statement.setInt(1, id);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User user = buildUser(resultSet);
-                updated = Optional.of(user);
+                result = Optional.of(user);
             }
         } catch (SQLException e) {
             logger.error("Database error occurred " + e);
             throw new DaoException("Database error occurred", e);
         }
-        return updated;
+        return result;
     }
 
     @Override
@@ -286,17 +286,17 @@ public class UserDaoImpl extends UserDao {
     private User buildUser(ResultSet resultSet) throws SQLException {
 
         User.Builder builder = new User.Builder();
-        builder.setId(resultSet.getInt(CLIENTS_ID))
-                .setName(resultSet.getString(CLIENTS_NAME))
-                .setSurname(resultSet.getString(CLIENTS_SURNAME))
+        builder.setId(resultSet.getInt(USERS_ID))
+                .setName(resultSet.getString(USERS_NAME))
+                .setSurname(resultSet.getString(USERS_SURNAME))
                 .setRole(UserRole.valueOf(resultSet
-                        .getString(CLIENT_ROLE_ROLE).toUpperCase()))
+                        .getString(USER_ROLE_ROLE).toUpperCase()))
                 .setStatus(UserStatus.valueOf(resultSet
-                        .getString(CLIENT_STATUS_STATUS).toUpperCase()))
-                .setEmail(resultSet.getString(CLIENTS_EMAIL))
-                .setHashedPassword(resultSet.getString(CLIENTS_PASSWORD))
-                .setBalance(resultSet.getDouble(CLIENTS_BALANCE))
-                .setProfileImagePath(resultSet.getString(CLIENTS_PROFILE_IMAGE));
+                        .getString(USER_STATUS_STATUS).toUpperCase()))
+                .setEmail(resultSet.getString(USERS_EMAIL))
+                .setHashedPassword(resultSet.getString(USERS_PASSWORD))
+                .setBalance(resultSet.getDouble(USERS_BALANCE))
+                .setProfileImagePath(resultSet.getString(USERS_PROFILE_IMAGE));
 
         return builder.buildUser();
     }

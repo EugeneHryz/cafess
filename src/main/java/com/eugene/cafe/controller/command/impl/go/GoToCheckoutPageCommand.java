@@ -30,8 +30,7 @@ public class GoToCheckoutPageCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request) {
 
-        Map<MenuItem, Integer> shoppingCart = (HashMap<MenuItem, Integer>)
-        request.getSession().getAttribute(SHOPPING_CART);
+        Map<MenuItem, Integer> shoppingCart = (HashMap<MenuItem, Integer>) request.getSession().getAttribute(SHOPPING_CART);
 
         Router router = new Router(CHECKOUT_PAGE, Router.RouterType.FORWARD);
         try {
@@ -62,14 +61,18 @@ public class GoToCheckoutPageCommand implements Command {
 
         // fixme
         List<LocalTime> pickupTimes = new ArrayList<>();
-        LocalTime time = nearestPickupTime.plusMinutes(30);
-        while (!time.equals(nearestPickupTime)) {
-
-            if (time.isAfter(LocalTime.of(9, 0))
-                    && time.isBefore(LocalTime.of(22, 0))) {
-                pickupTimes.add(time);
-            }
-            time = time.plusMinutes(30);
+//        LocalTime time = nearestPickupTime.plusMinutes(30);
+//        while (!time.equals(nearestPickupTime)) {
+//
+//            if (time.isAfter(LocalTime.of(9, 0))
+//                    && time.isBefore(LocalTime.of(22, 0))) {
+//                pickupTimes.add(time);
+//            }
+//            time = time.plusMinutes(30);
+//        }
+        LocalTime time = LocalTime.MIN;
+        while (time.isBefore(LocalTime.MAX)) {
+            pickupTimes.add(time);
         }
         return pickupTimes;
     }

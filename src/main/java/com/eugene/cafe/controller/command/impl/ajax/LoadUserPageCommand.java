@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.eugene.cafe.controller.command.RequestParameter.PARAM_PAGE_NUMBER;
 
-public class GoToUserPageCommand implements AjaxCommand {
+public class LoadUserPageCommand implements AjaxCommand {
 
     private static final UserService userService = new UserServiceImpl();
 

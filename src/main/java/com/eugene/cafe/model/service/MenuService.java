@@ -19,4 +19,6 @@ public interface MenuService {
     int getMenuItemCountByCategory(Category category) throws ServiceException;
 
     List<Category> getAllMenuCategories() throws ServiceException;
+
+    boolean deleteMenuItem(int itemId) throws ServiceException;
 }
