@@ -1,0 +1,175 @@
+:root {
+    --cafe-white: #fff;
+
+    --cafe-background: #EFEFEF;
+    --cafe-primary: #A45D5D;
+    --cafe-secondary: #FFC069;
+    --cafe-dark: #683a3a;
+    --cafe-darker: #3e221f;
+    --cafe-shadow: rgba(187, 31, 31, 0.25);
+    --cafe-light: #eec7b0;
+
+    --cafe-black: #2a2727;
+}
+
+.button {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.button-lg {
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    border-radius: 0.3rem;
+}
+
+.button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem var(--cafe-shadow);
+}
+
+.button-primary {
+    color: #fff;
+    background-color: var(--cafe-primary);
+    border-color: var(--cafe-primary);
+}
+
+.button-primary:hover {
+    background-color: var(--cafe-dark);
+    border-color: var(--cafe-dark);
+}
+
+.button-primary:disabled {
+    background-color: #a36c6c;
+    border-color: #a36c6c;
+}
+
+.button-primary-dark {
+    color: #fff;
+    background-color: var(--cafe-dark);
+    border-color: var(--cafe-dark);
+}
+
+.button-primary-dark:hover {
+    background-color: var(--cafe-darker);
+    border-color: var(--cafe-darker);
+}
+
+.button-secondary {
+    color: #000;
+    background-color: var(--cafe-secondary);
+    border-color: var(--cafe-secondary);
+}
+
+.button-secondary:hover {
+    color: #000;
+    background-color: var(--cafe-secondary);
+    border-color: var(--cafe-secondary);
+}
+
+.button-outline-primary {
+    color: var(--cafe-primary);
+    border-color: var(--cafe-primary);
+}
+
+.button-outline-secondary {
+    color: var(--cafe-secondary);
+    border-color: var(--cafe-secondary);
+}
+
+.button-outline-secondary:hover {
+    color: #000;
+    background-color: var(--cafe-secondary);
+    border-color: var(--cafe-secondary);
+}
+
+
+.page-button {
+    position: relative;
+    display: block;
+    color: #000;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #dcd3d3;
+    padding: 0.375rem 0.75rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.page-button:hover {
+    z-index: 2;
+    color: #904949;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.item-page.active .page-button {
+    z-index: 3;
+    color: var(--cafe-secondary);
+    background-color: var(--cafe-primary);
+    border-color: var(--cafe-primary);
+}
+
+.item-page.disabled .page-button {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+.navigation-link {
+    background: none;
+    border: 0;
+    border-bottom-right-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.navigation-link:hover, .navigation-link:focus {
+    color: #000;
+}
+
+.navigation-link.active {
+    color: #000;
+    background-color: var(--cafe-light);
+}
+
+.navigation-link-h {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    margin-bottom: -1px;
+    background: none;
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.navigation-link-h:hover, .navigation-link-h:focus {
+    color: #000;
+    border-color: #dee2e6;
+}
+
+.navigation-link-h.active {
+    color: #000;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}

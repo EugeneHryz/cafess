@@ -3,9 +3,9 @@ package com.eugene.cafe.model.dao.impl;
 import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.model.dao.MenuItemDao;
 import com.eugene.cafe.model.pool.ConnectionPool;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
@@ -15,12 +15,12 @@ public class MenuItemDaoImplTest {
     final MenuItemDao menuItemDao = new MenuItemDaoImpl();
     final Connection connection = pool.takeConnection();
 
-    @Before
+    @BeforeAll
     public void before() {
         menuItemDao.setConnection(connection);
     }
 
-    @After
+    @AfterAll
     public void after() {
         pool.releaseConnection(connection);
     }

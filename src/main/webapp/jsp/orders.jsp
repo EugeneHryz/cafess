@@ -10,8 +10,9 @@
 
 <html>
 <head>
+    <title><fmt:message key="title.orders"/></title>
+
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="${pageContext.request.contextPath}/css/colors.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/css/orders.css" rel="stylesheet"/>
 
 </head>
@@ -31,7 +32,7 @@
             <div class="card-header d-flex justify-content-between position-relative" style="border-top-left-radius: 16px; border-top-right-radius: 16px; line-height: 1em;">
                 <div>
                     <h3 class="fs-3"><fmt:formatDate value="${item.date}" type="both"/></h3>
-                    <span class="fs-6 text-muted">Need to be ready at <fmt:formatDate value="${item.pickUpTime}" type="time" timeStyle="short"/></span>
+                    <span class="fs-6 text-muted"><fmt:message key="orderHistory.text.readyAt"/> <fmt:formatDate value="${item.pickUpTime}" type="time" timeStyle="short"/></span>
                 </div>
                 <a id="openReview${status.count}" class="grey-text position-absolute top-0 end-0 m-2">
                     <i class="far fa-star fa-2x"></i>
@@ -45,27 +46,34 @@
                     </c:forEach>
                 </div>
 
-                <a id="expand-text" class="d-block fs-6 grey-text" data-bs-toggle="collapse" href="#collapsingText${status.count}" role="button">Description</a>
+                <a id="expand-text" class="d-block fs-6 grey-text" data-bs-toggle="collapse" href="#collapsingText${status.count}" role="button">
+                    <fmt:message key="orderHistory.text.description"/></a>
                 <hr class="border-light my-2"/>
 
                 <div class="d-flex justify-content-between fs-4">
-                    <span class="fw-light">User Id:</span>
+                    <span class="fw-light"><fmt:message key="orders.text.userId"/>:</span>
                     <span class="fw-normal">${item.userId}</span>
                 </div>
                 <hr class="border-light my-2"/>
 
                 <div class="d-flex justify-content-between fs-4">
-                    <span class="fw-light">Total:</span>
+                    <span class="fw-light"><fmt:message key="orderHistory.text.total"/>:</span>
                     <span class="fw-normal"><fmt:formatNumber value="${item.totalPrice}" maxFractionDigits="2" minFractionDigits="2"/></span>
                 </div>
                 <hr class="border-light my-2"/>
 
                 <div class="d-flex justify-content-between fs-4">
-                    <span class="fw-light">Status:</span>
+                    <span class="fw-light"><fmt:message key="orderHistory.text.status"/>:</span>
                     <select id="status${item.id}" class="form-select w-auto">
-                        <option value="cooking" ${item.orderStatus.name() == 'COOKING' ? 'selected' : ''}>Cooking</option>
-                        <option value="ready" ${item.orderStatus.name() == 'READY' ? 'selected' : ''}>Ready</option>
-                        <option value="picked_up" ${item.orderStatus.name() == 'PICKED_UP' ? 'selected' : ''}>Picked up</option>
+                        <option value="cooking" ${item.orderStatus.name() == 'COOKING' ? 'selected' : ''}>
+                            <fmt:message key="orderHistory.text.cooking"/>
+                        </option>
+                        <option value="ready" ${item.orderStatus.name() == 'READY' ? 'selected' : ''}>
+                            <fmt:message key="orderHistory.text.ready"/>
+                        </option>
+                        <option value="picked_up" ${item.orderStatus.name() == 'PICKED_UP' ? 'selected' : ''}>
+                            <fmt:message key="orderHistory.text.picked_up"/>
+                        </option>
                     </select>
                 </div>
             </div>
@@ -75,11 +83,11 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Review</h5>
+                        <h5 class="modal-title"><fmt:message key="orderHistory.text.review"/></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                            <p>Rating:</p>
+                            <p><fmt:message key="orderHistory.text.rating"/>:</p>
                             <div class="d-flex">
                                 <div class="rating mb-2">
                                     <i class="far fa-star fa-2x ${item.review.rating == 5 ? 'star' : ''}"></i>
@@ -90,15 +98,17 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="commentText" class="col-form-label">Comment:</label>
+                                <label for="commentText" class="col-form-label"><fmt:message key="orderHistory.text.comment"/>:</label>
                                 <textarea name="comment" id="commentText" rows="4" class="form-control" readonly>${item.review.comment}</textarea>
                             </div>
                         <c:if test="${not empty item.review}">
-                            <span>Last edited <fmt:formatDate value="${item.review.date}" type="both"/></span>
+                            <span><fmt:message key="orderHistory.text.lastEdited"/> <fmt:formatDate value="${item.review.date}" type="both"/></span>
                         </c:if>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="button button-outline-primary" data-bs-dismiss="modal">
+                            <fmt:message key="orderHistory.action.close"/>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -151,6 +161,12 @@
             initiateStartPageClick: false,
             prev: '&laquo;',
             next: '&raquo;',
+            firstClass: 'visually-hidden',
+            lastClass: 'visually-hidden',
+            anchorClass: 'page-button',
+            pageClass: 'item-page',
+            prevClass: 'item-page prev',
+            nextClass: 'item-page next',
 
             onPageClick: function (event, page) {
                 goToAnotherPage(page);

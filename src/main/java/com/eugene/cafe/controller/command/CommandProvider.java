@@ -25,9 +25,10 @@ public class CommandProvider {
         commandMap.put(LOG_OUT, new LogOutCommand());
         commandMap.put(DEFAULT, new DefaultCommand());
         commandMap.put(GO_TO_SIGNUP_PAGE, new GoToSignupPageCommand());
+        commandMap.put(GO_TO_LOGIN_PAGE, new GoToLoginPageCommand());
         commandMap.put(SIGN_UP, new SignUpCommand());
         commandMap.put(CHANGE_LOCALE, new ChangeLocaleCommand());
-        commandMap.put(GO_TO_PROFILE_SETTINGS_PAGE, new GoToProfileSettingsPageCommand());
+        commandMap.put(GO_TO_PROFILE_PAGE, new GoToProfileSettingsPageCommand());
         commandMap.put(EDIT_USER_PROFILE, new EditUserProfileCommand());
         commandMap.put(UPDATE_PROFILE_PICTURE, new UpdateProfilePictureCommand());
         commandMap.put(CHANGE_PASSWORD, new ChangePasswordCommand());

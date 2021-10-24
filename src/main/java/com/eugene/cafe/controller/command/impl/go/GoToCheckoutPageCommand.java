@@ -54,25 +54,20 @@ public class GoToCheckoutPageCommand implements Command {
         LocalTime nearestPickupTime;
         int minutes = currentTime.getMinute();
         if (minutes > 30) {
-            nearestPickupTime = LocalTime.of(currentTime.getHour() + 1, 0);
+            nearestPickupTime = LocalTime.of(currentTime.plusHours(1).getHour(), 30);
         } else {
-            nearestPickupTime = LocalTime.of(currentTime.getHour(), 30);
+            nearestPickupTime = LocalTime.of(currentTime.plusHours(1).getHour(), 0);
         }
 
-        // fixme
         List<LocalTime> pickupTimes = new ArrayList<>();
-//        LocalTime time = nearestPickupTime.plusMinutes(30);
-//        while (!time.equals(nearestPickupTime)) {
-//
-//            if (time.isAfter(LocalTime.of(9, 0))
-//                    && time.isBefore(LocalTime.of(22, 0))) {
-//                pickupTimes.add(time);
-//            }
-//            time = time.plusMinutes(30);
-//        }
-        LocalTime time = LocalTime.MIN;
-        while (time.isBefore(LocalTime.MAX)) {
-            pickupTimes.add(time);
+        LocalTime time = nearestPickupTime;
+        while (time.isBefore(LocalTime.of(22, 0))
+                || time.equals(LocalTime.of(22, 0))) {
+
+            if (time.isAfter(LocalTime.of(9, 0))) {
+                pickupTimes.add(time);
+            }
+            time = time.plusMinutes(30);
         }
         return pickupTimes;
     }

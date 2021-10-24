@@ -13,9 +13,8 @@
     max-width: 340px;
     padding: 20px;
     border-radius: 16px;
-    margin-bottom: 100px;
-    margin-top: 30px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    margin-bottom: 12%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
     background-color: var(--cafe-white);
 }
 

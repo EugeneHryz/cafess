@@ -2,14 +2,15 @@ package com.eugene.cafe.model.validator;
 
 public class UserValidator {
 
-    private static final String EMAIL_REGEX = "^[\\w.]+@[\\w.]+$";
+    private static final String EMAIL_REGEX = "^(?=.{3,30}$)[\\w.]+@[\\w.]+$";
 
-    private static final String PASSWORD_REGEX = "^.{8,}$";
+    private static final String PASSWORD_REGEX = "^.{8,40}$";
 
-    private static final String NAME_SURNAME_REGEX = "^(\\p{L}){3,}$";
+    private static final String NAME_SURNAME_REGEX = "^(\\p{L}){3,20}$";
 
     public static boolean validateUser(String name, String surname, String email, String password) {
-        return validateName(name) && validateSurname(surname) && validateEmail(email) && validatePassword(password);
+        return validateName(name) && (surname == null || surname.isEmpty() || validateSurname(surname))
+                && validateEmail(email) && validatePassword(password);
     }
 
     public static boolean validateEmail(String email) {

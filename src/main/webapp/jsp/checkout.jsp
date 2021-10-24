@@ -9,18 +9,20 @@
 
 <html>
 <head>
+    <title><fmt:message key="title.checkout"/></title>
+
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/checkout.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/checkout.css"/>
 
 </head>
 <body id="checkout-body" style="background: var(--cafe-background);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;">
+    justify-content: space-between;
+    min-height: 100vh">
 
 <c:import url="header.jsp"/>
 
@@ -42,30 +44,44 @@
         </c:forEach>
     </ul>
 
-    <div class="card-body" style="background-color: #f5d5d5;">
+    <div class="card-body" style="background-color: #f3d1bd;">
         <div class="d-flex justify-content-between fs-3 mb-3">
-            <span class="fw-light">Total:</span>
+            <span class="fw-light"><fmt:message key="checkout.text.total"/>:</span>
             <span id="orderTotal" class="me-3"><fmt:formatNumber value="${sessionScope.orderTotal}" maxFractionDigits="2" minFractionDigits="2"/></span>
         </div>
         <hr class="border-light my-3"/>
 
         <form action="${pageContext.request.contextPath}/controller" method="post">
             <input type="hidden" name="command" value="place_order"/>
-            <div class="form-group mb-3">
-                <label class="form-label">When you want your order to be ready:</label>
-                <select class="form-select w-auto" name="pickup_time">
-                    <c:forEach items="${requestScope.pickupTimeList}" var="time" varStatus="status">
-                        <option value="${time}">${time}</option>
-                    </c:forEach>
-                </select>
-            </div>
+            <c:choose>
+                <c:when test="${not empty requestScope.pickupTimeList}">
+                    <div class="form-group mb-3">
+                        <label class="form-label"><fmt:message key="checkout.text.orderPickupTime"/>:</label>
+                        <select class="form-select w-auto" name="pickup_time">
+                            <c:forEach items="${requestScope.pickupTimeList}" var="time" varStatus="status">
+                                <option value="${time}">${time}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <p class="mb-3"><fmt:message key="checkout.text.shopHours"/></p>
+                </c:otherwise>
+            </c:choose>
+
             <div style="float: right">
-                <button type="submit" class="btn btn-primary">Place order</button>
+                <button type="submit" class="button button-primary" ${empty requestScope.pickupTimeList ? 'disabled' : ''}>
+                    <fmt:message key="checkout.action.placeOrder"/>
+                </button>
             </div>
         </form>
     </div>
-
 </div>
+
+<form id="goToMainPage" class="visually-hidden" action="${pageContext.request.contextPath}/controller">
+    <input type="hidden" name="command" value="go_to_menu_page"/>
+    <input type="hidden" name="page" value="1"/>
+</form>
 
 <c:import url="footer.jsp"/>
 
@@ -85,9 +101,9 @@
             item.animate({height: '0px'}, 150, function () {
 
                 const itemId = item.find('.visually-hidden').attr('id').slice(4);
-                removeListItemFromSession(itemId);
 
                 item.remove();
+                removeListItemFromSession(itemId);
             });
         });
     }
@@ -100,6 +116,12 @@
 
         $.post(URL, requestData).done(function (response) {
 
+            if (Number(response.shopping_cart_size) === 0) {
+                $('#goToMainPage').submit();
+                console.log('length is zero');
+            } else {
+                console.log('length is not zero');
+            }
             $('#orderTotal').text(Number(response.order_total).toFixed(2));
             $('#shoppingCartSize').text(response.shopping_cart_size);
         });

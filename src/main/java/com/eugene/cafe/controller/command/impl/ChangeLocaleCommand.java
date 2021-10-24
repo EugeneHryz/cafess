@@ -20,7 +20,6 @@ public class ChangeLocaleCommand implements Command {
         String previousRequest = (String) request.getSession().getAttribute(RequestAttribute.PREVIOUS_REQUEST);
 
         Router router = new Router(previousRequest, Router.RouterType.REDIRECT);
-
         return router;
     }
 }

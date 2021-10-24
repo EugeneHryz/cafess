@@ -9,56 +9,59 @@
 
 <html>
 <head>
-    <title>Sign up</title>
+    <title><fmt:message key="title.signup"/></title>
+
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/signup.css"/>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/signup.css">
 </head>
-<body id="signup-body">
+<body id="signup-body" style="background-attachment: fixed; background-size: cover; background-image: url('${pageContext.request.contextPath}/content/background.jpg');">
 
-<c:import url="header.jsp" />
-
-<div class="form-signup">
-    <form action="${pageContext.request.contextPath}/controller" method="post" id="signupForm" novalidate>
+<div class="form-signup mt-5">
+    <form id="signupForm" action="${pageContext.request.contextPath}/controller" method="post" novalidate>
         <input type="hidden" name="command" value="sign_up" />
 
         <h1 class="h3 mb-3 fw-normal"><fmt:message key="signup.welcomeMessage"/></h1>
         <div class="form-floating">
-            <input id="floatingName" type="text" class="form-control first-input" name="name" placeholder=" " required pattern="^(\p{L}){3,}$"/>
+            <input id="floatingName" type="text" class="form-control first-input" name="name" placeholder=" "
+                   required pattern="^(\p{L}){3,20}$"/>
             <label for="floatingName"><fmt:message key="signup.label.name"/></label>
             <span id="invalidNameInput"></span>
         </div>
         <div class="form-floating">
-            <input id="floatingSurname" type="text" class="form-control other-input" name="surname" placeholder=" " pattern="^(\p{L}){3,}$"/>
+            <input id="floatingSurname" type="text" class="form-control other-input" name="surname" placeholder=" "
+                   pattern="^(\p{L}){3,20}$"/>
             <label for="floatingSurname"><fmt:message key="signup.label.surname"/></label>
-            <span id="invalidSurnameInput"></span>
         </div>
         <div class="form-floating">
-            <input id="floatingEmail" type="email" class="form-control other-input" name="email" placeholder=" " required pattern="^[\w.]+@[\w.]+$"/>
+            <input id="floatingEmail" type="email" class="form-control other-input" name="email" placeholder=" "
+                   required pattern="^(?=.{3,30}$)[\w.]+@[\w.]+$"/>
             <label for="floatingEmail"><fmt:message key="signup.label.email"/></label>
-            <span id="invalidEmailInput"></span>
         </div>
         <div class="form-floating">
-            <input id="floatingPassword" type="password" class="form-control other-input" name="password" placeholder=" " required minlength="8"/>
+            <input id="floatingPassword" type="password" class="form-control other-input" name="password" placeholder=" "
+                   required minlength="8" maxlength="40"/>
             <label for="floatingPassword"><fmt:message key="signup.label.password"/></label>
-            <span id="invalidPasswordInput"></span>
         </div>
-        <%--There's no need to put password twice in the request--%>
         <div class="form-floating">
-            <input id="floatingRepeatPassword" type="password" class="form-control last-input" name="password" placeholder=" " required minlength="8"/>
+            <input id="floatingRepeatPassword" type="password" class="form-control last-input" name="password" placeholder=" "
+                   required minlength="8" maxlength="40"/>
             <label for="floatingRepeatPassword"><fmt:message key="signup.label.repeatPassword"/></label>
-            <span id="invalidRepeatedPasswordInput"></span>
         </div>
-
-        ${loginAlreadyExists}
-        ${invalidSignUpData}
-
-        <button class="w-100 mt-2 btn btn-lg btn-primary button-signup" type="submit">
-            <fmt:message key="signup.button.signup"/>
+        <p class="text-danger">
+            ${loginAlreadyExists}
+            ${invalidSignUpData}
+        </p>
+        <button class="w-100 mt-2 button button-primary button-lg" type="submit">
+            <fmt:message key="signup.action.signup"/>
         </button>
     </form>
 </div>
+
+<c:import url="footer.jsp" />
 
 <fmt:message key="signup.error.valueMissing" var="valueMissing" />
 <fmt:message key="signup.error.namePatternMismatch" var="namePatternMismatch" />
@@ -67,123 +70,164 @@
 <fmt:message key="signup.error.passwordTooShort" var="passwordTooShort" />
 <fmt:message key="signup.error.passwordMismatch" var="passwordMismatch" />
 
-<c:import url="footer.jsp" />
+<script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.min.js" type='text/javascript'></script>
 
 <script>
-    const name = document.getElementById('floatingName');
-    const surname = document.getElementById('floatingSurname');
-    const email = document.getElementById('floatingEmail');
-    const password = document.getElementById('floatingPassword');
-    const repeatedPassword = document.getElementById('floatingRepeatPassword');
+    const nameInput = document.getElementById('floatingName');
+    const surnameInput = document.getElementById('floatingSurname');
+    const emailInput = document.getElementById('floatingEmail');
+    const passwordInput = document.getElementById('floatingPassword');
+    const repeatPasswordInput = document.getElementById('floatingRepeatPassword');
 
-    const form = document.getElementById('signupForm');
+    const signupDataForm = document.getElementById('signupForm');
 
-    const nameError = document.getElementById('invalidNameInput');
-    const surnameError = document.getElementById('invalidSurnameInput');
-    const emailError = document.getElementById('invalidEmailInput');
-    const passwordError = document.getElementById('invalidPasswordInput');
-    const repeatedPasswordError = document.getElementById('invalidRepeatedPasswordInput');
+    let popover = new bootstrap.Popover(nameInput, { trigger: 'manual' });
 
-    name.addEventListener('input', function () {
-        if (name.validity.valid) {
-            nameError.textContent = '';
+    nameInput.addEventListener('input', function () {
+        checkNameValidity();
+    });
+    nameInput.addEventListener('focusin', function () {
+        checkNameValidity();
+    });
+
+    surnameInput.addEventListener('input', function () {
+        checkSurnameValidity();
+    });
+    surnameInput.addEventListener('focusin', function () {
+        checkSurnameValidity();
+    });
+
+    emailInput.addEventListener('input', function () {
+        checkEmailValidity();
+    });
+    emailInput.addEventListener('focusin', function () {
+        checkEmailValidity();
+    });
+
+    passwordInput.addEventListener('input', function () {
+        checkPasswordValidity(passwordInput);
+    });
+    passwordInput.addEventListener('focusin', function () {
+        checkPasswordValidity(passwordInput);
+    });
+
+    repeatPasswordInput.addEventListener('input', function () {
+        checkRepeatedPasswordValidity();
+    });
+    repeatPasswordInput.addEventListener('focusin', function () {
+        checkRepeatedPasswordValidity();
+    });
+
+    function checkNameValidity() {
+        if (nameInput.validity.valid) {
+            popover.hide();
         } else {
             showNameError();
-        }
-    });
-
-    surname.addEventListener('input', function() {
-        if (surname.validity.valid) {
-            surnameError.textContent = '';
-        } else {
-            showSurnameError();
-        }
-    });
-
-    email.addEventListener('input', function() {
-        if (email.validity.valid) {
-            emailError.textContent = '';
-        } else {
-            showEmailError();
-        }
-    });
-
-    password.addEventListener('input', function() {
-       if (password.validity.valid) {
-           passwordError.textContent = '';
-       } else {
-           showPasswordError();
-       }
-    });
-
-    repeatedPassword.addEventListener('input', function() {
-        if (repeatedPassword.validity.valid && repeatedPassword.value === password.value) {
-            repeatedPasswordError.textContent = '';
-        } else {
-            showRepeatedPasswordError();
-        }
-    });
-
-    form.addEventListener('submit', function (event) {
-        if (!name.validity.valid) {
-            showNameError();
-        }
-        if (!surname.validity.valid) {
-            showSurnameError();
-        }
-        if (!email.validity.valid) {
-            showEmailError();
-        }
-        if (!password.validity.valid) {
-            showPasswordError();
-        }
-        if (!repeatedPassword.validity.valid || repeatedPassword.value !== password.value) {
-            showPasswordError()
-        }
-        if (!name.validity.valid || !surname.validity.valid || !email.validity.valid ||
-            (!repeatedPassword.validity.valid || repeatedPassword.value !== password.value)) {
-
-            event.preventDefault();
-        }
-    });
-
-    function showNameError() {
-        if (name.validity.valueMissing) {
-            nameError.textContent = "${valueMissing}";
-        } else if (name.validity.patternMismatch) {
-            nameError.textContent = "${namePatternMismatch}";
         }
     }
 
+    function checkSurnameValidity() {
+        if (surnameInput.validity.valid) {
+            popover.hide();
+        } else {
+            showSurnameError();
+        }
+    }
+
+    function checkEmailValidity() {
+        if (emailInput.validity.valid) {
+            popover.hide();
+        } else {
+            showEmailError();
+        }
+    }
+
+    function checkPasswordValidity() {
+        if (passwordInput.validity.valid) {
+            popover.hide();
+        } else {
+            showPasswordError();
+        }
+    }
+
+    function checkRepeatedPasswordValidity() {
+        if (repeatPasswordInput.value === passwordInput.value) {
+            popover.hide();
+        } else {
+            showRepeatPasswordError();
+        }
+    }
+
+    function showNameError() {
+        if (nameInput.validity.valueMissing) {
+            nameInput.setAttribute('data-bs-content', "${valueMissing}");
+        } else if (nameInput.validity.patternMismatch) {
+            nameInput.setAttribute('data-bs-content', "${namePatternMismatch}");
+        }
+        popover = createPopover(nameInput);
+        popover.show();
+    }
+
     function showSurnameError() {
-        if (surname.validity.patternMismatch) {
-            surnameError.textContent = "${surnamePatternMismatch}";
+        if (surnameInput.validity.patternMismatch) {
+            surnameInput.setAttribute('data-bs-content', "${surnamePatternMismatch}");
+            popover = createPopover(surnameInput);
+            popover.show();
         }
     }
 
     function showEmailError() {
-        if (email.validity.valueMissing) {
-            emailError.textContent = "${valueMissing}";
-        } else if (email.validity.patternMismatch) {
-            emailError.textContent = "${emailPatternMismatch}";
+        if (emailInput.validity.valueMissing) {
+            emailInput.setAttribute('data-bs-content', "${valueMissing}");
+        } else if (emailInput.validity.patternMismatch) {
+            emailInput.setAttribute('data-bs-content', "${emailPatternMismatch}");
         }
+        popover = createPopover(emailInput);
+        popover.show();
     }
 
     function showPasswordError() {
-        if (password.validity.valueMissing) {
-            passwordError.textContent = "${valueMissing}";
-        } else if (password.validity.tooShort) {
-            passwordError.textContent = "${passwordTooShort}";
+        if (passwordInput.validity.valueMissing) {
+            passwordInput.setAttribute('data-bs-content', "${valueMissing}");
+        } else if (passwordInput.validity.tooShort) {
+            passwordInput.setAttribute('data-bs-content', "${passwordTooShort}");
         }
+        popover = createPopover(passwordInput);
+        popover.show();
     }
 
-    function showRepeatedPasswordError() {
-        if (repeatedPassword.validity.valueMissing) {
-            repeatedPasswordError.textContent = "${valueMissing}";
-        } else if (repeatedPassword.value !== password.value) {
-            repeatedPasswordError.textContent = "${passwordMismatch}";
-        }
+    function showRepeatPasswordError() {
+        repeatPasswordInput.setAttribute('data-bs-content', "${passwordMismatch}");
+        popover = createPopover(repeatPasswordInput);
+        popover.show();
     }
+
+    function createPopover(input) {
+        popover.dispose();
+        return new bootstrap.Popover(input, { trigger: 'manual' });
+    }
+
+    signupDataForm.addEventListener('submit', function (event) {
+        if (!nameInput.validity.valid) {
+            showNameError();
+        } else if (!surnameInput.validity.valid) {
+            showSurnameError();
+        } else if (!emailInput.validity.valid) {
+            showEmailError();
+        } else if (!passwordInput.validity.valid) {
+            showPasswordError();
+        } else if (passwordInput.value !== repeatPasswordInput.value) {
+            showRepeatPasswordError();
+        }
+
+        if (!nameInput.validity.valid || !surnameInput.validity.valid || !emailInput.validity.valid
+            || !passwordInput.validity.valid || passwordInput.value !== repeatPasswordInput.value) {
+            event.preventDefault();
+        }
+    });
+    signupDataForm.addEventListener('focusout', function () {
+        popover.hide();
+    });
 </script>
 
 </body>

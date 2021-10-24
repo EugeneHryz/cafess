@@ -1,9 +1,10 @@
 package com.eugene.cafe.util;
 
 import com.eugene.cafe.util.impl.PasswordEncryptorImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class PasswordEncryptorImplTest {
 

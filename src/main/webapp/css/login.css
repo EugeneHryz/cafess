@@ -5,17 +5,18 @@
     justify-content: space-between;
     margin: 0;
     padding: 0;
-    background-color: var(--cafe-background);
+    /*background-color: var(--cafe-background);*/
+
 }
 
 #login-body .form-login {
     width: 100%;
     max-width: 340px;
     padding: 20px;
+    margin-top: 10%;
+    margin-bottom: 20%;
     border-radius: 16px;
-    margin-top: 30px;
-    margin-bottom: 16%;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
     background-color: var(--cafe-white);
 }
 
@@ -28,27 +29,4 @@
 #login-body .form-login input[type="password"] {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-}
-
-#login-body .button-login {
-    background-color: var(--cafe-primary);
-    border: none;
-    transition: background-color 200ms;
-}
-
-#login-body .button-login:hover,
-.button-login:active,
-.button-login:visited,
-.button-login:focus {
-    background-color: var(--cafe-black);
-}
-
-#login-body .button-signup {
-    background-color: var(--cafe-dark);
-    border: none;
-    transition: background-color 200ms;
-}
-
-#login-body .button-signup:hover {
-    background-color: var(--cafe-black);
 }

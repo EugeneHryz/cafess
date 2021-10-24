@@ -9,107 +9,136 @@
 
 <html>
 <head>
-    <title>Login</title>
+    <title><fmt:message key="title.login"/></title>
+
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css"/>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
 </head>
-<body id="login-body">
+<body id="login-body" style="background-attachment: fixed; background-size: cover; background-image: url('${pageContext.request.contextPath}/content/background.jpg');">
 
-<c:import url="header.jsp"/>
-
-<div class="form-login">
-    <form action="${pageContext.request.contextPath}/controller" method="post" id="loginForm" novalidate>
+<div class="form-login" style="margin-top: 6%">
+    <form id="loginForm" action="${pageContext.request.contextPath}/controller" method="post" novalidate>
         <input type="hidden" name="command" value="log_in"/>
         <h1 class="h3 mb-3 fw-normal"><fmt:message key="login.welcomeMessage"/></h1>
 
         <div class="form-floating">
-            <input type="email" class="form-control invalid-input" name="email" id="floatingEmail" placeholder=" " required pattern="^[\w.]+@[\w.]+$">
+            <input id="floatingEmail" type="email" class="form-control invalid-input" name="email"
+                   data-bs-toggle="popover" placeholder=" " required pattern="^(?=.{3,30}$)[\w.]+@[\w.]+$">
             <label for="floatingEmail"><fmt:message key="login.label.email"/></label>
-            <span id="invalidEmailInput"></span>
         </div>
 
         <div class="form-floating">
-            <input type="password" class="form-control invalid-input" name="password" id="floatingPassword" placeholder=" " required minlength="8">
+            <input id="floatingPassword" type="password" class="form-control invalid-input" name="password"
+                   data-bs-toggle="popover" placeholder=" " required minlength="8" maxlength="40">
             <label for="floatingPassword"><fmt:message key="login.label.password"/></label>
-            <span id="invalidPasswordInput"></span>
         </div>
-
-        ${invalidLoginOrPassword}
-
-        <button class="w-100 mt-4 btn btn-lg btn-primary button-login" type="submit" id="loginButton"><fmt:message
-                key="login.button.submit"/></button>
+        <p class="text-danger">
+            ${invalidLoginOrPassword}
+        </p>
+        <button class="w-100 mt-3 button button-primary button-lg" type="submit" id="loginButton"><fmt:message key="login.action.submit"/></button>
     </form>
 
     <form action="${pageContext.request.contextPath}/controller">
         <input type="hidden" name="command" value="go_to_signup_page"/>
         <fmt:message key="login.label.signup"/>
-        <button class="w-100 btn-dark btn-lg btn-primary button-signup" type="submit"><fmt:message
-                key="login.button.signup"/></button>
+        <button class="w-100 button button-primary-dark button-lg" type="submit"><fmt:message key="login.action.signup"/></button>
     </form>
 </div>
 
-<fmt:message key="login.error.emailPatternMismatch" var="emailPatternMismatch"/>
-<fmt:message key="login.error.emailMissing" var="emailMissing"/>
-
-<fmt:message key="login.error.passwordTooShort" var="passwordTooShort"/>
-<fmt:message key="login.error.passwordMissing" var="passwordMissing"/>
-
 <c:import url="footer.jsp"/>
 
+<fmt:message key="login.error.valueMissing" var="valueMissing"/>
+<fmt:message key="login.error.emailPatternMismatch" var="emailPatternMismatch"/>
+<fmt:message key="login.error.passwordTooShort" var="passwordTooShort"/>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
+<script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.min.js" type='text/javascript'></script>
+
 <script>
-    const email = document.getElementById('floatingEmail');
-    const password = document.getElementById('floatingPassword');
+    $(document).ready(function () {
+        const emailInput = document.getElementById('floatingEmail');
+        const passwordInput = document.getElementById('floatingPassword');
 
-    const form = document.getElementById('loginForm');
+        const loginForm = document.getElementById('loginForm');
 
-    const emailError = document.getElementById('invalidEmailInput');
-    const passwordError = document.getElementById('invalidPasswordInput');
+        let popover = new bootstrap.Popover(emailInput, { trigger: 'manual' });
 
-    email.addEventListener('input', function () {
+        emailInput.addEventListener('input', function () {
+            checkEmailValidity();
+        });
+        emailInput.addEventListener('focusin', function () {
+            checkEmailValidity();
+        });
 
-        if (email.validity.valid) {
-            emailError.textContent = ''
-        } else {
-            showEmailError();
+        passwordInput.addEventListener('input', function () {
+            checkPasswordValidity();
+        });
+        passwordInput.addEventListener('focusin', function () {
+            checkPasswordValidity();
+        })
+
+        function checkEmailValidity() {
+            if (emailInput.validity.valid) {
+                popover.hide();
+            } else {
+                showEmailError();
+            }
         }
+
+        function checkPasswordValidity() {
+            if (passwordInput.validity.valid) {
+                popover.hide();
+            } else {
+                showPasswordError();
+            }
+        }
+
+        function showEmailError() {
+            if (emailInput.validity.valueMissing) {
+                emailInput.setAttribute('data-bs-content', "${valueMissing}");
+            } else if (emailInput.validity.patternMismatch) {
+                emailInput.setAttribute('data-bs-content', "${emailPatternMismatch}");
+            }
+            popover = createPopover(emailInput);
+            popover.show();
+        }
+
+        function showPasswordError() {
+            if (passwordInput.validity.valueMissing) {
+                passwordInput.setAttribute('data-bs-content', "${valueMissing}");
+            } else if (passwordInput.validity.tooShort) {
+                passwordInput.setAttribute('data-bs-content', "${passwordTooShort}");
+            }
+            popover = createPopover(passwordInput);
+            popover.show();
+        }
+
+        function createPopover(input) {
+            popover.dispose();
+            return new bootstrap.Popover(input, { trigger: 'manual' });
+        }
+
+        loginForm.addEventListener('submit', function (event) {
+            if (!emailInput.validity.valid) {
+                popover = createPopover(emailInput);
+                showEmailError();
+            } else if (!passwordInput.validity.valid) {
+                popover = createPopover(passwordInput);
+                showPasswordError();
+            }
+
+            if (!emailInput.validity.valid || !passwordInput.validity.valid) {
+                event.preventDefault();
+            }
+        });
+        loginForm.addEventListener('focusout', function () {
+            popover.hide();
+        });
     });
-
-    password.addEventListener('input', function () {
-        if (password.validity.valid) {
-            passwordError.textContent = '';
-        } else {
-            showPasswordError();
-        }
-    });
-
-    form.addEventListener('submit', function (event) {
-        if (!email.validity.valid) {
-            showEmailError();
-        }
-        if (!password.validity.valid) {
-            showPasswordError();
-        }
-        if (!email.validity.valid || !password.validity.valid) {
-            event.preventDefault();
-        }
-    });
-
-    function showEmailError() {
-        if (email.validity.valueMissing) {
-            emailError.textContent = "${emailMissing}";
-        } else if (email.validity.patternMismatch) {
-            emailError.textContent = "${emailPatternMismatch}";
-        }
-    }
-
-    function showPasswordError() {
-        if (password.validity.tooShort) {
-            passwordError.textContent = "${passwordTooShort}"
-        } else if (password.validity.valueMissing) {
-            passwordError.textContent = "${passwordMissing}"
-        }
-    }
 </script>
 
 </body>

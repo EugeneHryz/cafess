@@ -10,11 +10,11 @@
 
 <html>
 <head>
-    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/8d5a2ad3e4.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
 </head>
 <body id="footer" style="justify-self: flex-end">
 

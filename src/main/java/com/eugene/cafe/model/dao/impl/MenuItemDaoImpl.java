@@ -274,7 +274,7 @@ public class MenuItemDaoImpl extends MenuItemDao {
         statement.setString(1, entity.getName());
         statement.setString(2, entity.getDescription());
         statement.setDouble(3, entity.getPrice());
-        statement.setString(4, entity.getImagePath());
-        statement.setInt(5, entity.getCategoryId());
+        statement.setInt(4, entity.getCategoryId());
+        statement.setString(5, entity.getImagePath());
     }
 }

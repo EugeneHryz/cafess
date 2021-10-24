@@ -3,16 +3,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:if test="${not empty sessionScope.locale}">
-    <fmt:setLocale value="${sessionScope.locale}" />
+    <fmt:setLocale value="${sessionScope.locale}" scope="session" />
 </c:if>
 <fmt:setBundle basename="page_content" />
 
 <html>
 <head>
+    <title><fmt:message key="title.main"/></title>
+
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/colors.css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css"/>
 
     <style>
         .grey-text {
@@ -21,7 +23,6 @@
             opacity: 0.4;
             transition: opacity 250ms;
         }
-
         .grey-text:hover {
             cursor: pointer;
             opacity: 0.7;
@@ -30,27 +31,27 @@
 </head>
 <body id="main-body">
 
-<c:import url="header.jsp" />
+<c:import url="header.jsp"/>
 
 <div class="album py-3">
     <div class="container" style="width: 950px">
 
         <div class="d-flex justify-content-between mb-4">
             <div>
-                <span>Sort by</span>
+                <span><fmt:message key="main.text.sortBy"/></span>
                 <select id="sortSelect" class="form-select w-auto">
                     <option value="price_ascending"
-                    ${sessionScope.menuItemsSortOrder eq 'price_ascending' ? 'selected' : ''}>Price: low to high</option>
+                    ${sessionScope.menuItemsSortOrder eq 'price_ascending' ? 'selected' : ''}><fmt:message key="main.text.priceAsc"/></option>
                     <option value="price_descending"
-                    ${sessionScope.menuItemsSortOrder eq 'price_descending' ? 'selected' : ''}>Price: high to low</option>
+                    ${sessionScope.menuItemsSortOrder eq 'price_descending' ? 'selected' : ''}><fmt:message key="main.text.priceDesc"/></option>
                 </select>
             </div>
             <div>
-                <span>Category</span>
+                <span><fmt:message key="main.text.category"/></span>
                 <select id="categorySelect" class="form-select w-auto">
-                    <option value="0">All</option>
+                    <option value="0"><fmt:message key="main.text.all"/></option>
                     <c:forEach items="${applicationScope.menuCategoriesList}" var="item">
-                        <option value="${item.id}" ${sessionScope.menuItemsCurrentCategory.id eq item.id ? 'selected' : ''}>${item.category}</option>
+                        <option value="${item.id}" ${sessionScope.menuItemsCurrentCategory.id eq item.id ? 'selected' : ''}><fmt:message key="main.text.${item.category}"/></option>
                     </c:forEach>
                 </select>
             </div>
@@ -60,7 +61,7 @@
 
             <c:forEach items="${sessionScope.menuItemsSublist}" var="item" varStatus="status">
                 <div class="col">
-                    <div class="card">
+                    <div class="card" style="border: none">
                         <c:choose>
                             <c:when test="${not empty item.imagePath}">
                                 <img src="${pageContext.request.contextPath}/files/menu_items/${item.imagePath}" class="card-img-top"
@@ -80,12 +81,14 @@
                             <span id="itemCategoryId" style="display: none">${item.categoryId}</span>
 
                             <div class="collapse" id="collapsingText${status.count}">${item.description}</div>
-                            <a class="d-block grey-text" data-bs-toggle="collapse" href="#collapsingText${status.count}" aria-controls="collapsingText${status.count}" role="button">Description</a>
+                            <a class="grey-text" data-bs-toggle="collapse" href="#collapsingText${status.count}" aria-controls="collapsingText${status.count}" role="button">
+                                <fmt:message key="main.text.description"/>
+                            </a>
                         </div>
 
                         <button id="addToCartButton${item.id}" class="btn btn-outline-dark w-100 py-2"
                            style="border-radius: 0; border-bottom: none; border-left: none; border-right: none;">
-                            Add to cart
+                            <fmt:message key="main.action.addToCart"/>
                         </button>
                     </div>
                 </div>
@@ -136,6 +139,10 @@
     </div>
 </div>
 
+<form id="goToLoginPage" class="visually-hidden" method="get" action="${pageContext.request.contextPath}/controller">
+    <input type="hidden" name="command" value="go_to_login_page"/>
+</form>
+
 <ul class="pagination my-4"></ul>
 
 <c:import url="footer.jsp" />
@@ -166,6 +173,12 @@
             initiateStartPageClick: false,
             prev: '&laquo;',
             next: '&raquo;',
+            firstClass: 'visually-hidden',
+            lastClass: 'visually-hidden',
+            anchorClass: 'page-button',
+            pageClass: 'item-page',
+            prevClass: 'item-page prev',
+            nextClass: 'item-page next',
 
             onPageClick: function (event, page) {
                 goToAnotherPage(page);
@@ -197,7 +210,11 @@
         $('#itemsContainer').find('button').click(function () {
             const productId = $(this).attr('id').slice(15);
 
-            addToCart(productId);
+            if (${not empty sessionScope.user}) {
+                addToCart(productId);
+            } else {
+                $('#goToLoginPage').submit();
+            }
         });
 
         function addToCart(productId) {
