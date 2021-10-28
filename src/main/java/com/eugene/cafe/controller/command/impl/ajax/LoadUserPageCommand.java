@@ -3,6 +3,7 @@ package com.eugene.cafe.controller.command.impl.ajax;
 import com.eugene.cafe.controller.command.AjaxCommand;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
+import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import com.google.gson.Gson;
@@ -26,9 +27,10 @@ public class LoadUserPageCommand implements AjaxCommand {
     public void execute(HttpServletRequest request, HttpServletResponse response) {
 
         String pageNumberParam = request.getParameter(PARAM_PAGE_NUMBER);
+        int pageNumber = Integer.parseInt(pageNumberParam);
 
         try {
-            List<User> users = userService.getSubsetOfUsers(pageNumberParam);
+            List<UserDto> users = userService.getSubsetOfUsers(pageNumber);
             String jsonData = new Gson().toJson(users);
             try {
                 response.getWriter().write(jsonData);

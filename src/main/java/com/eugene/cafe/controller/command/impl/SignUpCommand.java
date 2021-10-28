@@ -8,9 +8,9 @@ import static com.eugene.cafe.controller.command.RequestParameter.*;
 import static com.eugene.cafe.controller.command.PagePath.*;
 
 import com.eugene.cafe.controller.command.Router;
-import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.manager.ResourceManager;
+import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import com.eugene.cafe.model.validator.UserValidator;
@@ -42,7 +42,7 @@ public class SignUpCommand implements Command {
         try {
             if (UserValidator.validateUser(name, surname, email, password)) {
 
-                Optional<User> user = userService.signUp(name, surname, email, password);
+                Optional<UserDto> user = userService.signUp(name, surname, email, password);
                 if (user.isPresent()) {
                     request.getSession().setAttribute(USER, user.get());
                     request.getSession().setAttribute(ROLE, user.get().getRole().name());

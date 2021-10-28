@@ -6,9 +6,9 @@ import static com.eugene.cafe.controller.command.AttributeName.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 import com.eugene.cafe.controller.command.Router;
-import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.manager.ResourceManager;
+import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class LogInCommand implements Command {
 
         Router router;
         try {
-            Optional<User> user = userService.logIn(email, password);
+            Optional<UserDto> user = userService.logIn(email, password);
             if (user.isPresent()) {
                 request.getSession().setAttribute(USER, user.get());
                 request.getSession().setAttribute(ROLE, user.get().getRole().name());

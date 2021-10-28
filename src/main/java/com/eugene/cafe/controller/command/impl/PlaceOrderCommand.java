@@ -10,6 +10,7 @@ import com.eugene.cafe.controller.command.Router;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
+import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.OrderService;
 import com.eugene.cafe.model.service.impl.OrderServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class PlaceOrderCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request) {
 
-        User user = (User) request.getSession().getAttribute(USER);
+        UserDto user = (UserDto) request.getSession().getAttribute(USER);
         int userId = user.getId();
 
         String pickupTimeParam = request.getParameter(PARAM_PICKUP_TIME);

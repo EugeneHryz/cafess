@@ -8,8 +8,8 @@ import static com.eugene.cafe.controller.command.RequestParameter.*;
 import static com.eugene.cafe.controller.command.AttributeName.*;
 
 import com.eugene.cafe.controller.command.Router;
-import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
+import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,12 +27,12 @@ public class TopUpBalanceCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request) {
 
-        User user = (User) request.getSession().getAttribute(USER);
+        UserDto user = (UserDto) request.getSession().getAttribute(USER);
         String topUpAmount = request.getParameter(PARAM_TOP_UP_AMOUNT);
 
         Router router = new Router(PROFILE_SETTINGS_PAGE, Router.RouterType.REDIRECT);
         try {
-            Optional<User> updatedUser = userService.topUpUserBalance(user.getId(), topUpAmount);
+            Optional<UserDto> updatedUser = userService.topUpUserBalance(user.getId(), topUpAmount);
             updatedUser.ifPresent(value -> request.getSession().setAttribute(USER, value));
 
         } catch (ServiceException e) {

@@ -2,8 +2,8 @@ package com.eugene.cafe.controller.command.impl;
 
 import com.eugene.cafe.controller.command.Command;
 import com.eugene.cafe.controller.command.Router;
-import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
+import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.ServletException;
@@ -17,11 +17,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.eugene.cafe.controller.command.PagePath.ERROR_PAGE;
-import static com.eugene.cafe.controller.command.PagePath.PROFILE_SETTINGS_PAGE;
-import static com.eugene.cafe.controller.command.AttributeName.EXCEPTION;
-import static com.eugene.cafe.controller.command.AttributeName.USER;
-import static com.eugene.cafe.controller.command.RequestParameter.PARAM_FILE;
+import static com.eugene.cafe.controller.command.PagePath.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
+import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 public class UpdateProfilePictureCommand implements Command {
 
@@ -35,7 +33,7 @@ public class UpdateProfilePictureCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request) {
 
-        User user = (User) request.getSession().getAttribute(USER);
+        UserDto user = (UserDto) request.getSession().getAttribute(USER);
         int id = user.getId();
         String idAsString = Integer.toString(id);
 
@@ -67,7 +65,7 @@ public class UpdateProfilePictureCommand implements Command {
                 part.write(userDir + File.separator + submittedFileName);
             }
 
-            Optional<User> updatedUser = userService.updateProfilePicture(id, idAsString + File.separator + submittedFileName);
+            Optional<UserDto> updatedUser = userService.updateProfilePicture(id, idAsString + File.separator + submittedFileName);
             updatedUser.ifPresent(value -> request.getSession().setAttribute(USER, value));
 
         } catch (IOException | ServletException | ServiceException e) {

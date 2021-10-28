@@ -3,7 +3,6 @@ package com.eugene.cafe.controller.command.impl;
 import com.eugene.cafe.controller.command.Command;
 
 import static com.eugene.cafe.controller.command.AttributeName.*;
-import static com.eugene.cafe.controller.command.AttributeName.ORDER_COUNT;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 import static com.eugene.cafe.controller.command.PagePath.*;

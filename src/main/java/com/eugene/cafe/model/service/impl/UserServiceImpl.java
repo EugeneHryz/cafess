@@ -8,6 +8,7 @@ import com.eugene.cafe.model.dao.TransactionHelper;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.exception.ServiceException;
+import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.util.PasswordEncryptor;
 import com.eugene.cafe.util.impl.PasswordEncryptorImpl;
@@ -17,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
 
@@ -25,21 +27,22 @@ public class UserServiceImpl implements UserService {
     public static final int USERS_PER_PAGE = 8;
 
     @Override
-    public Optional<User> logIn(String email, String password) throws ServiceException {
+    public Optional<UserDto> logIn(String email, String password) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
-        Optional<User> result = Optional.empty();
+        Optional<UserDto> result = Optional.empty();
         helper.init(userDao);
         try {
             if (UserValidator.validateEmail(email) && UserValidator.validatePassword(password)) {
 
-                Optional<User> client = userDao.findUserByEmail(email);
-                if (client.isPresent()) {
+                Optional<User> user = userDao.findUserByEmail(email);
+                if (user.isPresent()) {
                     PasswordEncryptor encryptor = new PasswordEncryptorImpl();
-                    if (encryptor.checkPassword(password, client.get().getHashedPassword())) {
-                        result = client;
+                    if (encryptor.checkPassword(password, user.get().getHashedPassword())) {
+
+                        result = Optional.of(new UserDto(user.get()));
                     }
                 }
             }
@@ -53,12 +56,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> signUp(String name, String surname, String email, String password) throws ServiceException {
+    public Optional<UserDto> signUp(String name, String surname, String email, String password) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
-        Optional<User> result = Optional.empty();
+        Optional<UserDto> result = Optional.empty();
         helper.init(userDao);
         try {
             Optional<User> user = userDao.findUserByEmail(email);
@@ -76,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
                 User newUser = builder.buildUser();
                 if (userDao.create(newUser)) {
-                    result = Optional.of(newUser);
+                    result = Optional.of(new UserDto(newUser));
                 }
             }
         } catch (DaoException e) {
@@ -89,12 +92,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> editProfile(int id, String name, String surname, String email) throws ServiceException {
+    public Optional<UserDto> editProfile(int id, String name, String surname, String email) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
-        Optional<User> edited = Optional.empty();
+        Optional<UserDto> edited = Optional.empty();
         helper.init(userDao);
         try {
             if (UserValidator.validateUser(name, surname, email)) {
@@ -107,7 +110,10 @@ public class UserServiceImpl implements UserService {
                     user.setSurname(surname);
                     user.setEmail(email);
 
-                    edited = userDao.update(user);
+                    Optional<User> updatedUser = userDao.update(user);
+                    if (updatedUser.isPresent()) {
+                        edited = Optional.of(new UserDto(updatedUser.get()));
+                    }
                 }
             }
         } catch (DaoException e) {
@@ -120,22 +126,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> updateProfilePicture(int id, String picturePath) throws ServiceException {
+    public Optional<UserDto> updateProfilePicture(int id, String picturePath) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
-        Optional<User> updated;
+        Optional<UserDto> userDto = Optional.empty();
         helper.init(userDao);
         try {
-            updated = userDao.updateProfilePicture(id, picturePath);
+             Optional<User> updated = userDao.updateProfilePicture(id, picturePath);
+             if (updated.isPresent()) {
+                 userDto = Optional.of(new UserDto(updated.get()));
+             }
         } catch (DaoException e) {
             logger.error("Unable to update profile picture", e);
             throw new ServiceException("Unable to update profile picture", e);
         } finally {
             helper.end();
         }
-        return updated;
+        return userDto;
     }
 
     @Override
@@ -169,18 +178,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getSubsetOfUsers(String pageNumber) throws ServiceException {
+    public List<UserDto> getSubsetOfUsers(int pageNumber) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
         helper.init(userDao);
-        List<User> users;
-        // todo: validate page number
-        int number = Integer.parseInt(pageNumber);
-        int offset = USERS_PER_PAGE * (number - 1);
+        List<UserDto> usersDto;
+        int offset = USERS_PER_PAGE * (pageNumber - 1);
         try {
-            users = userDao.getSubsetOfUsers(USERS_PER_PAGE, offset);
+            List<User> users = userDao.getSubsetOfUsers(USERS_PER_PAGE, offset);
+            usersDto = users.stream().map(UserDto::new).toList();
 
         } catch (DaoException e) {
             logger.error("Unable to get a subset of users", e);
@@ -188,7 +196,7 @@ public class UserServiceImpl implements UserService {
         } finally {
             helper.end();
         }
-        return users;
+        return usersDto;
     }
 
     @Override
@@ -211,19 +219,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> changeUserStatus(int userId, UserStatus status) throws ServiceException {
+    public Optional<UserDto> changeUserStatus(int userId, UserStatus status) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
         helper.init(userDao);
-        Optional<User> bannedUser = Optional.empty();
+        Optional<UserDto> userDto = Optional.empty();
         try {
             Optional<User> user = userDao.findById(userId);
             if (user.isPresent()) {
                 user.get().setStatus(status);
 
-                bannedUser = userDao.update(user.get());
+                Optional<User> updatedUser = userDao.update(user.get());
+                if (updatedUser.isPresent()) {
+                    userDto = Optional.of(new UserDto(updatedUser.get()));
+                }
             }
         } catch (DaoException e) {
             logger.error("Unable to ban the user (id: " + userId + ")", e);
@@ -231,17 +242,17 @@ public class UserServiceImpl implements UserService {
         } finally {
             helper.end();
         }
-        return bannedUser;
+        return userDto;
     }
 
     @Override
-    public Optional<User> topUpUserBalance(int userId, String topUpAmount) throws ServiceException {
+    public Optional<UserDto> topUpUserBalance(int userId, String topUpAmount) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
         helper.init(userDao);
-        Optional<User> updated = Optional.empty();
+        Optional<UserDto> userDto = Optional.empty();
         try {
             if (UserValidator.validateTopUpAmount(topUpAmount)) {
 
@@ -252,7 +263,10 @@ public class UserServiceImpl implements UserService {
                     User user = userOptional.get();
                     user.setBalance(user.getBalance() + amount);
 
-                    updated = userDao.update(user);
+                    Optional<User> updated = userDao.update(user);
+                    if (updated.isPresent()) {
+                        userDto = Optional.of(new UserDto(updated.get()));
+                    }
                 }
             }
         } catch (DaoException e) {
@@ -261,6 +275,6 @@ public class UserServiceImpl implements UserService {
         } finally {
             helper.end();
         }
-        return updated;
+        return userDto;
     }
 }

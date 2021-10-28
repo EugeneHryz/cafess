@@ -29,7 +29,6 @@ public class AddItemToCartCommand implements AjaxCommand {
     public void execute(HttpServletRequest request, HttpServletResponse response) {
 
         String menuItemId = request.getParameter(PARAM_MENU_ITEM_ID);
-
         Map<MenuItem, Integer> shoppingCart = (HashMap<MenuItem, Integer>) request.getSession().getAttribute(SHOPPING_CART);
 
         int itemId = Integer.parseInt(menuItemId);

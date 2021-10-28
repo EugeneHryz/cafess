@@ -2,7 +2,6 @@ package com.eugene.cafe.controller.command.impl.ajax;
 
 import com.eugene.cafe.controller.command.AjaxCommand;
 import com.eugene.cafe.entity.MenuItem;
-import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.model.dao.MenuItemSortOrder;
 import com.eugene.cafe.model.service.MenuService;

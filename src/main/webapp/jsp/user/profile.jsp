@@ -15,8 +15,6 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile_settings.css"/>
-
-    <script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.min.js" type='text/javascript'></script>
 </head>
 
 <body id="profile-settings-body" style="background: var(--cafe-background);
@@ -181,6 +179,7 @@
 
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
+<script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.min.js" type='text/javascript'></script>
 
 <script>
     const fileInput = document.getElementById('fileUpload');

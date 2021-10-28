@@ -166,7 +166,6 @@
 <script src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
 <script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.min.js" type='text/javascript'></script>
 
-
 <script>
     $(document).ready(function () {
         const fileInput = document.getElementById('fileUpload');

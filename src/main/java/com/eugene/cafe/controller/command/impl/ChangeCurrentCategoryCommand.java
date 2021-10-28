@@ -15,8 +15,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.eugene.cafe.controller.command.PagePath.ERROR_PAGE;
-import static com.eugene.cafe.controller.command.PagePath.MAIN_PAGE;
+import static com.eugene.cafe.controller.command.PagePath.*;
 import static com.eugene.cafe.controller.command.AttributeName.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
