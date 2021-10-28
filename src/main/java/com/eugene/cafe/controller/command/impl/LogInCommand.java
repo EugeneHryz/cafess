@@ -2,23 +2,25 @@ package com.eugene.cafe.controller.command.impl;
 
 import com.eugene.cafe.controller.command.Command;
 import static com.eugene.cafe.controller.command.PagePath.*;
-import static com.eugene.cafe.controller.command.RequestAttribute.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 import com.eugene.cafe.controller.command.Router;
 import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.manager.ResourceManager;
-import com.eugene.cafe.model.service.MenuService;
 import com.eugene.cafe.model.service.UserService;
-import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Locale;
 import java.util.Optional;
 
 public class LogInCommand implements Command {
+
+    private static final Logger logger = LogManager.getLogger(LogInCommand.class);
 
     private static final UserService userService = new UserServiceImpl();
 
@@ -30,10 +32,10 @@ public class LogInCommand implements Command {
 
         Router router;
         try {
-            Optional<User> client = userService.signIn(email, password);
-            if (client.isPresent()) {
-                request.getSession().setAttribute(USER, client.get());
-                request.getSession().setAttribute(ROLE, client.get().getRole().name());
+            Optional<User> user = userService.logIn(email, password);
+            if (user.isPresent()) {
+                request.getSession().setAttribute(USER, user.get());
+                request.getSession().setAttribute(ROLE, user.get().getRole().name());
 
                 router = new Router(MAIN_PAGE, Router.RouterType.REDIRECT);
             } else {
@@ -44,7 +46,7 @@ public class LogInCommand implements Command {
                 router = new Router(LOGIN_PAGE, Router.RouterType.FORWARD);
             }
         } catch (ServiceException e) {
-            // todo: write log
+            logger.error("Unable to log in", e);
             request.getSession().setAttribute(EXCEPTION, e);
             router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }

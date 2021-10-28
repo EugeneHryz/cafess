@@ -2,13 +2,11 @@ package com.eugene.cafe.controller.command.impl;
 
 import com.eugene.cafe.controller.command.Command;
 
-import static com.eugene.cafe.controller.command.RequestAttribute.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 import static com.eugene.cafe.controller.command.PagePath.*;
 import com.eugene.cafe.controller.command.Router;
-import com.eugene.cafe.entity.MenuItem;
-import com.eugene.cafe.entity.User;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.manager.ResourceManager;
 import com.eugene.cafe.model.service.MenuService;
@@ -16,13 +14,16 @@ import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Locale;
 
 public class AddMenuItemCommand implements Command {
+
+    private static final Logger logger = LogManager.getLogger(AddMenuItemCommand.class);
 
     private static final MenuService menuService = new MenuServiceImpl();
 
@@ -47,9 +48,6 @@ public class AddMenuItemCommand implements Command {
         Router router = new Router(ADMIN_DASHBOARD, Router.RouterType.FORWARD);
         try {
             String submittedFileName = request.getPart(PARAM_FILE).getSubmittedFileName();
-            if (submittedFileName == null || submittedFileName.isEmpty()) {
-                return router;
-            }
 
             for (Part part : request.getParts()) {
                 if (part.getSubmittedFileName() != null &&
@@ -58,23 +56,16 @@ public class AddMenuItemCommand implements Command {
                     part.write(uploadDir + File.separator + submittedFileName);
                 }
             }
-            MenuItem.Builder builder = new MenuItem.Builder();
-            builder.setName(menuItemName)
-                    .setDescription(menuItemDescription)
-                    .setPrice(Double.parseDouble(menuItemPrice))
-                    .setCategoryId(Integer.parseInt(categoryId))
-                    .setImagePath(submittedFileName);
+            if (!menuService.addMenuItem(menuItemName, menuItemPrice, categoryId,
+                    menuItemDescription, submittedFileName)) {
 
-            Locale locale = Locale.forLanguageTag((String) request.getSession(false).getAttribute(LOCALE));
-            ResourceManager manager = new ResourceManager("message", locale);
+                Locale locale = Locale.forLanguageTag((String) request.getSession(false).getAttribute(LOCALE));
+                ResourceManager manager = new ResourceManager("message", locale);
 
-            if (menuService.addMenuItem(builder.buildMenuItem())) {
-                request.setAttribute(MENU_ITEM_ADDED, manager.getProperty(MENU_ITEM_ADDED));
-            } else {
                 request.setAttribute(MENU_ITEM_NOT_ADDED, manager.getProperty(MENU_ITEM_NOT_ADDED));
             }
         } catch (IOException | ServletException | ServiceException e) {
-            // todo: write log
+            logger.error("Unable to add menu item", e);
             request.getSession().setAttribute(EXCEPTION, e);
             router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }

@@ -10,9 +10,11 @@ import java.util.Optional;
 
 public interface MenuService {
 
-    boolean addMenuItem(MenuItem newMenuItem) throws ServiceException;
+    boolean addMenuItem(String name, String price, String categoryId, String description, String imagePath) throws ServiceException;
 
     Optional<MenuItem> findMenuItemById(int id) throws ServiceException;
+
+    Optional<Category> findCategoryById(int id) throws ServiceException;
 
     List<MenuItem> getSubsetOfMenuItems(int pageNumber, MenuItemSortOrder sortOrder, Category category) throws ServiceException;
 

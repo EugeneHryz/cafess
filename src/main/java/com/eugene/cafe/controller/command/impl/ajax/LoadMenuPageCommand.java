@@ -10,6 +10,8 @@ import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,10 +20,12 @@ import static com.eugene.cafe.controller.command.RequestParameter.PARAM_PAGE_NUM
 
 public class LoadMenuPageCommand implements AjaxCommand {
 
+    private static final Logger logger = LogManager.getLogger(LoadMenuPageCommand.class);
+
     private static final MenuService menuService = new MenuServiceImpl();
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) {
 
         String pageNumberParam = request.getParameter(PARAM_PAGE_NUMBER);
         int pageNumber = Integer.parseInt(pageNumberParam);
@@ -29,12 +33,19 @@ public class LoadMenuPageCommand implements AjaxCommand {
         try {
             List<MenuItem> menuItems = menuService.getSubsetOfMenuItems(pageNumber, MenuItemSortOrder.PRICE_ASCENDING, null);
             String jsonData = new Gson().toJson(menuItems);
-            response.getWriter().write(jsonData);
-
+            try {
+                response.getWriter().write(jsonData);
+            } catch (IOException e) {
+                logger.error("Error while writing a response body", e);
+            }
         } catch (ServiceException e) {
-            // todo: write log
+            logger.error("Unable to load menu page command", e);
             response.setStatus(400);
-            response.getWriter().write(e.getMessage());
+            try {
+                response.getWriter().write(e.getMessage());
+            } catch (IOException ioException) {
+                logger.error("Error while writing a response body", ioException);
+            }
         }
     }
 }

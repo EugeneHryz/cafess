@@ -9,6 +9,7 @@ public class GoToSignupPageCommand implements Command {
 
     @Override
     public Router execute(HttpServletRequest request) {
+
         Router router = new Router(PagePath.SIGNUP_PAGE, Router.RouterType.REDIRECT);
         return router;
     }

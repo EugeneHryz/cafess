@@ -9,6 +9,8 @@ import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,10 +19,12 @@ import static com.eugene.cafe.controller.command.RequestParameter.PARAM_USER_ID;
 
 public class UnbanUserCommand implements AjaxCommand {
 
+    private static final Logger logger = LogManager.getLogger(UnbanUserCommand.class);
+
     private static final UserService userService = new UserServiceImpl();
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) {
 
         String userIdParam = request.getParameter(PARAM_USER_ID);
         int userId = Integer.parseInt(userIdParam);
@@ -30,12 +34,20 @@ public class UnbanUserCommand implements AjaxCommand {
 
             if (unbannedUser.isPresent()) {
                 String jsonData = new Gson().toJson(unbannedUser.get());
-                response.getWriter().write(jsonData);
+                try {
+                    response.getWriter().write(jsonData);
+                } catch (IOException e) {
+                    logger.error("Error while writing a response body", e);
+                }
             }
         } catch (ServiceException e) {
-            // todo: write log
-            response.setStatus(400);
-            response.getWriter().write(e.getMessage());
+            logger.error("Unable to unban user with id: " + userId, e);
+            response.setStatus(500);
+            try {
+                response.getWriter().write(e.getMessage());
+            } catch (IOException ioException) {
+                logger.error("Error while writing a response body", ioException);
+            }
         }
     }
 }

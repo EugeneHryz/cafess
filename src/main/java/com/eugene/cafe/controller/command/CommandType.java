@@ -1,37 +1,49 @@
 package com.eugene.cafe.controller.command;
 
-public enum CommandType {
-    LOG_IN,
-    LOG_OUT,
-    DEFAULT,
-    GO_TO_SIGNUP_PAGE,
-    GO_TO_LOGIN_PAGE,
-    SIGN_UP,
-    CHANGE_LOCALE,
-    GO_TO_PROFILE_PAGE,
-    EDIT_USER_PROFILE,
-    UPDATE_PROFILE_PICTURE,
-    CHANGE_PASSWORD,
-    GO_TO_ADMIN_DASHBOARD_PAGE,
-    ADD_MENU_ITEM,
-    GO_TO_MENU_PAGE,
-    CHANGE_SORT_ORDER,
-    CHANGE_CURRENT_CATEGORY,
-    TOP_UP_BALANCE,
-    GO_TO_CHECKOUT_PAGE,
-    PLACE_ORDER,
-    GO_TO_ORDER_HISTORY_PAGE,
-    SAVE_REVIEW,
-    GO_TO_ORDER_PAGE,
-    CHANGE_ORDER_STATUS,
+import java.util.List;
 
-    GET_USER_COUNT,
-    LOAD_USER_PAGE,
-    BAN_USER,
-    UNBAN_USER,
-    ADD_ITEM_TO_CART,
-    REMOVE_ITEM_FROM_CART,
-    GET_MENU_ITEM_COUNT,
-    LOAD_MENU_PAGE,
-    DELETE_ITEM,
+public enum CommandType {
+    LOG_IN("guest", "user", "admin"),
+    LOG_OUT("guest", "user", "admin"),
+    DEFAULT("guest", "user", "admin"),
+    GO_TO_SIGNUP_PAGE("guest", "user", "admin"),
+    GO_TO_LOGIN_PAGE("guest", "user", "admin"),
+    SIGN_UP("guest", "user", "admin"),
+    CHANGE_LOCALE("guest", "user", "admin"),
+    GO_TO_PROFILE_PAGE("user", "admin"),
+    EDIT_USER_PROFILE("user", "admin"),
+    UPDATE_PROFILE_PICTURE("user", "admin"),
+    CHANGE_PASSWORD("user", "admin"),
+    GO_TO_ADMIN_DASHBOARD_PAGE("admin"),
+    ADD_MENU_ITEM("admin"),
+    GO_TO_MENU_PAGE("guest", "user", "admin"),
+    CHANGE_SORT_ORDER("guest", "user", "admin"),
+    CHANGE_CURRENT_CATEGORY("guest", "user", "admin"),
+    TOP_UP_BALANCE("user", "admin"),
+    GO_TO_CHECKOUT_PAGE("user", "admin"),
+    PLACE_ORDER("user", "admin"),
+    GO_TO_ORDER_HISTORY_PAGE("user", "admin"),
+    SAVE_REVIEW("user", "admin"),
+    GO_TO_ORDERS_PAGE("admin"),
+    CHANGE_ORDER_STATUS("admin"),
+
+    GET_USER_COUNT("admin"),
+    LOAD_USER_PAGE("admin"),
+    BAN_USER("admin"),
+    UNBAN_USER("admin"),
+    ADD_ITEM_TO_CART("user", "admin"),
+    REMOVE_ITEM_FROM_CART("user", "admin"),
+    GET_MENU_ITEM_COUNT("admin"),
+    LOAD_MENU_PAGE("admin"),
+    DELETE_ITEM("admin");
+
+    private final List<String> roles;
+
+    CommandType(String... roles) {
+        this.roles = List.of(roles);
+    }
+
+    public boolean isValidRole(String role) {
+        return roles.stream().anyMatch(r -> r.equalsIgnoreCase(role));
+    }
 }

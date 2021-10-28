@@ -1,7 +1,7 @@
 :root {
     --cafe-white: #fff;
-
-    --cafe-background: #EFEFEF;
+    /*#EFEFEF*/
+    --cafe-background: #f6edda;
     --cafe-primary: #A45D5D;
     --cafe-secondary: #FFC069;
     --cafe-dark: #683a3a;
@@ -48,6 +48,7 @@
 }
 
 .button-primary:hover {
+    color: #fff;
     background-color: var(--cafe-dark);
     border-color: var(--cafe-dark);
 }

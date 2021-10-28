@@ -14,16 +14,15 @@
 
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/css/orders.css" rel="stylesheet"/>
-
 </head>
-<body id="orders-body" style="background: #EFEFEF;
+<body id="orders-body" style="background: var(--cafe-background);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     min-height: 100vh">
 
-<c:import url="header.jsp"/>
+<c:import url="../header.jsp"/>
 
 <div class="mt-5 mb-3" style="width: 38%">
 
@@ -34,7 +33,7 @@
                     <h3 class="fs-3"><fmt:formatDate value="${item.date}" type="both"/></h3>
                     <span class="fs-6 text-muted"><fmt:message key="orderHistory.text.readyAt"/> <fmt:formatDate value="${item.pickUpTime}" type="time" timeStyle="short"/></span>
                 </div>
-                <a id="openReview${status.count}" class="grey-text position-absolute top-0 end-0 m-2">
+                <a id="openReview${status.count}" class="star-text position-absolute top-0 end-0 m-2">
                     <i class="far fa-star fa-2x"></i>
                 </a>
             </div>
@@ -116,6 +115,10 @@
     </c:forEach>
 </div>
 
+<c:if test="${requestScope.orderCount == 0}">
+    <p class="display-6"><fmt:message key="orders.text.noOrders"/></p>
+</c:if>
+
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
@@ -139,7 +142,7 @@
 
 <ul class="pagination mb-4"></ul>
 
-<c:import url="footer.jsp"/>
+<c:import url="../footer.jsp"/>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
@@ -149,53 +152,55 @@
         const totalOrders = ${requestScope.orderCount};
         const ordersPerPage = 4;
 
-        const totalPages = Math.ceil(totalOrders / ordersPerPage);
-        const visiblePages = (totalPages > 4) ? 4 : totalPages;
+        if (totalOrders > 0) {
+            const totalPages = Math.ceil(totalOrders / ordersPerPage);
+            const visiblePages = (totalPages > 4) ? 4 : totalPages;
 
-        const goToPageForm = $('#goToAnotherPage');
+            const goToPageForm = $('#goToAnotherPage');
 
-        const pagination = $('.pagination');
-        pagination.twbsPagination({
-            totalPages: totalPages,
-            visiblePages: visiblePages,
-            initiateStartPageClick: false,
-            prev: '&laquo;',
-            next: '&raquo;',
-            firstClass: 'visually-hidden',
-            lastClass: 'visually-hidden',
-            anchorClass: 'page-button',
-            pageClass: 'item-page',
-            prevClass: 'item-page prev',
-            nextClass: 'item-page next',
+            const pagination = $('.pagination');
+            pagination.twbsPagination({
+                totalPages: totalPages,
+                visiblePages: visiblePages,
+                initiateStartPageClick: false,
+                prev: '&laquo;',
+                next: '&raquo;',
+                firstClass: 'visually-hidden',
+                lastClass: 'visually-hidden',
+                anchorClass: 'page-button',
+                pageClass: 'item-page',
+                prevClass: 'item-page prev',
+                nextClass: 'item-page next',
 
-            onPageClick: function (event, page) {
-                goToAnotherPage(page);
+                onPageClick: function (event, page) {
+                    goToAnotherPage(page);
+                }
+            });
+
+            const currentPage = ${requestScope.ordersPageNumber};
+            pagination.twbsPagination('changePage', currentPage);
+
+            function goToAnotherPage(page) {
+                goToPageForm.find('#pageNumber').attr('value', page);
+                goToPageForm.submit();
             }
-        });
 
-        const currentPage = ${requestScope.ordersPageNumber};
-        pagination.twbsPagination('changePage', currentPage);
+            $('.card-header').find('a').click(function () {
+                const id = $(this).attr('id').slice(10);
 
-        function goToAnotherPage(page) {
-            goToPageForm.find('#pageNumber').attr('value', page);
-            goToPageForm.submit();
+                $('#reviewModal' + id).modal('show');
+            });
+
+            $('select').on('change', function () {
+                const orderId = $(this).attr('id').slice(6);
+
+                const changeOrderStatus = $('#changeOrderStatus');
+                changeOrderStatus.find('#orderId').attr('value', orderId);
+                changeOrderStatus.find('#orderStatus').attr('value', $(this).val());
+
+                changeOrderStatus.submit();
+            });
         }
-
-        $('.card-header').find('a').click(function () {
-            const id = $(this).attr('id').slice(10);
-
-            $('#reviewModal' + id).modal('show');
-        });
-
-        $('select').on('change', function () {
-            const orderId = $(this).attr('id').slice(6);
-
-            const changeOrderStatus = $('#changeOrderStatus');
-            changeOrderStatus.find('#orderId').attr('value', orderId);
-            changeOrderStatus.find('#orderStatus').attr('value', $(this).val());
-
-            changeOrderStatus.submit();
-        });
     });
 </script>
 

@@ -11,6 +11,7 @@ import com.eugene.cafe.model.dao.TransactionHelper;
 import com.eugene.cafe.model.dao.impl.CategoryDaoImpl;
 import com.eugene.cafe.model.dao.impl.MenuItemDaoImpl;
 import com.eugene.cafe.model.service.MenuService;
+import com.eugene.cafe.model.validator.ParamValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,15 +25,25 @@ public class MenuServiceImpl implements MenuService {
     public static final int MENU_ITEMS_PER_PAGE = 8;
 
     @Override
-    public boolean addMenuItem(MenuItem newMenuItem) throws ServiceException {
+    public boolean addMenuItem(String name, String price, String categoryId, String description, String imagePath) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final MenuItemDao menuItemDao = new MenuItemDaoImpl();
 
-        boolean itemAdded;
+        boolean itemAdded = false;
         helper.init(menuItemDao);
         try {
-            itemAdded = menuItemDao.create(newMenuItem);
+            if (ParamValidator.validateMenuItem(name, price, description)) {
+
+                MenuItem.Builder builder = new MenuItem.Builder();
+                builder.setName(name)
+                        .setPrice(Double.parseDouble(price))
+                        .setCategoryId(Integer.parseInt(categoryId))
+                        .setDescription(description)
+                        .setImagePath(imagePath);
+
+                itemAdded = menuItemDao.create(builder.buildMenuItem());
+            }
         } catch (DaoException e) {
             logger.error("Unable to add new menu item", e);
             throw new ServiceException("Unable to add new menu item", e);
@@ -62,6 +73,25 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public Optional<Category> findCategoryById(int id) throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final CategoryDao categoryDao = new CategoryDaoImpl();
+
+        helper.init(categoryDao);
+        Optional<Category> category;
+        try {
+            category = categoryDao.findById(id);
+        } catch (DaoException e) {
+            logger.error("Unable to find category by id", e);
+            throw new ServiceException("Unable to find category by id", e);
+        } finally {
+            helper.end();
+        }
+        return category;
+    }
+
+    @Override
     public List<MenuItem> getSubsetOfMenuItems(int pageNumber, MenuItemSortOrder sortOrder, Category category) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
@@ -69,8 +99,6 @@ public class MenuServiceImpl implements MenuService {
 
         helper.init(menuItemDao);
         List<MenuItem> menuItems;
-        // todo: validate page number
-
         int offset = MENU_ITEMS_PER_PAGE * (pageNumber - 1);
         try {
             if (category == null) {
@@ -140,8 +168,8 @@ public class MenuServiceImpl implements MenuService {
         try {
             itemDeleted = menuItemDao.deleteById(itemId);
         } catch (DaoException e) {
-            // todo: write log
-            throw new ServiceException("Failed to delete menu item", e);
+            logger.error("Failed to delete menu item with id: " + itemId, e);
+            throw new ServiceException("Failed to delete menu item with id: " + itemId, e);
         } finally {
             helper.end();
         }

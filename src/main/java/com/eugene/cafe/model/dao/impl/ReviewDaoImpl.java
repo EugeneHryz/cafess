@@ -36,8 +36,8 @@ public class ReviewDaoImpl extends ReviewDao {
     @Override
     public boolean create(Review entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ReviewDao");
-            throw new DaoException("Database connection is not set for ReviewDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         boolean created = false;
@@ -60,8 +60,8 @@ public class ReviewDaoImpl extends ReviewDao {
     @Override
     public Optional<Review> findById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ReviewDao");
-            throw new DaoException("Database connection is not set for ReviewDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         Optional<Review> result = Optional.empty();
@@ -83,8 +83,8 @@ public class ReviewDaoImpl extends ReviewDao {
     @Override
     public List<Review> findAll() throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ReviewDao");
-            throw new DaoException("Database connection is not set for ReviewDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<Review> reviews = new ArrayList<>();
@@ -105,8 +105,8 @@ public class ReviewDaoImpl extends ReviewDao {
     @Override
     public Optional<Review> update(Review entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ReviewDao");
-            throw new DaoException("Database connection is not set for ReviewDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         Optional<Review> updated = Optional.empty();
@@ -129,8 +129,8 @@ public class ReviewDaoImpl extends ReviewDao {
     @Override
     public boolean deleteById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ReviewDao");
-            throw new DaoException("Database connection is not set for ReviewDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         boolean deleted = false;
@@ -150,8 +150,8 @@ public class ReviewDaoImpl extends ReviewDao {
     @Override
     public Optional<Review> findOrderReview(int orderId) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for ReviewDao");
-            throw new DaoException("Database connection is not set for ReviewDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         Optional<Review> result = Optional.empty();

@@ -10,6 +10,18 @@
     opacity: 0.6;
 }
 
+#order-history-body .star-text {
+    text-decoration: none;
+    color: var(--cafe-secondary);
+    opacity: 0.8;
+    transition: opacity 150ms;
+}
+
+#order-history-body .star-text:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
 #order-history-body .rating {
     display: flex;
     flex-direction: row-reverse;

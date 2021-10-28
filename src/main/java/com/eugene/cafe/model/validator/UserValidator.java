@@ -8,24 +8,35 @@ public class UserValidator {
 
     private static final String NAME_SURNAME_REGEX = "^(\\p{L}){3,20}$";
 
+    private static final String AMOUNT_REGEX = "^[0-9]+$";
+
     public static boolean validateUser(String name, String surname, String email, String password) {
         return validateName(name) && (surname == null || surname.isEmpty() || validateSurname(surname))
                 && validateEmail(email) && validatePassword(password);
     }
 
+    public static boolean validateUser(String name, String surname, String email) {
+        return validateName(name) && (surname == null || surname.isEmpty() || validateSurname(surname))
+                && validateEmail(email);
+    }
+
     public static boolean validateEmail(String email) {
-        return email != null && email.matches(EMAIL_REGEX);
+        return email.matches(EMAIL_REGEX);
     }
 
     public static boolean validatePassword(String password) {
-        return password != null && password.matches(PASSWORD_REGEX);
+        return password.matches(PASSWORD_REGEX);
     }
 
     public static boolean validateName(String name) {
-        return name != null && name.matches(NAME_SURNAME_REGEX);
+        return name.matches(NAME_SURNAME_REGEX);
     }
 
     public static boolean validateSurname(String surname) {
-        return surname != null && surname.matches(NAME_SURNAME_REGEX);
+        return surname.matches(NAME_SURNAME_REGEX);
+    }
+
+    public static boolean validateTopUpAmount(String amount) {
+        return amount.matches(AMOUNT_REGEX);
     }
 }

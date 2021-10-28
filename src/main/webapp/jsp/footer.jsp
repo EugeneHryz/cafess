@@ -23,8 +23,8 @@
         <form action="${pageContext.request.contextPath}/controller" class="d-flex mb-0">
             <input type="hidden" name="command" value="change_locale" />
             <select class="form-select" name="locale" aria-label="select locale" onchange="this.form.submit()">
-                <option value="ru_RU" ${currentLocale eq 'ru_RU' ? 'selected' : ''}>Русский</option>
-                <option value="en_US" ${currentLocale eq 'en_US' ? 'selected' : ''}>English</option>
+                <option value="ru-RU" ${currentLocale eq 'ru-RU' ? 'selected' : ''}>Русский</option>
+                <option value="en-US" ${currentLocale eq 'en-US' ? 'selected' : ''}>English</option>
             </select>
         </form>
 

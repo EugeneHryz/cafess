@@ -24,8 +24,27 @@ public class Category extends AbstractEntity {
                 .append(", category: ")
                 .append(category)
                 .append("}");
+
         return builder.toString();
     }
 
-    // todo: implement hashcode(), equals()
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Category category) {
+            return getId() == category.getId()
+                    && this.category.equals(category.category);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = Integer.hashCode(getId());
+        hashCode = hashCode * 31 + category.hashCode();
+
+        return hashCode;
+    }
 }

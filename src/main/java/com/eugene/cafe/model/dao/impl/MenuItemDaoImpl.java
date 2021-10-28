@@ -52,8 +52,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public boolean create(MenuItem entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         boolean created = false;
@@ -64,7 +64,6 @@ public class MenuItemDaoImpl extends MenuItemDao {
                 created = true;
             }
         } catch (SQLException e) {
-            System.out.println("sql exception: " + e);
             logger.error("Database error occurred " + e);
             throw new DaoException("Database error occurred", e);
         }
@@ -74,8 +73,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public Optional<MenuItem> findById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         Optional<MenuItem> result = Optional.empty();
@@ -97,8 +96,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public List<MenuItem> findAll() throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<MenuItem> menuItems = new ArrayList<>();
@@ -119,8 +118,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public Optional<MenuItem> update(MenuItem entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         Optional<MenuItem> updated = Optional.empty();
@@ -141,8 +140,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public boolean deleteById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         boolean deleted = false;
@@ -162,8 +161,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public List<MenuItem> getSubsetOfMenuItems(int limit, int offset, MenuItemSortOrder sortOrder) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<MenuItem> menuItems = new ArrayList<>();
@@ -188,8 +187,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public List<MenuItem> getSubsetOfMenuItemsByCategory(int limit, int offset, MenuItemSortOrder sortOrder, Category category) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<MenuItem> menuItems = new ArrayList<>();
@@ -216,8 +215,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public int getCount() throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         int count = 0;
@@ -228,7 +227,7 @@ public class MenuItemDaoImpl extends MenuItemDao {
                 count = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            // todo: write log
+            logger.error("Database error occurred " + e);
             throw new DaoException("Database error occurred", e);
         }
         return count;
@@ -237,8 +236,8 @@ public class MenuItemDaoImpl extends MenuItemDao {
     @Override
     public int getCountByCategory(Category category) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         int number = 0;
@@ -250,7 +249,7 @@ public class MenuItemDaoImpl extends MenuItemDao {
                 number = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            // todo: write log
+            logger.error("Database error occurred " + e);
             throw new DaoException("Database error occurred", e);
         }
         return number;

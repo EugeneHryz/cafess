@@ -4,7 +4,7 @@ import com.eugene.cafe.controller.command.Command;
 import static com.eugene.cafe.controller.command.PagePath.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
-import static com.eugene.cafe.controller.command.RequestAttribute.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
 import com.eugene.cafe.controller.command.Router;
 import com.eugene.cafe.entity.Category;
 import com.eugene.cafe.entity.MenuItem;
@@ -13,10 +13,14 @@ import com.eugene.cafe.model.dao.MenuItemSortOrder;
 import com.eugene.cafe.model.service.MenuService;
 import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 public class ChangeSortOrderCommand implements Command {
+
+    private static final Logger logger = LogManager.getLogger(ChangeSortOrderCommand.class);
 
     private static final MenuService menuService = new MenuServiceImpl();
 
@@ -37,7 +41,7 @@ public class ChangeSortOrderCommand implements Command {
             request.getSession().setAttribute(MENU_ITEMS_SORT_ORDER, newSortOrder);
 
         } catch (ServiceException e) {
-            // todo: write log
+            logger.error("Unable to change sort order", e);
             request.getSession().setAttribute(EXCEPTION, e);
             router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }

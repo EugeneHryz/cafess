@@ -1,6 +1,6 @@
 package com.eugene.cafe.controller.listener;
 
-import com.eugene.cafe.controller.command.RequestAttribute;
+import com.eugene.cafe.controller.command.AttributeName;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.model.dao.MenuItemSortOrder;
@@ -9,14 +9,18 @@ import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
 
-import static com.eugene.cafe.controller.command.RequestAttribute.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
 
 @WebListener
 public class HttpSessionListenerImpl implements HttpSessionListener {
+
+    private static final Logger logger = LogManager.getLogger(HttpSessionListenerImpl.class);
 
     private static final MenuService menuService = new MenuServiceImpl();
 
@@ -33,9 +37,9 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
             se.getSession().setAttribute(SHOPPING_CART, new HashMap<MenuItem, Integer>());
 
         } catch (ServiceException e) {
-            // fixme
+            logger.error("Unable to initialize session");
         }
 
-        se.getSession().setAttribute(RequestAttribute.LOCALE, "ru-RU");
+        se.getSession().setAttribute(AttributeName.LOCALE, "ru-RU");
     }
 }

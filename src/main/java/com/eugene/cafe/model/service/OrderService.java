@@ -19,9 +19,9 @@ public interface OrderService {
 
     int getUserOrderCount(int userId) throws ServiceException;
 
-    double calculateOrderTotal(Map<MenuItem, Integer> shoppingCart) throws ServiceException;
-
     boolean saveOrderReview(int orderId, short rating, String comment) throws ServiceException;
 
     boolean changeOrderStatus(int orderId, OrderStatus newStatus) throws ServiceException;
+
+    double calculateOrderTotal(Map<MenuItem, Integer> shoppingCart);
 }

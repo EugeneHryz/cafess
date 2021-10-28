@@ -100,7 +100,31 @@ public class Order extends AbstractEntity {
         return builder.toString();
     }
 
-    // todo: implement hashcode(), equals()
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Order order) {
+            return getId() == order.getId() && userId == order.userId && date.equals(order.date)
+                    && pickUpTime.equals(order.pickUpTime) && totalPrice == order.totalPrice
+                    && orderStatus == order.orderStatus && review.equals(order.review);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = Integer.hashCode(getId());
+        hashCode = hashCode * 31 + Integer.hashCode(userId);
+        hashCode = hashCode * 31 + date.hashCode();
+        hashCode = hashCode * 31 + pickUpTime.hashCode();
+        hashCode = hashCode * 31 + Double.hashCode(totalPrice);
+        hashCode = hashCode * 31 + orderStatus.hashCode();
+        hashCode = hashCode * 31 + review.hashCode();
+
+        return hashCode;
+    }
 
     public static class Builder {
 

@@ -96,7 +96,7 @@
                 <li><a href="${pageContext.request.contextPath}/controller?command=go_to_admin_dashboard_page"
                        class="nav-link px-2 link-dark"><fmt:message key="header.text.dashboard"/></a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/controller?command=go_to_order_page&page=1"
+                <li><a href="${pageContext.request.contextPath}/controller?command=go_to_orders_page&page=1"
                        class="nav-link px-2 link-dark"><fmt:message key="header.text.orders"/></a>
                 </li>
             </c:if>

@@ -15,14 +15,14 @@
     <link href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="${pageContext.request.contextPath}/css/order_history.css" rel="stylesheet"/>
 </head>
-<body id="order-history-body" style="background: #EFEFEF;
+<body id="order-history-body" style="background: var(--cafe-background);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     min-height: 100vh">
 
-<c:import url="header.jsp"/>
+<c:import url="../header.jsp"/>
 
 <div class="mt-5 mb-3" style="width: 38%">
 
@@ -33,7 +33,7 @@
                     <h3 class="fs-3"><fmt:formatDate value="${item.date}" type="both"/></h3>
                     <span class="fs-6 text-muted"><fmt:message key="orderHistory.text.readyAt"/> <fmt:formatDate value="${item.pickUpTime}" type="time" timeStyle="short"/></span>
                 </div>
-                <a id="openReview${status.count}" class="grey-text position-absolute top-0 end-0 m-2">
+                <a id="openReview${status.count}" class="star-text position-absolute top-0 end-0 m-2">
                     <i class="far fa-star fa-2x"></i>
                 </a>
             </div>
@@ -69,7 +69,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="saveReviewForm${status.count}" method="post" action="${pageContext.request.contextPath}/controller">
+                        <form id="saveReviewForm${status.count}" method="post" action="${pageContext.request.contextPath}/controller" novalidate>
                             <input type="hidden" name="command" value="save_review"/>
                             <input type="hidden" name="order_id" value="${item.id}"/>
                             <p><fmt:message key="orderHistory.text.rating"/>:</p>
@@ -93,7 +93,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="commentText" class="col-form-label"><fmt:message key="orderHistory.text.comment"/>:</label>
-                                <textarea name="comment" id="commentText" rows="4" class="form-control">${item.review.comment}</textarea>
+                                <textarea name="comment" id="commentText" rows="4" class="form-control" required maxlength="150">${item.review.comment}</textarea>
                             </div>
                         </form>
                         <c:if test="${not empty item.review}">
@@ -112,6 +112,10 @@
     </c:forEach>
 </div>
 
+<c:if test="${requestScope.orderCount == 0}">
+    <p class="display-6"><fmt:message key="orderHistory.text.noOrders"/></p>
+</c:if>
+
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
@@ -129,7 +133,10 @@
 
 <ul class="pagination mb-4"></ul>
 
-<c:import url="footer.jsp"/>
+<c:import url="../footer.jsp"/>
+
+<fmt:message key="orderHistory.error.valueMissing" var="valueMissing"/>
+<fmt:message key="orderHistory.error.commentPatternMismatch" var="commentPatternMismatch"/>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
@@ -139,49 +146,112 @@
         const totalOrders = ${requestScope.orderCount};
         const ordersPerPage = 4;
 
-        const totalPages = Math.ceil(totalOrders / ordersPerPage);
-        const visiblePages = (totalPages > 4) ? 4 : totalPages;
+        if (totalOrders > 0) {
+            const totalPages = Math.ceil(totalOrders / ordersPerPage);
+            const visiblePages = (totalPages > 4) ? 4 : totalPages;
 
-        const goToPageForm = $('#goToAnotherPage');
+            const goToPageForm = $('#goToAnotherPage');
 
-        const pagination = $('.pagination');
-        pagination.twbsPagination({
-            totalPages: totalPages,
-            visiblePages: visiblePages,
-            initiateStartPageClick: false,
-            prev: '&laquo;',
-            next: '&raquo;',
-            firstClass: 'visually-hidden',
-            lastClass: 'visually-hidden',
-            anchorClass: 'page-button',
-            pageClass: 'item-page',
-            prevClass: 'item-page prev',
-            nextClass: 'item-page next',
+            const pagination = $('.pagination');
+            pagination.twbsPagination({
+                totalPages: totalPages,
+                visiblePages: visiblePages,
+                initiateStartPageClick: false,
+                prev: '&laquo;',
+                next: '&raquo;',
+                firstClass: 'visually-hidden',
+                lastClass: 'visually-hidden',
+                anchorClass: 'page-button',
+                pageClass: 'item-page',
+                prevClass: 'item-page prev',
+                nextClass: 'item-page next',
 
-            onPageClick: function (event, page) {
-                goToAnotherPage(page);
+                onPageClick: function (event, page) {
+                    goToAnotherPage(page);
+                }
+            });
+
+            const currentPage = ${requestScope.ordersPageNumber};
+            pagination.twbsPagination('changePage', currentPage);
+
+            function goToAnotherPage(page) {
+                goToPageForm.find('#pageNumber').attr('value', page);
+                goToPageForm.submit();
             }
-        });
 
-        const currentPage = ${requestScope.ordersPageNumber};
-        pagination.twbsPagination('changePage', currentPage);
+            $('.card-header').find('a').click(function () {
+                const id = $(this).attr('id').slice(10);
 
-        function goToAnotherPage(page) {
-            goToPageForm.find('#pageNumber').attr('value', page);
-            goToPageForm.submit();
+                $('#reviewModal' + id).modal('show');
+            });
+
+            if ("${requestScope.saveReviewMessage}") {
+                const toast = $('#liveToast');
+
+                toast.find('.toast-body').text("${requestScope.saveReviewMessage}");
+                toast.toast('show');
+            }
         }
 
-        $('.card-header').find('a').click(function () {
-            const id = $(this).attr('id').slice(10);
+        const commentInputs = document.getElementsByTagName('textarea');
 
-            $('#reviewModal' + id).modal('show');
-        });
+        let popover = new bootstrap.Popover(commentInputs[0], { trigger: 'manual' });
 
-        if ("${requestScope.saveReviewMessage}") {
-            const toast = $('#liveToast');
+        for (let item of commentInputs) {
+            item.addEventListener('input', function () {
+                checkCommentValidity(item);
+            });
+            item.addEventListener('focusin', function () {
+                checkCommentValidity(item);
+            });
 
-            toast.find('.toast-body').text("${requestScope.saveReviewMessage}");
-            toast.toast('show');
+            const form = $(item).parents('form')[0];
+            $(form).on('submit', function (event) {
+                const valid = item.validity.valid && validateTextArea(item);
+                if (!valid) {
+                    showCommentError(item);
+                    event.preventDefault();
+                }
+            });
+            $(form).on('focusout', function () {
+                popover.hide();
+            });
+        }
+
+        function checkCommentValidity(comment) {
+            const valid = comment.validity.valid && validateTextArea(comment);
+            if (valid) {
+                popover.hide();
+            } else {
+                showCommentError(comment);
+            }
+        }
+
+        function validateTextArea(textArea) {
+            const pattern = new RegExp("^[^<>]{5,}$");
+            let isValid = false;
+            $.each($(textArea).val().split("\n"), function () {
+                isValid = pattern.test(this);
+                if (!isValid) {
+                    return isValid;
+                }
+            });
+            return isValid;
+        }
+
+        function showCommentError(comment) {
+            if (comment.validity.valueMissing) {
+                $(comment).attr('data-bs-content', "${valueMissing}");
+            } else if (!validateTextArea(comment)) {
+                $(comment).attr('data-bs-content', "${commentPatternMismatch}");
+            }
+            popover = createPopover(comment);
+            popover.show();
+        }
+
+        function createPopover(input) {
+            popover.dispose();
+            return new bootstrap.Popover(input, { trigger: 'manual' });
         }
     });
 </script>

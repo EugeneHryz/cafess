@@ -24,7 +24,7 @@
     justify-content: space-between;
     min-height: 100vh">
 
-<c:import url="header.jsp"/>
+<c:import url="../header.jsp"/>
 
 <div class="card my-5" style="width: 42%">
 
@@ -83,7 +83,7 @@
     <input type="hidden" name="page" value="1"/>
 </form>
 
-<c:import url="footer.jsp"/>
+<c:import url="../footer.jsp"/>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 
@@ -116,14 +116,11 @@
 
         $.post(URL, requestData).done(function (response) {
 
-            if (Number(response.shopping_cart_size) === 0) {
+            if (Number(response.shoppingCartSize) === 0) {
                 $('#goToMainPage').submit();
-                console.log('length is zero');
-            } else {
-                console.log('length is not zero');
             }
-            $('#orderTotal').text(Number(response.order_total).toFixed(2));
-            $('#shoppingCartSize').text(response.shopping_cart_size);
+            $('#orderTotal').text(Number(response.orderTotal).toFixed(2));
+            $('#shoppingCartSize').text(response.shoppingCartSize);
         });
     }
 </script>

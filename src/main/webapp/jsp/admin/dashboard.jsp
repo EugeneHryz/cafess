@@ -24,7 +24,7 @@
     justify-content: space-between;
     min-height: 100vh">
 
-<c:import url="header.jsp"/>
+<c:import url="../header.jsp"/>
 
 <div class="container light-style mb-5">
     <h4 class="display-6 fs-3 my-2">
@@ -95,9 +95,8 @@
                                 <div class="form-group mb-2">
                                     <label for="descriptionInput" class="form-label"><fmt:message key="dashboard.label.description"/></label>
                                     <textarea id="descriptionInput" form="menuItemDataForm" name="description" class="form-control"
-                                              rows="4" style="resize: none" required minlength="5" maxlength="300"></textarea>
+                                              rows="4" style="resize: none" required maxlength="300"></textarea>
                                 </div>
-                                <p class="text-success">${menuItemAdded}</p>
                                 <p class="text-danger">${menuItemNotAdded}</p>
                             </div>
                         </div>
@@ -145,7 +144,6 @@
                             <tbody id="menuTableBody">
                             </tbody>
                         </table>
-
                         <ul class="menuPagination"></ul>
                     </div>
                 </div>
@@ -154,7 +152,7 @@
     </div>
 </div>
 
-<c:import url="footer.jsp"/>
+<c:import url="../footer.jsp"/>
 
 <fmt:message key="dashboard.action.banUser" var="banUser"/>
 <fmt:message key="dashboard.action.unbanUser" var="unbanUser"/>
@@ -162,7 +160,7 @@
 <fmt:message key="dashboard.error.namePatternMismatch" var="namePatternMismatch"/>
 <fmt:message key="dashboard.error.priceRangeOverflow" var="priceRangeOverflow"/>
 <fmt:message key="dashboard.error.priceRangeUnderflow" var="priceRangeUnderflow"/>
-<fmt:message key="dashboard.error.descriptionTooShort" var="descriptionTooShort"/>
+<fmt:message key="dashboard.error.descriptionPatternMismatch" var="descriptionPatternMismatch"/>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
@@ -354,15 +352,8 @@
 
                             $.post(URL, requestData).done(function (response) {
                                 if (response === 'menuItemDeleted') {
-                                    const currentRow = $('#menuRow' + index);
 
-                                    currentRow.animate({opacity: 0}, 150, function () {
-                                        currentRow.animate({height: 0}, 150, function () {
-                                            currentRow.remove();
-
-                                            loadNumberOfMenuItems();
-                                        })
-                                    })
+                                    loadNumberOfMenuItems();
                                 }
                             }).fail(function (response) {
                                 console.log(response);
@@ -437,7 +428,8 @@
         }
 
         function checkDescriptionValidity() {
-            if (descriptionInput.validity.valid) {
+            let valid = descriptionInput.validity.valid && validateTextArea(descriptionInput);
+            if (valid) {
                 popover.hide();
             } else {
                 showDescriptionError();
@@ -469,11 +461,23 @@
         function showDescriptionError() {
             if (descriptionInput.validity.valueMissing) {
                 descriptionInput.setAttribute('data-bs-content', "${valueMissing}");
-            } else if (descriptionInput.validity.tooShort) {
-                descriptionInput.setAttribute('data-bs-content', "${descriptionTooShort}");
+            } else if (!validateTextArea(descriptionInput)) {
+                descriptionInput.setAttribute('data-bs-content', "${descriptionPatternMismatch}");
             }
             popover = createPopover(descriptionInput);
             popover.show();
+        }
+
+        function validateTextArea(textArea) {
+            const pattern = new RegExp("^[^<>]{5,}$");
+            let isValid = false;
+            $.each($(textArea).val().split("\n"), function () {
+                isValid = pattern.test(this);
+                if (!isValid) {
+                    return isValid;
+                }
+            });
+            return isValid;
         }
 
         function createPopover(input) {

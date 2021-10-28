@@ -48,7 +48,45 @@ public class Review extends AbstractEntity {
         this.date = date;
     }
 
-    // todo: implement toString(), hashcode(), equals()
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Review{id: ")
+                .append(getId())
+                .append(", rating: ")
+                .append(rating)
+                .append(", orderId: ")
+                .append(orderId)
+                .append(", comment: ")
+                .append(comment)
+                .append(", date: ")
+                .append(date);
+        return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof Review review) {
+            return getId() == review.getId() && orderId == review.orderId
+                    && rating == review.rating && comment.equals(review.comment)
+                    && date.equals(review.date);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = Integer.hashCode(getId());
+        hashCode = hashCode * 31 + Short.hashCode(rating);
+        hashCode = hashCode * 31 + Integer.hashCode(orderId);
+        hashCode = hashCode * 31 + comment.hashCode();
+        hashCode = hashCode * 31 + date.hashCode();
+
+        return hashCode;
+    }
 
     public static class Builder {
 
@@ -88,6 +126,5 @@ public class Review extends AbstractEntity {
             review.setId(id);
             return review;
         }
-
     }
 }

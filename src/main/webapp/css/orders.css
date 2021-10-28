@@ -5,15 +5,27 @@
     transition: opacity 150ms;
 }
 
+#orders-body .grey-text:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+#orders-body .star-text {
+    text-decoration: none;
+    color: var(--cafe-secondary);
+    opacity: 0.8;
+    transition: opacity 150ms;
+}
+
+#orders-body .star-text:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
 #orders-body .rating i {
     float: right;
     color: grey;
     transition: color 200ms;
-}
-
-#orders-body .grey-text:hover {
-    cursor: pointer;
-    opacity: 0.6;
 }
 
 #orders-body .rating {

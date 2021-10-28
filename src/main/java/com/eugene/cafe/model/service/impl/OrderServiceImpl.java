@@ -11,6 +11,7 @@ import com.eugene.cafe.model.dao.impl.OrderDaoImpl;
 import com.eugene.cafe.model.dao.impl.ReviewDaoImpl;
 import com.eugene.cafe.model.dao.impl.UserDaoImpl;
 import com.eugene.cafe.model.service.OrderService;
+import com.eugene.cafe.model.validator.ParamValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -94,7 +95,6 @@ public class OrderServiceImpl implements OrderService {
         helper.init(orderDao);
         helper.init(reviewDao);
         List<Order> userOrders;
-        // todo: validate page number
         int offset = ORDERS_PER_PAGE * (pageNumber - 1);
         try {
             if (userId != 0) {
@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
                 order.setMenuItems(orderContent);
             }
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Unable to get a subset of orders", e);
             throw new ServiceException("Unable to get a subset of orders", e);
         } finally {
             helper.end();
@@ -136,30 +136,12 @@ public class OrderServiceImpl implements OrderService {
                 count = orderDao.getOrderCount();
             }
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Failed to get user order count", e);
             throw new ServiceException("Failed to get user order count", e);
         } finally {
             helper.end();
         }
         return count;
-    }
-
-    @Override
-    public double calculateOrderTotal(Map<MenuItem, Integer> shoppingCart) throws ServiceException {
-        // todo: is this necessary?
-        if (shoppingCart == null) {
-            logger.error("shopping cart is null");
-            throw new ServiceException("shoppingCart is null");
-        }
-
-        double total = 0;
-        for (Map.Entry<MenuItem, Integer> entry : shoppingCart.entrySet()) {
-            total += (entry.getValue() * entry.getKey().getPrice());
-        }
-        BigDecimal bigDecimal = BigDecimal.valueOf(total);
-        bigDecimal = bigDecimal.setScale(2, RoundingMode.HALF_UP);
-
-        return bigDecimal.doubleValue();
     }
 
     @Override
@@ -169,28 +151,31 @@ public class OrderServiceImpl implements OrderService {
         final ReviewDao reviewDao = new ReviewDaoImpl();
 
         helper.init(reviewDao);
-        boolean reviewSaved;
+        boolean reviewSaved = false;
         try {
-            Optional<Review> orderReview = reviewDao.findOrderReview(orderId);
-            if (orderReview.isPresent()) {
-                Review review = orderReview.get();
-                review.setRating(rating);
-                review.setComment(comment);
-                review.setDate(Timestamp.valueOf(LocalDateTime.now()));
+            if (ParamValidator.validateComment(comment)) {
 
-                reviewSaved = reviewDao.update(review).isPresent();
-            } else {
-                Review.Builder builder = new Review.Builder();
-                builder.setOrderId(orderId)
-                        .setRating(rating)
-                        .setComment(comment)
-                        .setDate(Timestamp.valueOf(LocalDateTime.now()));
+                Optional<Review> orderReview = reviewDao.findOrderReview(orderId);
+                if (orderReview.isPresent()) {
+                    Review review = orderReview.get();
+                    review.setRating(rating);
+                    review.setComment(comment);
+                    review.setDate(Timestamp.valueOf(LocalDateTime.now()));
 
-                reviewSaved = reviewDao.create(builder.buildReview());
+                    reviewSaved = reviewDao.update(review).isPresent();
+                } else {
+                    Review.Builder builder = new Review.Builder();
+                    builder.setOrderId(orderId)
+                            .setRating(rating)
+                            .setComment(comment)
+                            .setDate(Timestamp.valueOf(LocalDateTime.now()));
+
+                    reviewSaved = reviewDao.create(builder.buildReview());
+                }
             }
         } catch (DaoException e) {
-            // todo: write log
-            throw new ServiceException("Unable to save review");
+            logger.error("Unable to save review", e);
+            throw new ServiceException("Unable to save review", e);
         } finally {
             helper.end();
         }
@@ -213,12 +198,25 @@ public class OrderServiceImpl implements OrderService {
                 statusChanged = orderDao.update(order.get()).isPresent();
             }
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Failed to change order status (order id: " + orderId + ")", e);
             throw new ServiceException("Failed to change order status (order id: " + orderId + ")", e);
         } finally {
             helper.end();
         }
         return statusChanged;
+    }
+
+    @Override
+    public double calculateOrderTotal(Map<MenuItem, Integer> shoppingCart) {
+
+        double total = 0;
+        for (Map.Entry<MenuItem, Integer> entry : shoppingCart.entrySet()) {
+            total += (entry.getValue() * entry.getKey().getPrice());
+        }
+        BigDecimal bigDecimal = BigDecimal.valueOf(total);
+        bigDecimal = bigDecimal.setScale(2, RoundingMode.HALF_UP);
+
+        return bigDecimal.doubleValue();
     }
 
     private Map<MenuItem, Integer> convertListToMap(List<MenuItem> menuItems) {

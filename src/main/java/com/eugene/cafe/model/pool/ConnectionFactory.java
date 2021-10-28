@@ -45,7 +45,7 @@ public class ConnectionFactory {
         try {
             connection = DriverManager.getConnection(DB_URL, properties);
         } catch (SQLException e) {
-            // todo: write log
+            logger.fatal("Database error occurred or URL is null", e);
             throw new DatabaseConnectionException("Database error occurred or URL is null", e);
         }
         return new ProxyConnection(connection);

@@ -9,15 +9,20 @@ import com.eugene.cafe.model.dao.MenuItemSortOrder;
 import com.eugene.cafe.model.service.MenuService;
 import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.eugene.cafe.controller.command.PagePath.ERROR_PAGE;
 import static com.eugene.cafe.controller.command.PagePath.MAIN_PAGE;
-import static com.eugene.cafe.controller.command.RequestAttribute.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 public class ChangeCurrentCategoryCommand implements Command {
+
+    private static final Logger logger = LogManager.getLogger(ChangeCurrentCategoryCommand.class);
 
     private static final MenuService menuService = new MenuServiceImpl();
 
@@ -27,31 +32,25 @@ public class ChangeCurrentCategoryCommand implements Command {
         String categoryIdParam = request.getParameter(PARAM_CATEGORY_ID);
         int categoryId = Integer.parseInt(categoryIdParam);
 
-        // fixme: maybe need to change later
-        List<Category> categories = (List<Category>) request.getServletContext().getAttribute(MENU_CATEGORIES_LIST);
-        Category newCategory = null;
-        for (Category category : categories) {
-            if (category.getId() == categoryId) {
-                newCategory = category;
-            }
-        }
-
         String sortOrder = (String) request.getSession().getAttribute(MENU_ITEMS_SORT_ORDER);
         MenuItemSortOrder order = MenuItemSortOrder.valueOf(sortOrder.toUpperCase());
 
         Router router = new Router(MAIN_PAGE, Router.RouterType.FORWARD);
         try {
-            List<MenuItem> menuItems = menuService.getSubsetOfMenuItems(1, order, newCategory);
+            Optional<Category> newCategory = menuService.findCategoryById(categoryId);
+            Category category = newCategory.orElse(null);
 
-            int menuItemsCount = menuService.getMenuItemCountByCategory(newCategory);
+            List<MenuItem> menuItems = menuService.getSubsetOfMenuItems(1, order, category);
+
+            int menuItemsCount = menuService.getMenuItemCountByCategory(category);
 
             request.getSession().setAttribute(MENU_ITEMS_SUBLIST, menuItems);
             request.getSession().setAttribute(MENU_ITEMS_PAGE_NUMBER, 1);
-            request.getSession().setAttribute(MENU_ITEMS_CURRENT_CATEGORY, newCategory);
+            request.getSession().setAttribute(MENU_ITEMS_CURRENT_CATEGORY, category);
             request.getSession().setAttribute(MENU_ITEMS_COUNT, menuItemsCount);
 
         } catch (ServiceException e) {
-            // todo: write log
+            logger.error("Unable to change current category", e);
             request.getSession().setAttribute(EXCEPTION, e);
             router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }

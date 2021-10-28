@@ -25,15 +25,16 @@ public class UserServiceImpl implements UserService {
     public static final int USERS_PER_PAGE = 8;
 
     @Override
-    public Optional<User> signIn(String email, String password) throws ServiceException {
+    public Optional<User> logIn(String email, String password) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final UserDao userDao = new UserDaoImpl();
 
         Optional<User> result = Optional.empty();
-        if (UserValidator.validateEmail(email)) {
-            helper.init(userDao);
-            try {
+        helper.init(userDao);
+        try {
+            if (UserValidator.validateEmail(email) && UserValidator.validatePassword(password)) {
+
                 Optional<User> client = userDao.findUserByEmail(email);
                 if (client.isPresent()) {
                     PasswordEncryptor encryptor = new PasswordEncryptorImpl();
@@ -41,12 +42,12 @@ public class UserServiceImpl implements UserService {
                         result = client;
                     }
                 }
-            } catch (DaoException e) {
-                // todo: write log
-                throw new ServiceException("Unable to find client by email", e);
-            } finally {
-                helper.end();
             }
+        } catch (DaoException e) {
+            logger.error("Unable to find client by email", e);
+            throw new ServiceException("Unable to find client by email", e);
+        } finally {
+            helper.end();
         }
         return result;
     }
@@ -60,8 +61,8 @@ public class UserServiceImpl implements UserService {
         Optional<User> result = Optional.empty();
         helper.init(userDao);
         try {
-            Optional<User> oldClient = userDao.findUserByEmail(email);
-            if (oldClient.isEmpty()) {
+            Optional<User> user = userDao.findUserByEmail(email);
+            if (user.isEmpty()) {
 
                 User.Builder builder = new User.Builder();
                 builder.setName(name)
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Unable to sign up new user", e);
             throw new ServiceException("Unable to sign up new user", e);
         } finally {
             helper.end();
@@ -96,18 +97,21 @@ public class UserServiceImpl implements UserService {
         Optional<User> edited = Optional.empty();
         helper.init(userDao);
         try {
-            Optional<User> userToEdit = userDao.findById(id);
-            if (userToEdit.isPresent()) {
+            if (UserValidator.validateUser(name, surname, email)) {
 
-                User user = userToEdit.get();
-                user.setName(name);
-                user.setSurname(surname);
-                user.setEmail(email);
+                Optional<User> userToEdit = userDao.findById(id);
+                if (userToEdit.isPresent()) {
 
-                edited = userDao.update(user);
+                    User user = userToEdit.get();
+                    user.setName(name);
+                    user.setSurname(surname);
+                    user.setEmail(email);
+
+                    edited = userDao.update(user);
+                }
             }
         } catch (DaoException e) {
-            // todo write log
+            logger.error("Unable to update user profile", e);
             throw new ServiceException("Unable to update user profile", e);
         } finally {
             helper.end();
@@ -126,7 +130,7 @@ public class UserServiceImpl implements UserService {
         try {
             updated = userDao.updateProfilePicture(id, picturePath);
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Unable to update profile picture", e);
             throw new ServiceException("Unable to update profile picture", e);
         } finally {
             helper.end();
@@ -143,18 +147,20 @@ public class UserServiceImpl implements UserService {
         helper.init(userDao);
         boolean passwordChanged = false;
         try {
-            Optional<User> user = userDao.findById(id);
-            if (user.isPresent()) {
+            if (UserValidator.validatePassword(newPassword)) {
+                Optional<User> user = userDao.findById(id);
+                if (user.isPresent()) {
 
-                PasswordEncryptor encryptor = new PasswordEncryptorImpl();
-                if (encryptor.checkPassword(oldPassword, user.get().getHashedPassword())) {
+                    PasswordEncryptor encryptor = new PasswordEncryptorImpl();
+                    if (encryptor.checkPassword(oldPassword, user.get().getHashedPassword())) {
 
-                    String hashed = encryptor.encryptPassword(newPassword);
-                    passwordChanged = userDao.changeUserPassword(id, hashed);
+                        String hashed = encryptor.encryptPassword(newPassword);
+                        passwordChanged = userDao.changeUserPassword(id, hashed);
+                    }
                 }
             }
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Unable to change user password", e);
             throw new ServiceException("Unable to change user password", e);
         } finally {
             helper.end();
@@ -236,19 +242,21 @@ public class UserServiceImpl implements UserService {
 
         helper.init(userDao);
         Optional<User> updated = Optional.empty();
-        // todo: validate amount
         try {
-            Optional<User> userOptional = userDao.findById(userId);
-            if (userOptional.isPresent()) {
+            if (UserValidator.validateTopUpAmount(topUpAmount)) {
 
-                double amount = Double.parseDouble(topUpAmount);
-                User user = userOptional.get();
-                user.setBalance(user.getBalance() + amount);
+                Optional<User> userOptional = userDao.findById(userId);
+                if (userOptional.isPresent()) {
 
-                updated = userDao.update(user);
+                    double amount = Double.parseDouble(topUpAmount);
+                    User user = userOptional.get();
+                    user.setBalance(user.getBalance() + amount);
+
+                    updated = userDao.update(user);
+                }
             }
         } catch (DaoException e) {
-            // todo: write log
+            logger.error("Failed to top up user balance", e);
             throw new ServiceException("Failed to top up user balance", e);
         } finally {
             helper.end();

@@ -2,7 +2,7 @@ package com.eugene.cafe.controller.command.impl;
 
 import com.eugene.cafe.controller.command.Command;
 
-import static com.eugene.cafe.controller.command.RequestAttribute.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
 import static com.eugene.cafe.controller.command.PagePath.*;
@@ -14,11 +14,15 @@ import com.eugene.cafe.manager.ResourceManager;
 import com.eugene.cafe.model.service.OrderService;
 import com.eugene.cafe.model.service.impl.OrderServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Locale;
 
 public class SaveReviewCommand implements Command {
+
+    private static final Logger logger = LogManager.getLogger(SaveReviewCommand.class);
 
     private static final OrderService orderService = new OrderServiceImpl();
 
@@ -31,7 +35,8 @@ public class SaveReviewCommand implements Command {
         ResourceManager manager = new ResourceManager("message", locale);
 
         String ratingParam = request.getParameter(PARAM_RATING);
-        short rating = Short.parseShort(ratingParam);
+        short rating = ratingParam != null ? Short.parseShort(ratingParam) : 0;
+
         String orderIdParam = request.getParameter(PARAM_ORDER_ID);
         int orderId = Integer.parseInt(orderIdParam);
         String comment = request.getParameter(PARAM_COMMENT);
@@ -50,8 +55,9 @@ public class SaveReviewCommand implements Command {
             request.setAttribute(ORDERS_SUBLIST, userOrders);
             request.setAttribute(ORDERS_PAGE_NUMBER, 1);
             request.setAttribute(ORDER_COUNT, orderCount);
+
         } catch (ServiceException e) {
-            // todo: write log
+            logger.error("Unable to save review", e);
             request.getSession().setAttribute(EXCEPTION, e);
             router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }

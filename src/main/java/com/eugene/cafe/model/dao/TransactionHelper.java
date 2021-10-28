@@ -2,11 +2,15 @@ package com.eugene.cafe.model.dao;
 
 import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.model.pool.ConnectionPool;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class TransactionHelper {
+
+    private static final Logger logger = LogManager.getLogger(TransactionHelper.class);
 
     private Connection connection;
 
@@ -17,7 +21,7 @@ public class TransactionHelper {
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            // todo: write log
+            logger.error("Database error occurred", e);
             throw new DaoException("Database error occurred", e);
         }
 
@@ -30,7 +34,7 @@ public class TransactionHelper {
         try {
             connection.commit();
         } catch (SQLException e) {
-            // todo: write to log
+            logger.error("Database error occurred", e);
             throw new DaoException("Database error occurred", e);
         }
     }
@@ -39,7 +43,7 @@ public class TransactionHelper {
         try {
             connection.rollback();
         } catch (SQLException e) {
-            // todo: write to log
+            logger.error("Database error occurred", e);
             throw new DaoException("Database error occurred", e);
         }
     }
@@ -48,7 +52,7 @@ public class TransactionHelper {
         try {
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-            // todo: write log
+            logger.error("Database error occurred", e);
             throw new DaoException("Database error occurred", e);
         }
         ConnectionPool.getInstance().releaseConnection(connection);

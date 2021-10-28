@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface AjaxCommand {
 
-    void execute(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    void execute(HttpServletRequest request, HttpServletResponse response);
 }

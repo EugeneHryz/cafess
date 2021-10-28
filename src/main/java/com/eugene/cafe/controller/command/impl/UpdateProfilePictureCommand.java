@@ -9,6 +9,8 @@ import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,11 +19,13 @@ import java.util.Optional;
 
 import static com.eugene.cafe.controller.command.PagePath.ERROR_PAGE;
 import static com.eugene.cafe.controller.command.PagePath.PROFILE_SETTINGS_PAGE;
-import static com.eugene.cafe.controller.command.RequestAttribute.EXCEPTION;
-import static com.eugene.cafe.controller.command.RequestAttribute.USER;
+import static com.eugene.cafe.controller.command.AttributeName.EXCEPTION;
+import static com.eugene.cafe.controller.command.AttributeName.USER;
 import static com.eugene.cafe.controller.command.RequestParameter.PARAM_FILE;
 
 public class UpdateProfilePictureCommand implements Command {
+
+    private static final Logger logger = LogManager.getLogger(UpdateProfilePictureCommand.class);
 
     private static final UserService userService = new UserServiceImpl();
 
@@ -67,7 +71,7 @@ public class UpdateProfilePictureCommand implements Command {
             updatedUser.ifPresent(value -> request.getSession().setAttribute(USER, value));
 
         } catch (IOException | ServletException | ServiceException e) {
-            // todo: write log
+            logger.error("Unable to update profile picture", e);
             request.getSession().setAttribute(EXCEPTION, e);
             router = new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }

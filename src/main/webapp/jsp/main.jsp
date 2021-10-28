@@ -97,6 +97,10 @@
     </div>
 </div>
 
+<c:if test="${sessionScope.menuItemCount eq 0}">
+    <p class="fs-3 fw-light"><fmt:message key="main.text.noItemsForCategory"/></p>
+</c:if>
+
 <form id="goToAnotherPage" action="${pageContext.request.contextPath}/controller" style="display: none">
     <input type="hidden" name="command" value="go_to_menu_page"/>
     <input id="pageNumber" type="text" name="page" />
@@ -147,6 +151,8 @@
 
 <c:import url="footer.jsp" />
 
+<fmt:message key="main.message.itemAdded" var="itemAdded"/>
+
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.twbsPagination.js"></script>
 
@@ -167,26 +173,28 @@
         const categorySelect = $('#categorySelect');
 
         const pagination = $('.pagination');
-        pagination.twbsPagination({
-            totalPages: totalPages,
-            visiblePages: visiblePages,
-            initiateStartPageClick: false,
-            prev: '&laquo;',
-            next: '&raquo;',
-            firstClass: 'visually-hidden',
-            lastClass: 'visually-hidden',
-            anchorClass: 'page-button',
-            pageClass: 'item-page',
-            prevClass: 'item-page prev',
-            nextClass: 'item-page next',
+        if (totalPages > 0) {
+            pagination.twbsPagination({
+                totalPages: totalPages,
+                visiblePages: visiblePages,
+                initiateStartPageClick: false,
+                prev: '&laquo;',
+                next: '&raquo;',
+                firstClass: 'visually-hidden',
+                lastClass: 'visually-hidden',
+                anchorClass: 'page-button',
+                pageClass: 'item-page',
+                prevClass: 'item-page prev',
+                nextClass: 'item-page next',
 
-            onPageClick: function (event, page) {
-                goToAnotherPage(page);
-            }
-        });
+                onPageClick: function (event, page) {
+                    goToAnotherPage(page);
+                }
+            });
 
-        const currentPage = ${sessionScope.menuItemsPageNumber};
-        pagination.twbsPagination('changePage', currentPage);
+            const currentPage = ${sessionScope.menuPageNumber};
+            pagination.twbsPagination('changePage', currentPage);
+        }
 
         sortSelect.on('change', function () {
             const newSortOrder = sortSelect.val();
@@ -225,7 +233,7 @@
 
             $.post(URL, requestData).done(function (response) {
                 const liveToast = $('#liveToast');
-                liveToast.find('.toast-body').text("Item added to the cart");
+                liveToast.find('.toast-body').text("${itemAdded}");
 
                 liveToast.toast('show');
 
@@ -237,11 +245,6 @@
             }).fail(function (message) {
                 console.log(message);
             });
-        }
-
-        if ("${requestScope.orderResult}") {
-            $('.modal-body').text("${requestScope.orderResult}");
-            $('#orderResult').modal('show');
         }
     });
 </script>

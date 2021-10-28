@@ -1,7 +1,5 @@
 package com.eugene.cafe.entity;
 
-import java.io.InputStream;
-
 public class User extends AbstractEntity {
 
     private String name;
@@ -107,11 +105,39 @@ public class User extends AbstractEntity {
                 .append(email)
                 .append(", balance: ")
                 .append(balance)
+                .append(", profileImagePath: ")
+                .append(profileImagePath)
                 .append("}");
+
         return builder.toString();
     }
 
-    // todo: implement hashCode(), equals()
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof User user) {
+            return getId() == user.getId() && name.equals(user.name) && surname.equals(user.surname)
+                    && role == user.role && status == user.status && email.equals(user.email)
+                    && balance == user.balance && profileImagePath.equals(user.profileImagePath);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = Integer.hashCode(getId());
+        hashCode = hashCode * 31 + name.hashCode();
+        hashCode = hashCode * 31 + surname.hashCode();
+        hashCode = hashCode * 31 + role.hashCode();
+        hashCode = hashCode * 31 + status.hashCode();
+        hashCode = hashCode * 31 + email.hashCode();
+        hashCode = hashCode * 31 + Double.hashCode(balance);
+        hashCode = hashCode * 31 + profileImagePath.hashCode();
+
+        return hashCode;
+    }
 
     public static class Builder {
 

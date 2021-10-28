@@ -3,13 +3,11 @@ package com.eugene.cafe.controller.command.impl.ajax;
 import com.eugene.cafe.controller.command.AjaxCommand;
 import static com.eugene.cafe.controller.command.RequestParameter.*;
 
-import static com.eugene.cafe.controller.command.RequestAttribute.*;
+import static com.eugene.cafe.controller.command.AttributeName.*;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.model.service.MenuService;
-import com.eugene.cafe.model.service.UserService;
 import com.eugene.cafe.model.service.impl.MenuServiceImpl;
-import com.eugene.cafe.model.service.impl.UserServiceImpl;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +26,7 @@ public class AddItemToCartCommand implements AjaxCommand {
     private static final MenuService menuService = new MenuServiceImpl();
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) {
 
         String menuItemId = request.getParameter(PARAM_MENU_ITEM_ID);
 
@@ -55,12 +53,20 @@ public class AddItemToCartCommand implements AjaxCommand {
                 request.getSession().setAttribute(SHOPPING_CART_SIZE, totalItemsInCart);
 
                 String jsonData = new Gson().toJson(totalItemsInCart);
-                response.getWriter().write(jsonData);
+                try {
+                    response.getWriter().write(jsonData);
+                } catch (IOException e) {
+                    logger.error("Error while writing a response body", e);
+                }
             }
         } catch (ServiceException e) {
-            // todo write log
-            response.setStatus(400);
-            response.getWriter().write(e.getMessage());
+            logger.error("Unable to add item to cart", e);
+            response.setStatus(500);
+            try {
+                response.getWriter().write(e.getMessage());
+            } catch (IOException ioException) {
+                logger.error("Error while writing a response body", ioException);
+            }
         }
     }
 }

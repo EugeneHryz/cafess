@@ -57,8 +57,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public boolean create(Order entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         boolean created = false;
@@ -83,8 +83,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public Optional<Order> findById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         Optional<Order> result = Optional.empty();
@@ -106,8 +106,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public List<Order> findAll() throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<Order> orders = new ArrayList<>();
@@ -128,8 +128,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public Optional<Order> update(Order entity) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         Optional<Order> updated = Optional.empty();
@@ -150,8 +150,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public boolean deleteById(int id) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         boolean deleted = false;
@@ -171,11 +171,11 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public boolean createOrderMenuItemMappings(Order order, List<MenuItem> menuItems) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
-        boolean created = false;
+        boolean created;
         try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_ORDER_MENU_ITEM_MAPPING)) {
 
             for (MenuItem item : menuItems) {
@@ -200,8 +200,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public List<MenuItem> findMenuItemsByOrderId(int orderId) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<MenuItem> menuItems = new ArrayList<>();
@@ -223,8 +223,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public List<Order> getSubsetOfUserOrders(int userId, int offset, int limit) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<Order> orders = new ArrayList<>();
@@ -248,8 +248,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public List<Order> getSubsetOfOrders(int offset, int limit) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for OrderDao");
-            throw new DaoException("Database connection is not set for OrderDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         List<Order> orders = new ArrayList<>();
@@ -272,8 +272,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public int getUserOrderCount(int userId) throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         int count = 0;
@@ -285,7 +285,7 @@ public class OrderDaoImpl extends OrderDao {
                 count = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            // todo: write log
+            logger.error("Database error occurred", e);
             throw new DaoException("Database error occurred", e);
         }
         return count;
@@ -294,8 +294,8 @@ public class OrderDaoImpl extends OrderDao {
     @Override
     public int getOrderCount() throws DaoException {
         if (connection == null) {
-            logger.error("Database connection is not set for MenuItemDao");
-            throw new DaoException("Database connection is not set for MenuItemDao");
+            logger.error("Database connection is not set");
+            throw new DaoException("Database connection is not set");
         }
 
         int count = 0;
@@ -306,7 +306,7 @@ public class OrderDaoImpl extends OrderDao {
                 count = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            // todo: write log
+            logger.error("Database error occurred", e);
             throw new DaoException("Database error occurred", e);
         }
         return count;

@@ -26,7 +26,7 @@
     justify-content: space-between;
     min-height: 100vh;">
 
-<c:import url="header.jsp"/>
+<c:import url="../header.jsp"/>
 
 <div class="d-block light-style mb-5">
     <h4 class="display-6 fs-3 my-2">
@@ -104,6 +104,13 @@
                                     <input id="emailInput" type="email" name="email" class="form-control" value="${sessionScope.user.email}"
                                             data-bs-toggle="popover" required pattern="^(?=.{3,30}$)[\w.]+@[\w.]+$"/>
                                 </div>
+                                <p class="text-danger">
+                                    ${editProfileFail}
+                                    ${changePasswordFail}
+                                </p>
+                                <p class="text-success">
+                                    ${changePasswordSuccess}
+                                </p>
                                 <button type="submit" form="userDataForm" class="button button-primary-dark"
                                         style="color: var(--cafe-secondary)"><fmt:message key="profile.action.saveChanges"/></button>
                             </form>
@@ -161,7 +168,7 @@
     </div>
 </div>
 
-<c:import url="footer.jsp"/>
+<c:import url="../footer.jsp"/>
 
 <fmt:message key="signup.error.valueMissing" var="valueMissing"/>
 <fmt:message key="signup.error.namePatternMismatch" var="namePatternMismatch"/>
