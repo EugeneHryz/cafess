@@ -3,7 +3,7 @@ package com.eugene.cafe.controller.listener;
 import com.eugene.cafe.controller.command.AttributeName;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.exception.ServiceException;
-import com.eugene.cafe.model.dao.MenuItemSortOrder;
+import com.eugene.cafe.model.dao.MenuSortOrder;
 import com.eugene.cafe.model.service.MenuService;
 import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import jakarta.servlet.annotation.WebListener;
@@ -27,13 +27,13 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
     @Override
     public void sessionCreated(HttpSessionEvent se) {
         try {
-            List<MenuItem> menuItems = menuService.getSubsetOfMenuItems(1, MenuItemSortOrder.PRICE_ASCENDING, null);
-            int menuItemsCount = menuService.getMenuItemCountByCategory(null);
+            List<MenuItem> menuItems = menuService.getSubsetOfActiveMenuItems(1, MenuSortOrder.PRICE_ASCENDING, null);
+            int menuItemsCount = menuService.getMenuItemCountByCategory(null, true);
 
             se.getSession().setAttribute(MENU_ITEMS_SUBLIST, menuItems);
             se.getSession().setAttribute(MENU_ITEMS_PAGE_NUMBER, 1);
             se.getSession().setAttribute(MENU_ITEMS_COUNT, menuItemsCount);
-            se.getSession().setAttribute(MENU_ITEMS_SORT_ORDER, MenuItemSortOrder.PRICE_ASCENDING.name().toLowerCase());
+            se.getSession().setAttribute(MENU_ITEMS_SORT_ORDER, MenuSortOrder.PRICE_ASCENDING.name().toLowerCase());
             se.getSession().setAttribute(SHOPPING_CART, new HashMap<MenuItem, Integer>());
 
         } catch (ServiceException e) {

@@ -1,6 +1,6 @@
 package com.eugene.cafe.model.dao;
 
-public enum MenuItemSortOrder {
+public enum MenuSortOrder {
 
     PRICE_ASCENDING,
     PRICE_DESCENDING

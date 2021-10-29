@@ -20,7 +20,7 @@
 <body style="min-height: 100vh; background-color: var(--cafe-background); display: flex; flex-direction: column; justify-content: center; align-items: center">
 
 <p class="display-6"><fmt:message key="checkout.text.orderFail"/></p>
-<i class="fas fa-times-circle fa-7x" style="color: #e85555"></i>
+<i class="fas fa-times-circle fa-7x" style="color: var(--cafe-dark)"></i>
 
 <a class="button button-primary" style="text-decoration: none; margin-top: 5%" href="${pageContext.request.contextPath}/controller?command=go_to_menu_page&page=1">
     <fmt:message key="orderFail.text.goToMainPage"/>

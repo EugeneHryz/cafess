@@ -6,7 +6,7 @@ import com.eugene.cafe.exception.DaoException;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.model.dao.CategoryDao;
 import com.eugene.cafe.model.dao.MenuItemDao;
-import com.eugene.cafe.model.dao.MenuItemSortOrder;
+import com.eugene.cafe.model.dao.MenuSortOrder;
 import com.eugene.cafe.model.dao.TransactionHelper;
 import com.eugene.cafe.model.dao.impl.CategoryDaoImpl;
 import com.eugene.cafe.model.dao.impl.MenuItemDaoImpl;
@@ -92,7 +92,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuItem> getSubsetOfMenuItems(int pageNumber, MenuItemSortOrder sortOrder, Category category) throws ServiceException {
+    public List<MenuItem> getSubsetOfActiveMenuItems(int pageNumber, MenuSortOrder sortOrder, Category category) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final MenuItemDao menuItemDao = new MenuItemDaoImpl();
@@ -102,9 +102,9 @@ public class MenuServiceImpl implements MenuService {
         int offset = MENU_ITEMS_PER_PAGE * (pageNumber - 1);
         try {
             if (category == null) {
-                menuItems = menuItemDao.getSubsetOfMenuItems(MENU_ITEMS_PER_PAGE, offset, sortOrder);
+                menuItems = menuItemDao.getSubsetOfMenuItems(MENU_ITEMS_PER_PAGE, offset, sortOrder, true);
             } else {
-                menuItems = menuItemDao.getSubsetOfMenuItemsByCategory(MENU_ITEMS_PER_PAGE, offset, sortOrder, category);
+                menuItems = menuItemDao.getSubsetOfActiveMenuItemsByCategory(MENU_ITEMS_PER_PAGE, offset, sortOrder, category);
             }
         } catch (DaoException e) {
             logger.error("Unable to get a subset of menu items", e);
@@ -116,7 +116,27 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public int getMenuItemCountByCategory(Category category) throws ServiceException {
+    public List<MenuItem> getSubsetOfAllMenuItems(int pageNumber, MenuSortOrder sortOrder) throws ServiceException {
+
+        final TransactionHelper helper = new TransactionHelper();
+        final MenuItemDao menuItemDao = new MenuItemDaoImpl();
+
+        helper.init(menuItemDao);
+        List<MenuItem> menuItems;
+        int offset = MENU_ITEMS_PER_PAGE * (pageNumber - 1);
+        try {
+            menuItems = menuItemDao.getSubsetOfMenuItems(MENU_ITEMS_PER_PAGE, offset, sortOrder, false);
+        } catch (DaoException e) {
+            logger.error("Unable to get a subset of menu items", e);
+            throw new ServiceException("Unable to get a subset of menu items", e);
+        } finally {
+            helper.end();
+        }
+        return menuItems;
+    }
+
+    @Override
+    public int getMenuItemCountByCategory(Category category, boolean active) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final MenuItemDao menuItemDao = new MenuItemDaoImpl();
@@ -125,9 +145,9 @@ public class MenuServiceImpl implements MenuService {
         int count;
         try {
             if (category == null) {
-                count = menuItemDao.getCount();
+                count = menuItemDao.getCount(active);
             } else {
-                count = menuItemDao.getCountByCategory(category);
+                count = menuItemDao.getCountByCategory(category, active);
             }
         } catch (DaoException e) {
             logger.error("Unable to get menu item count", e);
@@ -158,21 +178,26 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public boolean deleteMenuItem(int itemId) throws ServiceException {
+    public Optional<MenuItem> changeMenuItemStatus(int id, boolean status) throws ServiceException {
 
         final TransactionHelper helper = new TransactionHelper();
         final MenuItemDao menuItemDao = new MenuItemDaoImpl();
 
         helper.init(menuItemDao);
-        boolean itemDeleted;
+        Optional<MenuItem> updatedItem = Optional.empty();
         try {
-            itemDeleted = menuItemDao.deleteById(itemId);
+            Optional<MenuItem> menuItem = menuItemDao.findById(id);
+            if (menuItem.isPresent()) {
+
+                menuItem.get().setArchived(status);
+                updatedItem = menuItemDao.update(menuItem.get());
+            }
         } catch (DaoException e) {
-            logger.error("Failed to delete menu item with id: " + itemId, e);
-            throw new ServiceException("Failed to delete menu item with id: " + itemId, e);
+            logger.error("Failed to change menu item status (id: " + id + ")", e);
+            throw new ServiceException("Failed to change menu item status (id: " + id + ")", e);
         } finally {
             helper.end();
         }
-        return itemDeleted;
+        return updatedItem;
     }
 }

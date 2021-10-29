@@ -21,7 +21,7 @@ public class GetMenuItemCountCommand implements AjaxCommand {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
         try {
-            int menuItemCount = menuService.getMenuItemCountByCategory(null);
+            int menuItemCount = menuService.getMenuItemCountByCategory(null, false);
             String jsonData = new Gson().toJson(menuItemCount);
             try {
                 response.getWriter().write(jsonData);

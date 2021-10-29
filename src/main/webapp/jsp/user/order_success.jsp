@@ -20,7 +20,7 @@
 <body style="min-height: 100vh; background-color: var(--cafe-background); display: flex; flex-direction: column; justify-content: center; align-items: center">
 
 <p class="display-6"><fmt:message key="checkout.text.orderSuccess"/></p>
-<i class="far fa-check-circle fa-7x" style="color: #9bce77"></i>
+<i class="far fa-check-circle fa-7x" style="color: var(--cafe-dark)"></i>
 
 <a class="button button-primary" style="text-decoration: none; margin-top: 5%" href="${pageContext.request.contextPath}/controller?command=go_to_order_history_page&page=1">
     <fmt:message key="orderSuccess.text.goToOrderHistory"/>

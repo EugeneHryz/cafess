@@ -36,6 +36,8 @@ public final class RequestParameter {
 
     public static final String PARAM_MENU_ITEM_ID = "item_id";
 
+    public static final String PARAM_MENU_ITEM_STATUS = "status";
+
     public static final String PARAM_PICKUP_TIME = "pickup_time";
 
     public static final String PARAM_RATING = "rating";

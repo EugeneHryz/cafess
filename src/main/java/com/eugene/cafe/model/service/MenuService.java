@@ -3,7 +3,7 @@ package com.eugene.cafe.model.service;
 import com.eugene.cafe.entity.Category;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.exception.ServiceException;
-import com.eugene.cafe.model.dao.MenuItemSortOrder;
+import com.eugene.cafe.model.dao.MenuSortOrder;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +16,13 @@ public interface MenuService {
 
     Optional<Category> findCategoryById(int id) throws ServiceException;
 
-    List<MenuItem> getSubsetOfMenuItems(int pageNumber, MenuItemSortOrder sortOrder, Category category) throws ServiceException;
+    List<MenuItem> getSubsetOfActiveMenuItems(int pageNumber, MenuSortOrder sortOrder, Category category) throws ServiceException;
 
-    int getMenuItemCountByCategory(Category category) throws ServiceException;
+    List<MenuItem> getSubsetOfAllMenuItems(int pageNumber, MenuSortOrder sortOrder) throws ServiceException;
+
+    int getMenuItemCountByCategory(Category category, boolean active) throws ServiceException;
 
     List<Category> getAllMenuCategories() throws ServiceException;
 
-    boolean deleteMenuItem(int itemId) throws ServiceException;
+    Optional<MenuItem> changeMenuItemStatus(int id, boolean status) throws ServiceException;
 }

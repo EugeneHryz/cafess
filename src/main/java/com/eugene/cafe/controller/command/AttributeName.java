@@ -22,7 +22,6 @@ public final class AttributeName {
 
     public static final String SAVE_REVIEW_MESSAGE = "saveReviewMessage";
 
-    public static final String MENU_ITEM_DELETED = "menuItemDeleted";
 
 
     public static final String MENU_ITEMS_SUBLIST = "menuItemsSublist";

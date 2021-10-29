@@ -21,12 +21,12 @@ public final class DatabaseColumnLabel {
 
     public static final String USERS_PROFILE_IMAGE = "profile_image";
 
-    // client_role table
+    // user_role table
     public static final String USER_ROLE_ID = "id";
 
     public static final String USER_ROLE_ROLE = "role";
 
-    // client_status table
+    // user_status table
     public static final String USER_STATUS_ID = "id";
 
     public static final String USER_STATUS_STATUS = "status";
@@ -36,10 +36,6 @@ public final class DatabaseColumnLabel {
 
     public static final String ORDER_STATUS_STATUS = "status";
 
-    // order_payment_status table
-    public static final String ORDER_PAYMENT_STATUS_ID = "id";
-
-    public static final String ORDER_PAYMENT_STATUS_STATUS = "status";
 
     // orders table
     public static final String ORDERS_ID = "id";
@@ -67,6 +63,8 @@ public final class DatabaseColumnLabel {
     public static final String MENU_ITEMS_PRICE = "price";
 
     public static final String MENU_ITEMS_IMAGE = "image";
+
+    public static final String MENU_ITEMS_STATUS = "status";
 
     public static final String MENU_ITEMS_CATEGORY_ID = "category_id";
 

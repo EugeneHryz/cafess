@@ -60,38 +60,40 @@
         <div id="itemsContainer" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
 
             <c:forEach items="${sessionScope.menuItemsSublist}" var="item" varStatus="status">
-                <div class="col">
-                    <div class="card" style="border: none">
-                        <c:choose>
-                            <c:when test="${not empty item.imagePath}">
-                                <img src="${pageContext.request.contextPath}/files/menu_items/${item.imagePath}" class="card-img-top"
-                                     alt="menu item image" height="160" style="object-fit: cover;">
-                            </c:when>
-                            <c:otherwise>
-                                <img src="${pageContext.request.contextPath}/content/no_image.png" class="card-img-top"
-                                     alt="no image" height="160" style="object-fit: cover;">
-                            </c:otherwise>
-                        </c:choose>
+                <c:if test="${not item.archived}">
+                    <div class="col">
+                        <div class="card" style="border: none">
+                            <c:choose>
+                                <c:when test="${not empty item.imagePath}">
+                                    <img src="${pageContext.request.contextPath}/files/menu_items/${item.imagePath}" class="card-img-top"
+                                         alt="menu item image" height="160" style="object-fit: cover;">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/content/no_image.png" class="card-img-top"
+                                         alt="no image" height="160" style="object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
 
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2" style="line-height: 1.2">
-                                <span id="itemName" class="fs-5" style="height: 2em;">${item.name}</span>
-                                <span id="itemPrice" class="fs-4">${item.price}</span>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2" style="line-height: 1.2">
+                                    <span id="itemName" class="fs-5" style="height: 2em;">${item.name}</span>
+                                    <span id="itemPrice" class="fs-4">${item.price}</span>
+                                </div>
+                                <span id="itemCategoryId" style="display: none">${item.categoryId}</span>
+
+                                <div class="collapse" id="collapsingText${status.count}">${item.description}</div>
+                                <a class="grey-text" data-bs-toggle="collapse" href="#collapsingText${status.count}" aria-controls="collapsingText${status.count}" role="button">
+                                    <fmt:message key="main.text.description"/>
+                                </a>
                             </div>
-                            <span id="itemCategoryId" style="display: none">${item.categoryId}</span>
 
-                            <div class="collapse" id="collapsingText${status.count}">${item.description}</div>
-                            <a class="grey-text" data-bs-toggle="collapse" href="#collapsingText${status.count}" aria-controls="collapsingText${status.count}" role="button">
-                                <fmt:message key="main.text.description"/>
-                            </a>
+                            <button id="addToCartButton${item.id}" class="btn btn-outline-dark w-100 py-2"
+                                    style="border-radius: 0; border-bottom: none; border-left: none; border-right: none;">
+                                <fmt:message key="main.action.addToCart"/>
+                            </button>
                         </div>
-
-                        <button id="addToCartButton${item.id}" class="btn btn-outline-dark w-100 py-2"
-                           style="border-radius: 0; border-bottom: none; border-left: none; border-right: none;">
-                            <fmt:message key="main.action.addToCart"/>
-                        </button>
                     </div>
-                </div>
+                </c:if>
             </c:forEach>
         </div>
     </div>

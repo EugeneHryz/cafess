@@ -35,7 +35,7 @@ public enum CommandType {
     REMOVE_ITEM_FROM_CART("user", "admin"),
     GET_MENU_ITEM_COUNT("admin"),
     LOAD_MENU_PAGE("admin"),
-    DELETE_ITEM("admin");
+    CHANGE_MENU_ITEM_STATUS("admin");
 
     private final List<String> roles;
 

@@ -5,7 +5,7 @@ import com.eugene.cafe.controller.command.Router;
 import com.eugene.cafe.entity.Category;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.exception.ServiceException;
-import com.eugene.cafe.model.dao.MenuItemSortOrder;
+import com.eugene.cafe.model.dao.MenuSortOrder;
 import com.eugene.cafe.model.service.MenuService;
 import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,16 +32,16 @@ public class ChangeCurrentCategoryCommand implements Command {
         int categoryId = Integer.parseInt(categoryIdParam);
 
         String sortOrder = (String) request.getSession().getAttribute(MENU_ITEMS_SORT_ORDER);
-        MenuItemSortOrder order = MenuItemSortOrder.valueOf(sortOrder.toUpperCase());
+        MenuSortOrder order = MenuSortOrder.valueOf(sortOrder.toUpperCase());
 
         Router router = new Router(MAIN_PAGE, Router.RouterType.FORWARD);
         try {
             Optional<Category> newCategory = menuService.findCategoryById(categoryId);
             Category category = newCategory.orElse(null);
 
-            List<MenuItem> menuItems = menuService.getSubsetOfMenuItems(1, order, category);
+            List<MenuItem> menuItems = menuService.getSubsetOfActiveMenuItems(1, order, category);
 
-            int menuItemsCount = menuService.getMenuItemCountByCategory(category);
+            int menuItemsCount = menuService.getMenuItemCountByCategory(category, true);
 
             request.getSession().setAttribute(MENU_ITEMS_SUBLIST, menuItems);
             request.getSession().setAttribute(MENU_ITEMS_PAGE_NUMBER, 1);

@@ -28,7 +28,7 @@ public class AjaxCommandProvider {
         commandMap.put(REMOVE_ITEM_FROM_CART, new RemoveItemFromCartCommand());
         commandMap.put(GET_MENU_ITEM_COUNT, new GetMenuItemCountCommand());
         commandMap.put(LOAD_MENU_PAGE, new LoadMenuPageCommand());
-        commandMap.put(DELETE_ITEM, new DeleteMenuItemCommand());
+        commandMap.put(CHANGE_MENU_ITEM_STATUS, new ChangeMenuItemStatusCommand());
     }
 
     public AjaxCommand getCommand(String commandName) {

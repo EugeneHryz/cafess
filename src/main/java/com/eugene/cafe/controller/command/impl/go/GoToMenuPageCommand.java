@@ -9,7 +9,7 @@ import com.eugene.cafe.controller.command.Router;
 import com.eugene.cafe.entity.Category;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.exception.ServiceException;
-import com.eugene.cafe.model.dao.MenuItemSortOrder;
+import com.eugene.cafe.model.dao.MenuSortOrder;
 import com.eugene.cafe.model.service.MenuService;
 import com.eugene.cafe.model.service.impl.MenuServiceImpl;
 import com.eugene.cafe.model.validator.ParamValidator;
@@ -41,11 +41,15 @@ public class GoToMenuPageCommand implements Command {
         int pageNumber = Integer.parseInt(pageNumberParam);
         Router router = new Router(MAIN_PAGE, Router.RouterType.FORWARD);
         try {
-            MenuItemSortOrder order = MenuItemSortOrder.valueOf(sortOrder.toUpperCase());
-            List<MenuItem> menuItems = menuService.getSubsetOfMenuItems(pageNumber, order, currentCategory);
+            MenuSortOrder order = MenuSortOrder.valueOf(sortOrder.toUpperCase());
+            List<MenuItem> menuItems = menuService.getSubsetOfActiveMenuItems(pageNumber, order, currentCategory);
+            int menuItemCount = menuService.getMenuItemCountByCategory(currentCategory, true);
+//            System.out.println("count: " + menuItemCount);
+//            System.out.println("currentCategory: " + currentCategory);
 
             request.getSession().setAttribute(MENU_ITEMS_SUBLIST, menuItems);
             request.getSession().setAttribute(MENU_ITEMS_PAGE_NUMBER, pageNumber);
+            request.getSession().setAttribute(MENU_ITEMS_COUNT, menuItemCount);
 
         } catch (ServiceException e) {
             logger.error("Unable to load menu page: " + pageNumberParam, e);

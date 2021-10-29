@@ -136,7 +136,8 @@
                             <tr>
                                 <th scope="col" style="width: 12%">Id</th>
                                 <th scope="col" style="width: 36%"><fmt:message key="dashboard.text.menuItemName"/></th>
-                                <th scope="col" style="width: 12%"><fmt:message key="dashboard.text.menuItemPrice"/></th>
+                                <th scope="col" style="width: 16%"><fmt:message key="dashboard.text.menuItemPrice"/></th>
+                                <th scope="col" style="width: 16%"><fmt:message key="dashboard.text.menuItemStatus"/></th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -156,6 +157,8 @@
 
 <fmt:message key="dashboard.action.banUser" var="banUser"/>
 <fmt:message key="dashboard.action.unbanUser" var="unbanUser"/>
+<fmt:message key="dashboard.action.archiveItem" var="archiveItem"/>
+<fmt:message key="dashboard.action.unarchiveItem" var="unarchiveItem"/>
 <fmt:message key="dashboard.error.valueMissing" var="valueMissing"/>
 <fmt:message key="dashboard.error.namePatternMismatch" var="namePatternMismatch"/>
 <fmt:message key="dashboard.error.priceRangeOverflow" var="priceRangeOverflow"/>
@@ -337,22 +340,34 @@
 
                     $.each(responseData, function (index, menuItem) {
                         // creating button for each menu item row
-                        const deleteButton = $("<button>")
-                            .addClass('btn-close')
-                            .attr('id', 'deleteButton' + index)
-                            .css('float', 'right');
+                        const toggleArchivedButton = $("<button>")
+                            .addClass('btn btn-outline-danger btn-sm')
+                            .attr('id', 'toggleArchivedButton' + index)
+                            .css('float', 'right')
+                            .css('width', '84%');
+
+                        if (menuItem.archived) {
+                            toggleArchivedButton.text("${unarchiveItem}");
+                        } else {
+                            toggleArchivedButton.text("${archiveItem}");
+                        }
 
                         // setting click event on button to delete item
-                        deleteButton.click(function () {
+                        toggleArchivedButton.click(function () {
                             const requestData = {
-                                command: 'delete_item',
+                                command: 'change_menu_item_status',
                                 item_id: menuItem.id
                             };
+                            requestData.status = (tableBody.find('#menuItemStatus' + index).text() === 'active') ? 'true' : 'false';
 
                             $.post(URL, requestData).done(function (response) {
-                                if (response === 'menuItemDeleted') {
 
-                                    loadNumberOfMenuItems();
+                                tableBody.find('#menuItemStatus' + index).text(response.archived ? "archived" : "active");
+
+                                if (response.archived) {
+                                    toggleArchivedButton.text("${unarchiveItem}");
+                                } else {
+                                    toggleArchivedButton.text("${archiveItem}");
                                 }
                             }).fail(function (response) {
                                 console.log(response);
@@ -364,7 +379,8 @@
                             .append($("<td>").text(menuItem.id))
                             .append($("<td>").text(menuItem.name))
                             .append($("<td>").text(Number(menuItem.price).toFixed(2)))
-                            .append($("<td>").html(deleteButton));
+                            .append($("<td>").attr('id', 'menuItemStatus' + index).text(menuItem.archived ? "archived" : "active"))
+                            .append($("<td>").html(toggleArchivedButton));
                     });
 
                     tableBody.fadeIn(120);
