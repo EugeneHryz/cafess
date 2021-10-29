@@ -120,7 +120,7 @@ public class User extends AbstractEntity {
         if (obj instanceof User user) {
             return getId() == user.getId() && name.equals(user.name) && surname.equals(user.surname)
                     && role == user.role && status == user.status && email.equals(user.email)
-                    && balance == user.balance && profileImagePath.equals(user.profileImagePath);
+                    && Double.compare(balance, user.balance) == 0 && profileImagePath.equals(user.profileImagePath);
         }
         return false;
     }

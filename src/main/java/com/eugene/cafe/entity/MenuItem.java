@@ -95,7 +95,7 @@ public class MenuItem extends AbstractEntity {
         }
         if (obj instanceof MenuItem item) {
             return (name.equals(item.name) && description.equals(item.description)
-                    && price == item.price && categoryId == item.categoryId
+                    && Double.compare(price, item.price) == 0 && categoryId == item.categoryId
                     && archived == item.archived && imagePath.equals(item.imagePath));
         }
         return false;

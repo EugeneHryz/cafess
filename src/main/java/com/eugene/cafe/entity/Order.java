@@ -107,7 +107,7 @@ public class Order extends AbstractEntity {
         }
         if (obj instanceof Order order) {
             return getId() == order.getId() && userId == order.userId && date.equals(order.date)
-                    && pickUpTime.equals(order.pickUpTime) && totalPrice == order.totalPrice
+                    && pickUpTime.equals(order.pickUpTime) && Double.compare(totalPrice, order.totalPrice) == 0
                     && orderStatus == order.orderStatus && review.equals(order.review);
         }
         return false;

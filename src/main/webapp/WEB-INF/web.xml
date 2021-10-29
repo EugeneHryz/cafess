@@ -12,4 +12,14 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+    
+    <error-page>
+        <location>/jsp/error/error.jsp</location>
+        <error-code>404</error-code>
+    </error-page>
+
+    <error-page>
+        <location>/jsp/error/error.jsp</location>
+        <error-code>500</error-code>
+    </error-page>
 </web-app>

@@ -26,7 +26,7 @@
 
 <c:import url="../header.jsp"/>
 
-<div class="card my-5" style="width: 42%">
+<div class="card my-5" style="width: 42%; ">
 
     <ul class="list-group list-group-flush">
         <c:forEach items="${sessionScope.shoppingCart}" var="item">
@@ -51,7 +51,7 @@
         </div>
         <hr class="border-light my-3"/>
 
-        <form action="${pageContext.request.contextPath}/controller" method="post">
+        <form id="placeOrderForm" action="${pageContext.request.contextPath}/controller" method="post">
             <input type="hidden" name="command" value="place_order"/>
             <c:choose>
                 <c:when test="${not empty requestScope.pickupTimeList}">
@@ -69,8 +69,13 @@
                 </c:otherwise>
             </c:choose>
 
+            <c:if test="${sessionScope.user.status eq 'BANNED'}">
+                <p><fmt:message key="checkout.text.userBanned"/></p>
+            </c:if>
+
             <div style="float: right">
-                <button type="submit" class="button button-primary" ${empty requestScope.pickupTimeList ? 'disabled' : ''}>
+                <button type="submit" class="button button-primary" ${empty requestScope.pickupTimeList or
+                sessionScope.user.status eq 'BANNED' ? 'disabled' : ''}>
                     <fmt:message key="checkout.action.placeOrder"/>
                 </button>
             </div>
@@ -123,6 +128,18 @@
             $('#shoppingCartSize').text(response.shoppingCartSize);
         });
     }
+
+    <%--const placeOrderForm = $('#placeOrderForm');--%>
+    <%--placeOrderForm.on('submit', function (event) {--%>
+    <%--    if (${sessionScope.user.status eq 'BANNED'}) {--%>
+
+    <%--        event.preventDefault();--%>
+
+    <%--        const liveToast = $('#liveToast');--%>
+    <%--        liveToast.find('.toast-body').text("You are banned");--%>
+    <%--        liveToast.toast('show');--%>
+    <%--    }--%>
+    <%--});--%>
 </script>
 </body>
 </html>

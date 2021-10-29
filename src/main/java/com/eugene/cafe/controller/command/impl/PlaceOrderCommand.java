@@ -9,6 +9,7 @@ import static com.eugene.cafe.controller.command.PagePath.*;
 import com.eugene.cafe.controller.command.Router;
 import com.eugene.cafe.entity.MenuItem;
 import com.eugene.cafe.entity.User;
+import com.eugene.cafe.entity.UserStatus;
 import com.eugene.cafe.exception.ServiceException;
 import com.eugene.cafe.model.dto.UserDto;
 import com.eugene.cafe.model.service.OrderService;
@@ -33,6 +34,11 @@ public class PlaceOrderCommand implements Command {
 
         UserDto user = (UserDto) request.getSession().getAttribute(USER);
         int userId = user.getId();
+
+        if (user.getStatus() == UserStatus.BANNED) {
+            logger.error("User can't place orders because he is banned");
+            return new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
+        }
 
         String pickupTimeParam = request.getParameter(PARAM_PICKUP_TIME);
         LocalTime pickupTime = LocalTime.parse(pickupTimeParam);

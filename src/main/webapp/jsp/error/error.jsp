@@ -10,12 +10,6 @@
 <body>
 <h1>Error occurred</h1>
 
-<%--<p style="line-height: 1em">--%>
-<%--    <c:forEach items="${sessionScope.exception.stackTrace}" var="trace">--%>
-<%--        ${trace}--%>
-<%--    </c:forEach>--%>
-<%--</p>--%>
-
 ${sessionScope.exception}
 
 </body>
