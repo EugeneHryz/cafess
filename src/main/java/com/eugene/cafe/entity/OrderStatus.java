@@ -5,5 +5,5 @@ public enum OrderStatus {
     EMPTY,
     COOKING,
     READY,
-    PICKED_UP;
+    PICKED_UP
 }

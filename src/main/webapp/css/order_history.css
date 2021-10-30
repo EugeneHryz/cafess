@@ -22,6 +22,10 @@
     cursor: pointer;
 }
 
+#order-history-body .star-text:disabled {
+    opacity: 0.6;
+}
+
 #order-history-body .rating {
     display: flex;
     flex-direction: row-reverse;

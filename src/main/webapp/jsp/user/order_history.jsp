@@ -57,7 +57,7 @@
 
                 <div class="d-flex justify-content-between fs-4">
                     <span class="fw-light"><fmt:message key="orderHistory.text.status"/>:</span>
-                    <span class="fw-normal"><fmt:message key="orderHistory.text.${fn:toLowerCase(item.orderStatus.name())}"/></span>
+                    <span id="orderStatus${status.count}" title="${item.orderStatus}" class="fw-normal"><fmt:message key="orderHistory.text.${fn:toLowerCase(item.orderStatus.name())}"/></span>
                 </div>
             </div>
         </div>
@@ -182,7 +182,9 @@
             $('.card-header').find('a').click(function () {
                 const id = $(this).attr('id').slice(10);
 
-                $('#reviewModal' + id).modal('show');
+                if ($('#orderStatus' + id).attr('title') === 'PICKED_UP') {
+                    $('#reviewModal' + id).modal('show');
+                }
             });
 
             if ("${requestScope.saveReviewMessage}") {

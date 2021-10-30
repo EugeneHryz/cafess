@@ -10,6 +10,8 @@
 <body>
 <h1>Error occurred</h1>
 
+${pageContext.exception}
+<br/>
 ${sessionScope.exception}
 
 </body>
