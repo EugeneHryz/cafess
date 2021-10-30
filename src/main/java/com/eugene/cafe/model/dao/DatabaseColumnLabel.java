@@ -1,5 +1,8 @@
 package com.eugene.cafe.model.dao;
 
+/**
+ * column names for all tables in the database
+ */
 public final class DatabaseColumnLabel {
 
     // users table
