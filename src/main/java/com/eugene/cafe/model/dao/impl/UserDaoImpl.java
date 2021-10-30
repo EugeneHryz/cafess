@@ -193,7 +193,7 @@ public class UserDaoImpl extends UserDao {
     }
 
     @Override
-    public Optional<User> findUserByEmail(String email) throws DaoException {
+    public Optional<User> findByEmail(String email) throws DaoException {
         if (connection == null) {
             logger.error("Database connection is not set");
             throw new DaoException("Database connection is not set");
@@ -216,7 +216,7 @@ public class UserDaoImpl extends UserDao {
     }
 
     @Override
-    public boolean changeUserPassword(int id, String newPassword) throws DaoException {
+    public boolean changePassword(int id, String newPassword) throws DaoException {
         if (connection == null) {
             logger.error("Database connection is not set");
             throw new DaoException("Database connection is not set");

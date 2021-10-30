@@ -43,7 +43,7 @@ public class UserValidatorTest {
 
     @Test
     public void nameValidationShouldBeIncorrect() {
-        String name = "яч";
+        String name = "ячшшшшшшш";
         boolean result = UserValidator.validateName(name);
         assertFalse(result);
     }

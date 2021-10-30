@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public abstract class UserDao extends AbstractDao<User> {
 
-    public abstract Optional<User> findUserByEmail(String email) throws DaoException;
+    public abstract Optional<User> findByEmail(String email) throws DaoException;
 
     public abstract Optional<User> updateProfilePicture(int id, String imagePath) throws DaoException;
 
-    public abstract boolean changeUserPassword(int id, String newPassword) throws DaoException;
+    public abstract boolean changePassword(int id, String newPassword) throws DaoException;
 
     public abstract List<User> getSubsetOfUsers(int limit, int offset) throws DaoException;
 

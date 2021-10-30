@@ -169,8 +169,7 @@ public class MenuItemDaoImpl extends MenuItemDao {
     }
 
     @Override
-    public List<MenuItem> getSubsetOfMenuItems(int limit, int offset, MenuSortOrder sortOrder,
-                                               boolean active) throws DaoException {
+    public List<MenuItem> getSubsetOfMenuItems(int limit, int offset, MenuSortOrder sortOrder, boolean active) throws DaoException {
         if (connection == null) {
             logger.error("Database connection is not set");
             throw new DaoException("Database connection is not set");

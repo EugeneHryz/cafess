@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
 
@@ -37,7 +36,7 @@ public class UserServiceImpl implements UserService {
         try {
             if (UserValidator.validateEmail(email) && UserValidator.validatePassword(password)) {
 
-                Optional<User> user = userDao.findUserByEmail(email);
+                Optional<User> user = userDao.findByEmail(email);
                 if (user.isPresent()) {
                     PasswordEncryptor encryptor = new PasswordEncryptorImpl();
                     if (encryptor.checkPassword(password, user.get().getHashedPassword())) {
@@ -64,7 +63,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserDto> result = Optional.empty();
         helper.init(userDao);
         try {
-            Optional<User> user = userDao.findUserByEmail(email);
+            Optional<User> user = userDao.findByEmail(email);
             if (user.isEmpty()) {
 
                 User.Builder builder = new User.Builder();
@@ -164,7 +163,7 @@ public class UserServiceImpl implements UserService {
                     if (encryptor.checkPassword(oldPassword, user.get().getHashedPassword())) {
 
                         String hashed = encryptor.encryptPassword(newPassword);
-                        passwordChanged = userDao.changeUserPassword(id, hashed);
+                        passwordChanged = userDao.changePassword(id, hashed);
                     }
                 }
             }
