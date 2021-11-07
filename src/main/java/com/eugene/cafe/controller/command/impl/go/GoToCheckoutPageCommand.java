@@ -51,8 +51,7 @@ public class GoToCheckoutPageCommand implements Command {
 
         List<LocalTime> pickupTimes = new ArrayList<>();
         LocalTime time = nearestPickupTime;
-        while (time.isBefore(LocalTime.of(22, 0))
-                || time.equals(LocalTime.of(22, 0))) {
+        while (time.isBefore(LocalTime.of(22, 0))) {
 
             if (time.isAfter(LocalTime.of(9, 0))) {
                 pickupTimes.add(time);

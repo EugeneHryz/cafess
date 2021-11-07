@@ -153,7 +153,7 @@
                                     <label class="form-label"><fmt:message key="profile.action.topUpBalance"/></label>
                                     <div class="d-flex text-nowrap">
                                         <input id="topUpBalance" type="number" name="top_up_amount" class="form-control me-2"
-                                               data-bs-toggle="popover" data-bs-placement="bottom" min="1" max="1000" step="0.1" required/>
+                                               data-bs-toggle="popover" data-bs-placement="bottom" min="1" max="1000" step="0.01" required/>
                                         <button type="submit" class="button button-primary" style="color: var(--cafe-secondary)"><fmt:message key="profile.action.topUp"/></button>
                                     </div>
                                 </div>
@@ -176,7 +176,7 @@
 <fmt:message key="signup.error.passwordMismatch" var="passwordMismatch"/>
 <fmt:message key="profile.error.rangeOverflow" var="amountRangeOverflow"/>
 <fmt:message key="profile.error.rangeUnderflow" var="amountRangeUnderflow"/>
-
+<fmt:message key="profile.error.amountStepMismatch" var="amountStepMismatch"/>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.bundle.min.js" type='text/javascript'></script>
@@ -398,6 +398,8 @@
             topUpInput.setAttribute('data-bs-content', "${amountRangeOverflow}");
         } else if (topUpInput.validity.rangeUnderflow) {
             topUpInput.setAttribute('data-bs-content', "${amountRangeUnderflow}");
+        } else if (topUpInput.validity.stepMismatch) {
+            topUpInput.setAttribute('data-bs-content', "${amountStepMismatch}");
         }
         popover = createPopover(topUpInput);
         popover.show();

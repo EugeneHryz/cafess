@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="priceInput" class="form-label"><fmt:message key="dashboard.label.price"/></label>
-                                    <input id="priceInput" type="number" form="menuItemDataForm" name="price" step="0.1" class="form-control"
+                                    <input id="priceInput" type="number" form="menuItemDataForm" name="price" step="0.01" class="form-control"
                                            required min="1" max="100"/>
                                 </div>
                                 <div class="form-group mb-2">
@@ -163,6 +163,7 @@
 <fmt:message key="dashboard.error.namePatternMismatch" var="namePatternMismatch"/>
 <fmt:message key="dashboard.error.priceRangeOverflow" var="priceRangeOverflow"/>
 <fmt:message key="dashboard.error.priceRangeUnderflow" var="priceRangeUnderflow"/>
+<fmt:message key="dashboard.error.priceStepMismatch" var="priceStepMismatch"/>
 <fmt:message key="dashboard.error.descriptionPatternMismatch" var="descriptionPatternMismatch"/>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-3.6.0.min.js"></script>
@@ -468,6 +469,8 @@
                 priceInput.setAttribute('data-bs-content', "${priceRangeOverflow}");
             } else if (priceInput.validity.rangeUnderflow) {
                 priceInput.setAttribute('data-bs-content', "${priceRangeUnderflow}");
+            } else if (priceInput.validity.stepMismatch) {
+                priceInput.setAttribute('data-bs-content', "${priceStepMismatch}");
             }
             popover = createPopover(priceInput);
             popover.show();
